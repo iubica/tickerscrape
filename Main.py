@@ -2575,7 +2575,7 @@ class MySplashScreen(SplashScreen):
         bmp = wx.Image(opj("bitmaps/splash.png")).ConvertToBitmap()
         SplashScreen.__init__(self, bmp,
                                  wx.adv.SPLASH_CENTRE_ON_SCREEN | wx.adv.SPLASH_TIMEOUT,
-                                 5000, None, -1)
+                                 1000, None, -1)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.fc = wx.CallLater(2000, self.ShowMain)
 
@@ -2594,7 +2594,7 @@ class MySplashScreen(SplashScreen):
 
 
     def ShowMain(self):
-        frame = wxPythonDemo(None, "wxPython: (A Demonstration)")
+        frame = wxPythonDemo(None, "wx-portfolio")
         frame.Show()
         if self.fc.IsRunning():
             self.Raise()
@@ -2655,7 +2655,7 @@ class MyApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
         # Check runtime version
         if LooseVersion(version.VERSION_STRING) != LooseVersion(wx.VERSION_STRING):
             wx.MessageBox(caption="Warning",
-                          message="You're using version %s of wxPython, but this copy of the demo was written for version %s.\n"
+                          message="You're using version %s of wxPython, but this application was written for version %s.\n"
                           "There may be some version incompatibilities..."
                           % (wx.VERSION_STRING, version.VERSION_STRING))
 
