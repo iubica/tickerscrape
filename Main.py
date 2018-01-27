@@ -1440,7 +1440,7 @@ class wxPythonDemo(wx.Frame):
         self.statusBar = self.CreateStatusBar(2)#, wx.ST_SIZEGRIP
         self.statusBar.SetStatusWidths([-2, -1])
 
-        statusText = "Welcome to wxPython %s" % wx.VERSION_STRING
+        statusText = "Welcome to wx-portfolio %s" % wx.VERSION_STRING
         self.statusBar.SetStatusText(statusText, 0)
 
         self.downloadGauge = wx.Gauge(self.statusBar, wx.ID_ANY, 50)
