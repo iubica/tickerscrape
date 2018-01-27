@@ -48,7 +48,7 @@
 #   item. The second element of the tuple is the list of demos for the external package.
 # * GetOverview: returns a wx.html-ready representation of the package's documentation.
 #
-# Please see the __demo__.py file in the demo/agw/ folder for an example.
+# Please see the __demo__.py file in the wxPortfolio/agw/ folder for an example.
 # Last updated: Andrea Gavana, 20 Oct 2008, 18.00 GMT
 
 import sys, os, time, traceback
@@ -1390,7 +1390,7 @@ class DemoTaskBarIcon(TaskBarIcon):
 #---------------------------------------------------------------------------
 class wxPortfolioFrame(wx.Frame):
 
-    overviewText = "wxPython Overview"
+    overviewText = "wxPortfolio Help"
 
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, -1, title, size = (970, 720),
@@ -1801,7 +1801,7 @@ class wxPortfolioFrame(wx.Frame):
 
         self.tree.Freeze()
         self.tree.DeleteAllItems()
-        self.root = self.tree.AddRoot("wxPython Overview")
+        self.root = self.tree.AddRoot("wxPortfolio Views")
         self.tree.SetItemImage(self.root, 0)
         self.tree.SetItemData(self.root, 0)
 
@@ -1951,7 +1951,7 @@ class wxPortfolioFrame(wx.Frame):
         pt = event.GetPosition()
         item, flags = self.tree.HitTest(pt)
         if item == self.tree.GetSelection():
-            self.SetOverview(self.tree.GetItemText(item)+" Overview", self.curOverview)
+            self.SetOverview(self.tree.GetItemText(item)+" Help", self.curOverview)
         event.Skip()
 
     #---------------------------------------------
