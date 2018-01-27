@@ -1440,7 +1440,7 @@ class wxPortfolioFrame(wx.Frame):
         self.statusBar = self.CreateStatusBar(2)#, wx.ST_SIZEGRIP
         self.statusBar.SetStatusWidths([-2, -1])
 
-        statusText = "Welcome to wx-Portfolio %s" % version.VERSION_STRING
+        statusText = "Welcome to wxPortfolio %s" % version.VERSION_STRING
         self.statusBar.SetStatusText(statusText, 0)
 
         self.downloadGauge = wx.Gauge(self.statusBar, wx.ID_ANY, 50)
@@ -1553,7 +1553,7 @@ class wxPortfolioFrame(wx.Frame):
         # add the windows to the splitter and split it.
         leftBox = wx.BoxSizer(wx.VERTICAL)
         leftBox.Add(self.tree, 1, wx.EXPAND)
-        leftBox.Add(wx.StaticText(leftPanel, label = "Filter wx-Portfolio Views:"), 0, wx.TOP|wx.LEFT, 5)
+        leftBox.Add(wx.StaticText(leftPanel, label = "Filter wxPortfolio Views:"), 0, wx.TOP|wx.LEFT, 5)
         leftBox.Add(self.filter, 0, wx.EXPAND|wx.ALL, 5)
         if 'wxMac' in wx.PlatformInfo:
             leftBox.Add((5,5))  # Make sure there is room for the focus ring
@@ -1584,7 +1584,7 @@ class wxPortfolioFrame(wx.Frame):
                          Left().Layer(2).BestSize((240, -1)).
                          MinSize((240, -1)).
                          Floatable(self.allowAuiFloating).FloatingSize((240, 700)).
-                         Caption("wx-Portfolio Views").
+                         Caption("wxPortfolio Views").
                          CloseButton(False).
                          Name("DemoTree"))
         self.mgr.AddPane(self.log,
@@ -1592,7 +1592,7 @@ class wxPortfolioFrame(wx.Frame):
                          Bottom().BestSize((-1, 150)).
                          MinSize((-1, 140)).
                          Floatable(self.allowAuiFloating).FloatingSize((500, 160)).
-                         Caption("wx-Portfolio Log Messages").
+                         Caption("wxPortfolio Log Messages").
                          CloseButton(False).
                          Name("LogWindow"))
 
@@ -2594,7 +2594,7 @@ class MySplashScreen(SplashScreen):
 
 
     def ShowMain(self):
-        frame = wxPortfolioFrame(None, "wx-Portfolio")
+        frame = wxPortfolioFrame(None, "wxPortfolio")
         frame.Show()
         if self.fc.IsRunning():
             self.Raise()
