@@ -1,0 +1,48 @@
+[Persistence_Options]
+[Persistence_Options/Window]
+[Persistence_Options/Window/Example1]
+x=('int', '642')
+y=('int', '202')
+w=('int', '700')
+h=('int', '500')
+Maximized=('bool', 'False')
+Iconized=('bool', 'False')
+AGWAui_Perspective=('str', 'layout2|name=tb3;caption=AuiToolbar;state=67379964;dir=1;layer=10;row=0;pos=0;prop=100000;bestw=273;besth=26;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=DummyPanel1;caption=Pickers;state=67373052;dir=4;layer=0;row=0;pos=0;prop=100000;bestw=304;besth=137;minw=300;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=300;floath=300;notebookid=-1;transparent=255|name=DummyPanel2;caption=;state=768;dir=5;layer=0;row=0;pos=0;prop=100000;bestw=424;besth=130;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1;notebookid=-1;transparent=255|name=DummyPanel3;caption=Slider & Spins;state=67373052;dir=3;layer=0;row=0;pos=0;prop=100000;bestw=-1;besth=200;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=300;floath=300;notebookid=-1;transparent=255|dock_size(1,10,0)=28|dock_size(4,0,0)=302|dock_size(5,0,0)=207|dock_size(3,0,0)=136|')
+[Persistence_Options/MenuBar]
+[Persistence_Options/MenuBar/MenuBar1]
+Checked=('dict', '{201: True, 202: False, 203: False, 204: True, 205: False, 301: False, 302: False, 303: False}')
+[Persistence_Options/ToolBar]
+[Persistence_Options/ToolBar/AuiToolBar]
+Checked=('dict', '{6099: 0, 6100: 0, 6101: 0, 6102: 0, 6103: 0, 6104: 0, 6105: 0, 6106: 0, 6107: 0, 6108: 0}')
+[Persistence_Options/ColourPicker]
+[Persistence_Options/ColourPicker/ColourPicker1]
+Colour=('tuple', '(0, 0, 0, 255)')
+[Persistence_Options/ColourPicker/ColourPicker2]
+Colour=('tuple', '(0, 0, 0, 255)')
+[Persistence_Options/FileDirPicker]
+[Persistence_Options/FileDirPicker/DirPicker1]
+Path=('str', '')
+[Persistence_Options/FileDirPicker/FilePicker1]
+Path=('str', '')
+[Persistence_Options/FontPicker]
+[Persistence_Options/FontPicker/FontPicker1]
+Font=('tuple', "(8, 70, 90, 90, False, 'Tahoma', -1)")
+[Persistence_Options/RadioBox]
+[Persistence_Options/RadioBox/RadioBox1]
+Selection=('int', '0')
+[Persistence_Options/ToggleButton]
+[Persistence_Options/ToggleButton/Toggle1]
+Toggled=('bool', 'False')
+[Persistence_Options/ComboBox]
+[Persistence_Options/ComboBox/ComboBox1]
+Selection=('str', '')
+[Persistence_Options/Slider]
+[Persistence_Options/Slider/Slider1]
+Value=('int', '3')
+[Persistence_Options/Spin]
+[Persistence_Options/Spin/SpinCtrl1]
+Value=('int', '20')
+[Persistence_Options/Spin/FloatSpin1]
+Value=('float', '150.0')
+[Persistence_Options/Spin/spinButton]
+Value=('int', '0')
