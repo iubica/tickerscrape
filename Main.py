@@ -1388,7 +1388,7 @@ class DemoTaskBarIcon(TaskBarIcon):
 
 
 #---------------------------------------------------------------------------
-class wxPythonDemo(wx.Frame):
+class wxPortfolioFrame(wx.Frame):
 
     overviewText = "wxPython Overview"
 
@@ -1484,7 +1484,7 @@ class wxPythonDemo(wx.Frame):
         self.treeMap = {}
         self.searchItems = {}
 
-        self.tree = wxPythonDemoTree(leftPanel)
+        self.tree = wxPortfolioTree(leftPanel)
 
         self.filter = wx.SearchCtrl(leftPanel, style=wx.TE_PROCESS_ENTER)
         self.filter.ShowCancelButton(True)
@@ -2026,7 +2026,7 @@ class wxPythonDemo(wx.Frame):
         overviewText = ""
 
         # o The RunTest() for all samples must now return a window that can
-        #   be palced in a tab in the main notebook.
+        #   be placed in a tab in the main notebook.
         # o If an error occurs (or has occurred before) an error tab is created.
 
         if module is not None:
@@ -2594,7 +2594,7 @@ class MySplashScreen(SplashScreen):
 
 
     def ShowMain(self):
-        frame = wxPythonDemo(None, "wx-Portfolio")
+        frame = wxPortfolioFrame(None, "wx-Portfolio")
         frame.Show()
         if self.fc.IsRunning():
             self.Raise()
@@ -2613,7 +2613,7 @@ else:
     TreeBaseClass = wx.TreeCtrl
 
 
-class wxPythonDemoTree(ExpansionState, TreeBaseClass):
+class wxPortfolioTree(ExpansionState, TreeBaseClass):
     def __init__(self, parent):
         TreeBaseClass.__init__(self, parent, style=wx.TR_DEFAULT_STYLE|
                                wx.TR_HAS_VARIABLE_ROW_HEIGHT)
