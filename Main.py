@@ -1651,13 +1651,13 @@ class wxPortfolioFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnToggleRedirect, item)
 
         wx.App.SetMacExitMenuItemId(9123)
-        exitItem = wx.MenuItem(menu, 9123, 'E&xit\tCtrl-Q', 'Get the heck outta here!')
+        exitItem = wx.MenuItem(menu, 9123, 'E&xit\tCtrl-Q', 'Terminate the application')
         exitItem.SetBitmap(images.catalog['exit'].GetBitmap())
         menu.Append(exitItem)
         self.Bind(wx.EVT_MENU, self.OnFileExit, exitItem)
         self.mainmenu.Append(menu, '&File')
 
-        # Make a Demo menu
+        # Make a Views menu
         menu = wx.Menu()
         for indx, item in enumerate(_treeList[:-1]):
             menuItem = wx.MenuItem(menu, -1, item[0])
@@ -1668,7 +1668,7 @@ class wxPortfolioFrame(wx.Frame):
             menuItem.SetBitmap(images.catalog[_demoPngs[indx+1]].GetBitmap())
             menuItem.SetSubMenu(submenu)
             menu.Append(menuItem)
-        self.mainmenu.Append(menu, '&Demo')
+        self.mainmenu.Append(menu, '&Views')
 
         # Make an Option menu
 
@@ -2572,7 +2572,7 @@ class wxPortfolioFrame(wx.Frame):
 
 class MySplashScreen(SplashScreen):
     def __init__(self):
-        bmp = wx.Image(opj("bitmaps/splash.png")).ConvertToBitmap()
+        bmp = wx.Image(opj("bitmaps/running-man.png")).ConvertToBitmap()
         SplashScreen.__init__(self, bmp,
                                  wx.adv.SPLASH_CENTRE_ON_SCREEN | wx.adv.SPLASH_TIMEOUT,
                                  1000, None, -1)
