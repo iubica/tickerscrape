@@ -659,7 +659,7 @@ modDefault = modOriginal
 #---------------------------------------------------------------------------
 
 class DemoCodePanel(wx.Panel):
-    """Panel for the 'Demo Code' tab"""
+    """Panel for the 'Code' tab"""
     def __init__(self, parent, mainFrame):
         wx.Panel.__init__(self, parent, size=(1,1))
         if 'wxMSW' in wx.PlatformInfo:
@@ -1664,7 +1664,7 @@ class wxPortfolioFrame(wx.Frame):
             submenu = wx.Menu()
             for childItem in item[1]:
                 mi = submenu.Append(-1, childItem)
-                self.Bind(wx.EVT_MENU, self.OnDemoMenu, mi)
+                self.Bind(wx.EVT_MENU, self.OnViewsMenu, mi)
             menuItem.SetBitmap(images.catalog[_demoPngs[indx+1]].GetBitmap())
             menuItem.SetSubMenu(submenu)
             menu.Append(menuItem)
@@ -1977,7 +1977,7 @@ class wxPortfolioFrame(wx.Frame):
             self.ShutdownDemoModule()
 
             if demoName == self.overviewText:
-                # User selected the "wxPython Overview" node
+                # User selected the "Views" node
                 # ie: _this_ module
                 # Changing the main window at runtime not yet supported...
                 self.demoModules = DemoModules(__name__)
@@ -2109,8 +2109,8 @@ class wxPortfolioFrame(wx.Frame):
         if select == -1:
             select = nb.GetSelection()
 
-        UpdatePage(self.codePage, "Demo Code")
-        UpdatePage(self.demoPage, "Demo")
+        UpdatePage(self.codePage, "Code")
+        UpdatePage(self.demoPage, "View")
 
         if select >= 0 and select < nb.GetPageCount():
             nb.SetSelection(select)
@@ -2537,14 +2537,14 @@ class wxPortfolioFrame(wx.Frame):
             # config.Flush()
 
     #---------------------------------------------
-    def OnDemoMenu(self, event):
+    def OnViewsMenu(self, event):
         try:
-            selectedDemo = self.treeMap[self.mainmenu.GetLabel(event.GetId())]
+            selectedView = self.treeMap[self.mainmenu.GetLabel(event.GetId())]
         except:
-            selectedDemo = None
-        if selectedDemo:
-            self.tree.SelectItem(selectedDemo)
-            self.tree.EnsureVisible(selectedDemo)
+            selectedView = None
+        if selectedView:
+            self.tree.SelectItem(selectedView)
+            self.tree.EnsureVisible(selectedView)
 
 
     #---------------------------------------------
