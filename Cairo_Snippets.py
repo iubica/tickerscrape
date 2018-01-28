@@ -11,7 +11,7 @@ except ImportError:
 
 from math import pi as M_PI  # used by many snippets
 from snippets import snip_list, snippet_normalize
-from Main import opj, DemoCodeEditor
+from Main import opj, CodeEditor
 
 #----------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ class TestPanel(wx.Panel):
 
         self.lb = wx.ListBox(self, choices=snip_list)
         self.canvas = DisplayPanel(self)
-        self.editor = DemoCodeEditor(self, style=wx.BORDER_SIMPLE)
+        self.editor = CodeEditor(self, style=wx.BORDER_SIMPLE)
         self.editor.SetEditable(False)
 
         self.Bind(wx.EVT_LISTBOX, self.OnListBoxSelect, self.lb)

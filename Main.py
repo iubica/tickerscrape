@@ -439,7 +439,7 @@ try:
     from wx import stc
     from StyledTextCtrl_2 import PythonSTC
 
-    class DemoCodeEditor(PythonSTC):
+    class CodeEditor(PythonSTC):
         def __init__(self, parent, style=wx.BORDER_NONE):
             PythonSTC.__init__(self, parent, -1, style=style)
             self.SetUpEditor()
@@ -620,7 +620,7 @@ try:
 
 
 except ImportError:
-    class DemoCodeEditor(wx.TextCtrl):
+    class CodeEditor(wx.TextCtrl):
         def __init__(self, parent):
             wx.TextCtrl.__init__(self, parent, -1, style =
                                  wx.TE_MULTILINE | wx.HSCROLL | wx.TE_RICH2 | wx.TE_NOHIDESEL)
@@ -665,7 +665,7 @@ class DemoCodePanel(wx.Panel):
         if 'wxMSW' in wx.PlatformInfo:
             self.Hide()
         self.mainFrame = mainFrame
-        self.editor = DemoCodeEditor(self)
+        self.editor = CodeEditor(self)
         self.editor.RegisterModifiedEvent(self.OnCodeModified)
 
         self.btnSave = wx.Button(self, -1, "Save Changes")
