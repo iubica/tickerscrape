@@ -658,7 +658,7 @@ modDefault = modOriginal
 
 #---------------------------------------------------------------------------
 
-class DemoCodePanel(wx.Panel):
+class CodePanel(wx.Panel):
     """Panel for the 'Code' tab"""
     def __init__(self, parent, mainFrame):
         wx.Panel.__init__(self, parent, size=(1,1))
@@ -2014,7 +2014,7 @@ class wxPortfolioFrame(wx.Frame):
     #---------------------------------------------
     def LoadDemoSource(self):
         self.codePage = None
-        self.codePage = DemoCodePanel(self.nb, self)
+        self.codePage = CodePanel(self.nb, self)
         self.codePage.LoadDemo(self.demoModules)
 
     #---------------------------------------------
@@ -2054,7 +2054,7 @@ class wxPortfolioFrame(wx.Frame):
         self.SetOverview(self.demoModules.name + " Overview", overviewText)
 
         if self.firstTime:
-            # change to the demo page the first time a module is run
+            # change to the view page the first time a module is run
             self.UpdateNotebook(2)
             self.firstTime = False
         else:
