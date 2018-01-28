@@ -16,31 +16,27 @@ class MyAboutBox(wx.Dialog):
 cellpadding="0" border="1">
 <tr>
     <td align="center">
-    <h1>wxPython %s</h1>
+    <h1>wxPortfolio %s</h1>
     (%s)<br>
     Running on Python %s<br>
     </td>
 </tr>
 </table>
 
-<p><b>wxPython</b> is a Python extension module that
-encapsulates the wxWindows GUI classes.</p>
+<p><b>wxPortfolio</b> is a Python GUI toolkit for investment portfolio management. It is implemented on top of wxPython.</p>
 
-<p>This demo shows off some of the capabilities
-of <b>wxPython</b>.  Select items from the menu or tree control,
-sit back and enjoy.  Be sure to take a peek at the source code for each
-demo item so you can learn how to use the classes yourself.</p>
+<p><b>wxPortfolio</b> is written by <b>Andrei Radulescu-Banu</b>, Copyright (c) 2018 and is released under an MIT license.</p>
 
 <p><b>wxPython</b> is brought to you by <b>Robin Dunn</b> and<br>
 <b>Total Control Software,</b> Copyright (c) 1997-2017.</p>
 
 <p>
-<font size="-1">Please see <i>license.txt</i> for licensing information.</font>
+<font size="-1">Please see <i>LICENSE</i> for licensing information.</font>
 </p>
 
 <p><wxp module="wx" class="Button">
     <param name="label" value="Okay">
-    <param name="id"    value="ID_OK">
+    <param name="id" value="ID_OK">
 </wxp></p>
 </center>
 </body>

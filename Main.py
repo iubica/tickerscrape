@@ -1748,11 +1748,13 @@ class wxPortfolioFrame(wx.Frame):
         menu.Append(inspToolItem)
         if 'wxMac' not in wx.PlatformInfo:
             menu.AppendSeparator()
-        helpItem = menu.Append(wx.ID_ABOUT, '&About wxPython Demo', 'wxPython RULES!!!')
+        helpAbout = menu.Append(wx.ID_ABOUT, 
+                                '&About wxPortfolio', 
+                                'About wxPortfolio')
 
         self.Bind(wx.EVT_MENU, self.OnOpenShellWindow, shellItem)
         self.Bind(wx.EVT_MENU, self.OnOpenWidgetInspector, inspToolItem)
-        self.Bind(wx.EVT_MENU, self.OnHelpAbout, helpItem)
+        self.Bind(wx.EVT_MENU, self.OnHelpAbout, helpAbout)
         self.Bind(wx.EVT_MENU, self.OnHelpFind,  findItem)
         self.Bind(wx.EVT_MENU, self.OnFindNext,  findNextItem)
         self.Bind(wx.EVT_FIND, self.OnFind)
@@ -1769,7 +1771,7 @@ class wxPortfolioFrame(wx.Frame):
             # This is another way to set Accelerators, in addition to
             # using the '\t<key>' syntax in the menu items.
             aTable = wx.AcceleratorTable([(wx.ACCEL_ALT,  ord('X'), exitItem.GetId()),
-                                          (wx.ACCEL_CTRL, ord('H'), helpItem.GetId()),
+                                          (wx.ACCEL_CTRL, ord('H'), helpAbout.GetId()),
                                           (wx.ACCEL_CTRL, ord('F'), findItem.GetId()),
                                           (wx.ACCEL_NORMAL, wx.WXK_F3, findNextItem.GetId()),
                                           (wx.ACCEL_NORMAL, wx.WXK_F9, shellItem.GetId()),
