@@ -1553,7 +1553,7 @@ class wxPortfolioFrame(wx.Frame):
         # add the windows to the splitter and split it.
         leftBox = wx.BoxSizer(wx.VERTICAL)
         leftBox.Add(self.tree, 1, wx.EXPAND)
-        leftBox.Add(wx.StaticText(leftPanel, label = "Filter wxPortfolio Views:"), 0, wx.TOP|wx.LEFT, 5)
+        leftBox.Add(wx.StaticText(leftPanel, label = "Filter Views:"), 0, wx.TOP|wx.LEFT, 5)
         leftBox.Add(self.filter, 0, wx.EXPAND|wx.ALL, 5)
         if 'wxMac' in wx.PlatformInfo:
             leftBox.Add((5,5))  # Make sure there is room for the focus ring
@@ -1584,7 +1584,7 @@ class wxPortfolioFrame(wx.Frame):
                          Left().Layer(2).BestSize((240, -1)).
                          MinSize((240, -1)).
                          Floatable(self.allowAuiFloating).FloatingSize((240, 700)).
-                         Caption("wxPortfolio Views").
+                         Caption("Views").
                          CloseButton(False).
                          Name("DemoTree"))
         self.mgr.AddPane(self.log,
@@ -1801,7 +1801,7 @@ class wxPortfolioFrame(wx.Frame):
 
         self.tree.Freeze()
         self.tree.DeleteAllItems()
-        self.root = self.tree.AddRoot("wxPortfolio Views")
+        self.root = self.tree.AddRoot("Views")
         self.tree.SetItemImage(self.root, 0)
         self.tree.SetItemData(self.root, 0)
 
@@ -2703,34 +2703,19 @@ def main():
 
 
 mainOverview = """<html><body>
-<h2>wxPython</h2>
+<h2>wxPortfolio Help</h2>
 
-<p> wxPython is a <b>GUI toolkit</b> for the Python programming
-language.  It allows Python programmers to create programs with a
-robust, highly functional graphical user interface, simply and easily.
-It is implemented as a Python extension module (native code) that
-wraps the popular wxWindows cross platform GUI library, which is
-written in C++.
+<p> wxPortfolio is a <b>GUI toolkit</b> for investment portfolio management,
+implemented using <b>wxPython</b>, and using <b>web scraping</b> of investment data. Users can employ the existing web scrapers, or implement extension scrapers right within the wxPortfolio toolkit. Users can also create extension widgets, which can be added to the wxPortfolio views, allowing full customization of the wxPortfolio app.
 
-<p> Like Python and wxWindows, wxPython is <b>Open Source</b> which
-means that it is free for anyone to use and the source code is
-available for anyone to look at and modify.  Or anyone can contribute
-fixes or enhancements to the project.
+<p> Like Python and wxPython, wxPortfolio is <b>Open Source</b>, which means 
+that it is free for anyone to use and the source code is available for anyone
+to look at and modify.  Or anyone can contribute fixes or enhancements to the project.
 
-<p> wxPython is a <b>cross-platform</b> toolkit.  This means that the
-same program will run on multiple platforms without modification.
-Currently supported platforms are 32-bit Microsoft Windows, most Unix
-or unix-like systems, and Macintosh OS X. Since the language is
-Python, wxPython programs are <b>simple, easy</b> to write and easy to
-understand.
+<p> wxPortfolio is availabled for <b>Windows x64</b> and <b>x32</b>, Linux <b>x64</b> and <b>x32</b> and <b>MAC OS X</b>. 
 
-<p> <b>This demo</b> is not only a collection of test cases for
-wxPython, but is also designed to help you learn about and how to use
-wxPython.  Each sample is listed in the tree control on the left.
-When a sample is selected in the tree then a module is loaded and run
-(usually in a tab of this notebook,) and the source code of the module
-is loaded in another tab for you to browse and learn from.
-
+<p> <b>This toolkit</b> will display each wxPortfolio view's code in the
+View Code pane. Views can be <b>added</b>, <b>edited</b>, <b>cloned</b>, or <b>removed</b> from the tree control on the left pane. Views are versioned so past versions of views can be recovered.
 """
 
 
