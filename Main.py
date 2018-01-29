@@ -1390,7 +1390,7 @@ class DemoTaskBarIcon(TaskBarIcon):
 #---------------------------------------------------------------------------
 class wxPortfolioFrame(wx.Frame):
 
-    overviewText = "wxPortfolio Help"
+    overviewText = "Views Help"
 
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, -1, title, size = (970, 720),
@@ -2005,7 +2005,7 @@ class wxPortfolioFrame(wx.Frame):
                         self.codePage = None
                         self.UpdateNotebook(0)
                     else:
-                        self.SetOverview("wxPython", mainOverview)
+                        self.SetOverview("Views Help", mainOverview)
                         self.codePage = None
                         self.UpdateNotebook(0)
 
@@ -2053,7 +2053,7 @@ class wxPortfolioFrame(wx.Frame):
             self.demoPage = DemoErrorPanel(self.nb, self.codePage,
                                            self.demoModules.GetErrorInfo(), self)
 
-        self.SetOverview(self.demoModules.name + " Overview", overviewText)
+        self.SetOverview(self.demoModules.name + " Help", overviewText)
 
         if self.firstTime:
             # change to the view page the first time a module is run
@@ -2714,7 +2714,7 @@ implemented using <b>wxPython</b>, and using <b>web scraping</b> of investment d
 that it is free for anyone to use and the source code is available for anyone
 to look at and modify.  Or anyone can contribute fixes or enhancements to the project.
 
-<p> wxPortfolio is availabled for <b>Windows x64</b> and <b>x32</b>, Linux <b>x64</b> and <b>x32</b> and <b>MAC OS X</b>. 
+<p> wxPortfolio is availabled for <b>Windows x32</b> and <b>x64</b>, Linux <b>x32</b> and <b>x64</b> and <b>MAC OS X</b>. 
 
 <p> <b>This toolkit</b> will display each wxPortfolio view's code in the
 View Code pane. Views can be <b>added</b>, <b>edited</b>, <b>cloned</b>, or <b>removed</b> from the tree control on the left pane. Views are versioned so past versions of views can be recovered.
