@@ -55,15 +55,17 @@ class RunDemoApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
         self.SetAssertMode(assertMode)
         self.InitInspection()  # for the InspectionMixin base class
 
-        frame = wx.Frame(None, -1, "RunDemo: " + self.name, pos=(50,50), size=(200,100),
-                        style=wx.DEFAULT_FRAME_STYLE, name="run a sample")
+        frame = wx.Frame(None, -1, "RunDemo: " + self.name, pos=(50,50), 
+                         size=(200,100),
+                         style=wx.DEFAULT_FRAME_STYLE, name="run a sample")
         frame.CreateStatusBar()
 
         menuBar = wx.MenuBar()
         menu = wx.Menu()
-        item = menu.Append(-1, "&Widget Inspector\tF6", "Show the wxPython Widget Inspection Tool")
+        item = menu.Append(-1, "&Widget Inspector\tF6", 
+                           "Show the wxPython Widget Inspection Tool")
         self.Bind(wx.EVT_MENU, self.OnWidgetInspector, item)
-        item = menu.Append(wx.ID_EXIT, "E&xit\tCtrl-Q", "Exit demo")
+        item = menu.Append(wx.ID_EXIT, "E&xit\tCtrl-Q", "Exit application")
         self.Bind(wx.EVT_MENU, self.OnExitApp, item)
         menuBar.Append(menu, "&File")
 
@@ -152,13 +154,11 @@ def main(argv):
     demoFolder = os.path.realpath(os.path.dirname(__file__))
     os.chdir(demoFolder)
 
-    name, ext  = os.path.splitext(argv[1])
+    name, ext = os.path.splitext(argv[1])
     module = __import__(name)
-
 
     app = RunDemoApp(name, module, useShell)
     app.MainLoop()
-
 
 
 if __name__ == "__main__":

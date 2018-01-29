@@ -15,7 +15,8 @@ Globals for the main.py wxPython demo.
 #
 #-------------------------------------------------------------------------------
 
-_demoPngs = ["overview", "recent", "frame", "dialog", "moredialog", "core",
+_demoPngs = ["overview", "recent", "custom", "frame", "dialog", 
+             "moredialog", "core",
              "book", "customcontrol", "morecontrols", "layout", "process",
              "clipboard", "images", "miscellaneous"]
 
@@ -45,6 +46,11 @@ _treeList = [
         'ToolTip',
         'TimePickerCtrl',
         'BannerWindow',
+    ]),
+
+    # portfolio views
+    ('Portfolio', [
+        'Holdings',
     ]),
 
     # managed windows == things with a (optional) caption you can close
