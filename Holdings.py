@@ -92,6 +92,36 @@ class HoldingsModel(dv.DataViewIndexListModel):
         self.data = data
         self.log = log
 
+    # Convert model column to data frame column
+    def _GetDataFrameCol(self, modelCol):
+        dataFrameCol = None
+        
+        if modelCol == 0:
+            dataFrameCol = 0
+        elif modelCol == 2:
+            dataFrameCol = 1
+        elif modelCol == 3:
+            dataFrameCol = 2
+        elif modelCol == 4:
+            dataFrameCol = 3
+
+        return dataFrameCol
+
+    # Convert data frame column to model column
+    def _GetModelCol(self, dataFrameCol):
+        modelCol = None
+
+        if dataFrameCol == 0:
+            modelCol = 0
+        elif dataFrameCol == 1:
+            modelCol = 2
+        elif dataFrameCol == 2:
+            modelCol = 3
+        elif dataFrameCol == 3:
+            modelCol = 4
+
+        return modelCol
+
     # All of our columns are strings.  If the model or the renderers
     # in the view are other types then that should be reflected here.
     def GetColumnType(self, col):
@@ -99,43 +129,30 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
     # This method is called to provide the data object for a
     # particular row,col
-    def GetValueByRow(self, row, col):        
-        value = ""
+    def GetValueByRow(self, row, col):
+        dataFrameCol = self._GetDataFrameCol(col)
         
-        if col == 0:
-            value = self.data.iloc[row, 0]
-        elif col == 2:
-            value = self.data.iloc[row, 1]
-        elif col == 3:
-            value = self.data.iloc[row, 2]
-        elif col == 4:
-            value = self.data.iloc[row, 3]
-
-        self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
+        value = ""
+        if dataFrameCol is not None:
+            value = self.data.iloc[row, dataFrameCol]
 
         return value
 
     # This method is called when the user edits a data item in the view.
     def SetValueByRow(self, value, row, col):
+        dataFrameCol = self._GetDataFrameCol(col)
+ 
         self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
 
-        tickers_df_col = None
+        if dataFrameCol is not None:
+            self.data.iloc[row, dataFrameCol] = value
+            return True
 
-        if col == 0:
-            tickers_df_col = 0
-        elif col == 2:
-            tickers_df_col = 1
-        elif col == 3:
-            tickers_df_col = 2
-        elif col == 4:
-            tickers_df_col = 3
-
-        self.data.iloc[row, tickers_df_col] = value
-        return True
+        return False
 
     # Report how many columns this model provides data for.
     def GetColumnCount(self):
-        return self.data.num_columns
+        return 5
 
     # Report the number of rows in the model
     def GetCount(self):
@@ -225,7 +242,7 @@ class HoldingsPanel(wx.Panel):
         # fetch the data from.  This means that you can have views
         # using the same model that show different columns of data, or
         # that they can be in a different order than in the model.
-        self.dvc.AppendTextColumn("Ticker", 0, width=60, 
+        self.dvc.AppendTextColumn("Ticker", 0, width=70, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Name", 1, width=260)
         self.dvc.AppendTextColumn("Shares", 2, width=80, 
