@@ -100,13 +100,37 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # This method is called to provide the data object for a
     # particular row,col
     def GetValueByRow(self, row, col):        
-        self.log.write("GetValue: (%d,%d) %s\n" % (row, col, self.data.iloc[row, col]))
-        return self.data.iloc[row, col]
+        value = ""
+        
+        if col == 0:
+            value = self.data.iloc[row, 0]
+        elif col == 2:
+            value = self.data.iloc[row, 1]
+        elif col == 3:
+            value = self.data.iloc[row, 2]
+        elif col == 4:
+            value = self.data.iloc[row, 3]
+
+        self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
+
+        return value
 
     # This method is called when the user edits a data item in the view.
     def SetValueByRow(self, value, row, col):
         self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
-        self.data.iloc[row, col] = value
+
+        tickers_df_col = None
+
+        if col == 0:
+            tickers_df_col = 0
+        elif col == 2:
+            tickers_df_col = 1
+        elif col == 3:
+            tickers_df_col = 2
+        elif col == 4:
+            tickers_df_col = 3
+
+        self.data.iloc[row, tickers_df_col] = value
         return True
 
     # Report how many columns this model provides data for.
@@ -122,7 +146,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # cell at (row, col)
     def GetAttrByRow(self, row, col, attr):
         ##self.log.write('GetAttrByRow: (%d, %d)' % (row, col))
-        if col == 3:
+        if col == 4:
             attr.SetColour('blue')
             attr.SetBold(True)
             return True
