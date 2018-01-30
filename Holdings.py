@@ -50,7 +50,7 @@ def GetHoldings():
     global _tickers_df
     _tickers_df = pd.read_csv(tickerscrape_home + "/tickers.csv")
     _tickers_df.fillna("", inplace=True)
-    print(_tickers_df)
+    #print(_tickers_df)
     
 def SaveHoldings():
     tickerscrape_env = "TICKERSCRAPE_HOME"
@@ -116,7 +116,7 @@ class TestListCtrl(wx.ListCtrl,
             self.SetItemData(index, key)
 
         self.SetColumnWidth(0, wx.LIST_AUTOSIZE)
-        self.SetColumnWidth(1, wx.LIST_AUTOSIZE)
+        self.SetColumnWidth(1, 80)
         self.SetColumnWidth(2, wx.LIST_AUTOSIZE)
         self.SetColumnWidth(3, wx.LIST_AUTOSIZE)
         self.SetColumnWidth(4, wx.LIST_AUTOSIZE)
@@ -187,6 +187,16 @@ def runTest(frame, nb, log):
 
 #---------------------------------------------------------------------------
 
+
+overview = """\
+<html>
+<body>
+
+Use the <b>Holdings</b> view to view or change your etf, fund or stock holdings.
+
+</body>
+</html>
+"""
 
 if __name__ == '__main__':
     import sys,os
