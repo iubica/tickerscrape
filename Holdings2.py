@@ -208,7 +208,7 @@ class TestPanel(wx.Panel):
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Cost Basis", 3, width=100, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Purchase Date", 4, width=80, 
+        self.dvc.AppendTextColumn("Purchase Date", 4, width=100, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
 
         # Through the magic of Python we can also access the columns
