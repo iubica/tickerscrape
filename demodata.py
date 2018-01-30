@@ -51,7 +51,7 @@ _treeList = [
     # portfolio views
     ('Portfolio', [
         'Holdings',
-        'Holdings2',
+        'HoldingsOld',
     ]),
 
     # managed windows == things with a (optional) caption you can close
