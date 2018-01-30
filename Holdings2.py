@@ -203,8 +203,7 @@ class TestPanel(wx.Panel):
         # that they can be in a different order than in the model.
         self.dvc.AppendTextColumn("Ticker", 0, width=60, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Name", 1, width=260, 
-                                  mode=dv.DATAVIEW_CELL_EDITABLE)
+        self.dvc.AppendTextColumn("Name", 1, width=260)
         self.dvc.AppendTextColumn("Shares", 2, width=80, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Cost Basis", 3, width=100, 
