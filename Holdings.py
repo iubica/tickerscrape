@@ -86,7 +86,7 @@ def SaveHoldings():
 # For this example our data is stored in a simple list of lists.  In
 # real life you can use whatever you want or need to hold your data.
 
-class TestModel(dv.DataViewIndexListModel):
+class HoldingsModel(dv.DataViewIndexListModel):
     def __init__(self, data, log):
         dv.DataViewIndexListModel.__init__(self, len(data))
         self.data = data
@@ -167,7 +167,7 @@ class TestModel(dv.DataViewIndexListModel):
 
 
 
-class TestPanel(wx.Panel):
+class HoldingsPanel(wx.Panel):
     def __init__(self, parent, log, model=None, data=None):
         self.log = log
         wx.Panel.__init__(self, parent, -1)
@@ -183,7 +183,7 @@ class TestPanel(wx.Panel):
 
         # Create an instance of our simple model...
         if model is None:
-            self.model = TestModel(data, log)
+            self.model = HoldingsModel(data, log)
         else:
             self.model = model
 
@@ -243,7 +243,7 @@ class TestPanel(wx.Panel):
 
     def OnNewView(self, evt):
         f = wx.Frame(None, title="New view, shared model", size=(600,400))
-        TestPanel(f, self.log, self.model)
+        HoldingsPanel(f, self.log, self.model)
         b = f.FindWindowByName("newView")
         b.Disable()
         f.Show()
@@ -288,7 +288,7 @@ def runTest(frame, nb, log):
     musicdata = sorted(ListCtrl.musicdata.items())
     musicdata = [[str(k)] + list(v) for k,v in musicdata]
 
-    win = TestPanel(nb, log, data=_tickers_df)
+    win = HoldingsPanel(nb, log, data=_tickers_df)
     return win
 
 #----------------------------------------------------------------------
