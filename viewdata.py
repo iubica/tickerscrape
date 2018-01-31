@@ -37,6 +37,11 @@ _viewPngs = ["overview", "recent", "custom", "frame", "dialog",
 #-------------------------------------------------------------------------------
 
 _treeList = [
+    # portfolio views
+    ('Portfolio', [
+        'Holdings',
+    ]),
+
     # new stuff
     ('Recent Additions/Updates', [
         'FileCtrl',
@@ -46,11 +51,6 @@ _treeList = [
         'ToolTip',
         'TimePickerCtrl',
         'BannerWindow',
-    ]),
-
-    # portfolio views
-    ('Portfolio', [
-        'Holdings',
     ]),
 
     # managed windows == things with a (optional) caption you can close

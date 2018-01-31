@@ -987,7 +987,7 @@ def HuntExternalDemos():
         # Insert a new package in the _treeList of demos
         _treeList.insert(index, package.GetDemos())
         # Get the recent additions for this package
-        _treeList[0][1].extend(package.GetRecentAdditions())
+        _treeList[1][1].extend(package.GetRecentAdditions())
         # Extend the demo bitmaps and the catalog
         _viewPngs.insert(index+1, extern)
         images.catalog[extern] = package.GetDemoBitmap()
