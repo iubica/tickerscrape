@@ -94,7 +94,7 @@ DEFAULT_PERSPECTIVE = "Default Perspective"
 #---------------------------------------------------------------------------
 
 # get images and demo list
-from viewdata import _viewPngs, _treeList
+from DataAgent import _viewPngs, _treeList
 
 #---------------------------------------------------------------------------
 

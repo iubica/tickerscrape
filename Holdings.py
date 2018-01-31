@@ -76,7 +76,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         if dataFrameCol is not None:
             value = str(self.data.iloc[row, dataFrameCol])
 
-        self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
+        #self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
         return value
 
     # This method is called when the user edits a data item in the view.
