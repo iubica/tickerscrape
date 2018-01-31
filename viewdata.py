@@ -15,7 +15,7 @@ Globals for the main.py wxPython views.
 #
 #-------------------------------------------------------------------------------
 
-_viewPngs = ["overview", "recent", "custom", "frame", "dialog", 
+_viewPngs = ["overview", "custom", "recent", "frame", "dialog", 
              "moredialog", "core",
              "book", "customcontrol", "morecontrols", "layout", "process",
              "clipboard", "images", "miscellaneous"]
