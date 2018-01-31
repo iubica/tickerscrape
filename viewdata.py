@@ -8,7 +8,7 @@ Globals for the main.py wxPython views.
 #
 # _viewPngs
 #
-# These are the images names used in the demo treectrl.
+# These are the images names used in the wxPortfolio treectrl.
 # These come from images.py or bitmaps/imagename.ext
 #
 # _viewPngs = ["imagename1", "imagename2", "etc"]
@@ -25,12 +25,12 @@ _viewPngs = ["overview", "recent", "custom", "frame", "dialog",
 #
 # _treeList
 #
-# These are the Demo Catagory Headers
-# and Demo Module Names(Ex: Frame.py without ext)
+# These are the View Catagory Headers
+# and View Module Names(Ex: Frame.py without ext)
 #
-# ('Demo Catagory Name String', [
-#       'DemoModuleName1',
-#       'DemoModuleName2',
+# ('View Catagory Name String', [
+#       'ViewModuleName1',
+#       'ViewModuleName2',
 #       'Etc',
 #       ]),
 #
