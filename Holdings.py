@@ -13,61 +13,42 @@ _tickers_df = None
 #---------------------------------------------------------------------------
 
 def GetHoldings():
-    tickerscrape_env = "TICKERSCRAPE_HOME"
-    tickerscrape_home = None
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
 
-    # Get the home directory of the application
-    if tickerscrape_env in os.environ:
-        tickerscrape_home = os.environ[tickerscrape_env]
-    if not tickerscrape_home:
-        if os.name == "posix":
-            tickerscrape_home = "/opt/tickerscrape"
-        elif os.name == "nt":
-            tickerscrape_home = os.environ["APPDATA"] + "\\tickerscrape"
-            
-    try:
-        os.stat(tickerscrape_home)
-    except:
-        try:
-            os.mkdir(tickerscrape_home)
-        except IOError as e:
-            print(e)
-            return None
-
-    # Get the holdings table
+    # Get the global holdings table
     global _tickers_df
-    _tickers_df = pd.read_csv(tickerscrape_home + "/tickers.csv")
+
+    try:
+        _tickers_df = pd.read_csv(sp.GetUserDataDir() + "/tickers.csv")
+    except OSError as e:
+        # Create an empty DataFrame with unordered columns
+        _tickers_df = pd.DataFrame.from_dict({
+            "Ticker": ["SPY", "FUSEX"],
+            "Shares": ["100", "150"],
+            "Cost Basis": ["150000.00", "100.00"],
+            "Purchase Date": ["2/3/2011", "2/4/2011"]
+        })
+        
+        # Order the columns
+        _tickers_df = _tickers_df[["Ticker", 
+                                   "Shares", 
+                                   "Cost Basis", 
+                                   "Purchase Date"]]
+
     _tickers_df.fillna("", inplace=True)
     #print(_tickers_df)
     
 def SaveHoldings():
-    tickerscrape_env = "TICKERSCRAPE_HOME"
-    tickerscrape_home = None
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
 
-    # Get the home directory of the application
-    if tickerscrape_env in os.environ:
-        tickerscrape_home = os.environ[tickerscrape_env]
-    if not tickerscrape_home:
-        if os.name == "posix":
-            tickerscrape_home = "/opt/tickerscrape"
-        elif os.name == "nt":
-            tickerscrape_home = os.environ["APPDATA"] + "\\tickerscrape"
-            
-    try:
-        os.stat(tickerscrape_home)
-    except:
-        try:
-            os.mkdir(tickerscrape_home)
-        except IOError as e:
-            print(e)
-            return None
-
-    # Get the holdings table
+    # Get the global holdings table
     global _tickers_df
 
     # Save the holdings table
     df = _tickers_df.set_index("Ticker", inplace=False)
-    df.to_csv(tickerscrape_home + "/tickers_out.csv")
+    df.to_csv(sp.GetUserDataDir() + "/tickers_out.csv")
     
 
 
