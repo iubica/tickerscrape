@@ -2673,7 +2673,7 @@ class MyApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
         #self.SetAssertMode(wx.PYAPP_ASSERT_DIALOG|wx.PYAPP_ASSERT_EXCEPTION)
 
         wx.SystemOptions.SetOption("mac.window-plain-transition", 1)
-        self.SetAppName("wxPyDemo")
+        self.SetAppName("wxPortfolio")
 
         # Create and show the splash screen.  It will then create and
         # show the main frame when it is time to do so.  Normally when

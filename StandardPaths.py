@@ -24,11 +24,11 @@ class TestPanel(wx.Panel):
         sp = wx.StandardPaths.Get()
 
         # StandardPaths will use the value of wx.App().GetAppName()
-        # for some of the stnadard path components.  Let's set it to
+        # for some of the standard path components.  Let's set it to
         # something that makes that obvious for the demo.  In your own
         # apps you'll set it in to something more meaningfull for your
         # app in your OnInit, (or just let it default.)
-        wx.GetApp().SetAppName("AppName")
+        wx.GetApp().SetAppName("wxPortfolio")
 
         self.help = {}
 
