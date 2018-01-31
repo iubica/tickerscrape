@@ -394,7 +394,7 @@ def GetHoldings():
                                    "Purchase Date"]]
 
     _tickers_df.fillna("", inplace=True)
-    print(_tickers_df)
+    #print(_tickers_df)
     
 #---------------------------------------------------------------------------
 # Save portfolio holdings to tickers.csv
@@ -407,8 +407,8 @@ def SaveHoldings():
     global _tickers_df
 
     # Save the holdings table
-    df = _tickers_df.set_index("Ticker", inplace=False)
-    df.to_csv(sp.GetUserDataDir() + "/tickers_out.csv")
+    df = _tickers_df.set_index("Ticker", inplace=False)    
+    df.to_csv(sp.GetUserDataDir() + "/tickers.csv")
     
 
 
@@ -1701,6 +1701,10 @@ class wxPortfolioFrame(wx.Frame):
                            wx.ITEM_CHECK)
         self.Bind(wx.EVT_MENU, self.OnToggleRedirect, item)
 
+        saveItem = wx.MenuItem(menu, -1, '&Save\tCtrl-S', 'Save the portfolio')
+        menu.Append(saveItem)
+        self.Bind(wx.EVT_MENU, self.OnFileSave, saveItem)
+
         wx.App.SetMacExitMenuItemId(9123)
         exitItem = wx.MenuItem(menu, 9123, 'E&xit\tCtrl-Q', 'Terminate the application')
         exitItem.SetBitmap(images.catalog['exit'].GetBitmap())
@@ -2282,6 +2286,10 @@ class wxPortfolioFrame(wx.Frame):
         #print("load time: ", time.time() - start)
 
     # Menu methods
+    def OnFileSave(self, *event):
+        SaveHoldings()
+        self.statusBar.SetStatusText("Holdings saved", 0)
+
     def OnFileExit(self, *event):
         self.Close()
 
