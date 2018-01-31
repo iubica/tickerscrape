@@ -1,21 +1,21 @@
 # viewdata.py
 
 """
-Globals for the main.py wxPython demo.
+Globals for the main.py wxPython views.
 """
 
 #-------------------------------------------------------------------------------
 #
-# _demoPngs
+# _viewPngs
 #
 # These are the images names used in the demo treectrl.
 # These come from images.py or bitmaps/imagename.ext
 #
-# _demoPngs = ["imagename1", "imagename2", "etc"]
+# _viewPngs = ["imagename1", "imagename2", "etc"]
 #
 #-------------------------------------------------------------------------------
 
-_demoPngs = ["overview", "recent", "custom", "frame", "dialog", 
+_viewPngs = ["overview", "recent", "custom", "frame", "dialog", 
              "moredialog", "core",
              "book", "customcontrol", "morecontrols", "layout", "process",
              "clipboard", "images", "miscellaneous"]

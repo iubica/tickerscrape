@@ -92,7 +92,7 @@ DEFAULT_PERSPECTIVE = "Default Perspective"
 #---------------------------------------------------------------------------
 
 # get images and demo list
-from demodata import _demoPngs, _treeList
+from viewdata import _viewPngs, _treeList
 
 #---------------------------------------------------------------------------
 
@@ -989,7 +989,7 @@ def HuntExternalDemos():
         # Get the recent additions for this package
         _treeList[0][1].extend(package.GetRecentAdditions())
         # Extend the demo bitmaps and the catalog
-        _demoPngs.insert(index+1, extern)
+        _viewPngs.insert(index+1, extern)
         images.catalog[extern] = package.GetDemoBitmap()
 
     # That's all folks...
@@ -1665,7 +1665,7 @@ class wxPortfolioFrame(wx.Frame):
             for childItem in item[1]:
                 mi = submenu.Append(-1, childItem)
                 self.Bind(wx.EVT_MENU, self.OnViewsMenu, mi)
-            menuItem.SetBitmap(images.catalog[_demoPngs[indx+1]].GetBitmap())
+            menuItem.SetBitmap(images.catalog[_viewPngs[indx+1]].GetBitmap())
             menuItem.SetSubMenu(submenu)
             menu.Append(menuItem)
         self.mainmenu.Append(menu, '&Views')
@@ -1841,7 +1841,7 @@ class wxPortfolioFrame(wx.Frame):
                 for childItem in items:
                     image = count
                     if DoesModifiedExist(childItem):
-                        image = len(_demoPngs)
+                        image = len(_viewPngs)
                     theDemo = self.tree.AppendItem(child, childItem, image=image)
                     self.tree.SetItemData(theDemo, count)
                     self.treeMap[childItem] = theDemo
@@ -1921,7 +1921,7 @@ class wxPortfolioFrame(wx.Frame):
     def SetTreeModified(self, modified):
         item = self.tree.GetSelection()
         if modified:
-            image = len(_demoPngs)
+            image = len(_viewPngs)
         else:
             image = self.tree.GetItemData(item)
         self.tree.SetItemImage(item, image)
@@ -2636,7 +2636,7 @@ class wxPortfolioTree(ExpansionState, TreeBaseClass):
 
     def BuildTreeImageList(self):
         imgList = wx.ImageList(16, 16)
-        for png in _demoPngs:
+        for png in _viewPngs:
             imgList.Add(images.catalog[png].GetBitmap())
 
         # add the image for modified demos.
