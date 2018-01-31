@@ -6,51 +6,10 @@ import wx.dataview as dv
 import os, sys
 import csv
 import pandas as pd
-
-# The tickers dataframe
-_tickers_df = None
+from Main import _tickers_df # The tickers dataframe
+from Main import GetHoldings, SaveHoldings 
 
 #---------------------------------------------------------------------------
-
-def GetHoldings():
-    # Get the wxPython standard paths
-    sp = wx.StandardPaths.Get()
-
-    # Get the global holdings table
-    global _tickers_df
-
-    try:
-        _tickers_df = pd.read_csv(sp.GetUserDataDir() + "/tickers.csv")
-    except OSError as e:
-        # Create an empty DataFrame with unordered columns
-        _tickers_df = pd.DataFrame.from_dict({
-            "Ticker": ["SPY", "FUSEX"],
-            "Shares": ["100", "150"],
-            "Cost Basis": ["150000.00", "100.00"],
-            "Purchase Date": ["2/3/2011", "2/4/2011"]
-        })
-        
-        # Order the columns
-        _tickers_df = _tickers_df[["Ticker", 
-                                   "Shares", 
-                                   "Cost Basis", 
-                                   "Purchase Date"]]
-
-    _tickers_df.fillna("", inplace=True)
-    #print(_tickers_df)
-    
-def SaveHoldings():
-    # Get the wxPython standard paths
-    sp = wx.StandardPaths.Get()
-
-    # Get the global holdings table
-    global _tickers_df
-
-    # Save the holdings table
-    df = _tickers_df.set_index("Ticker", inplace=False)
-    df.to_csv(sp.GetUserDataDir() + "/tickers_out.csv")
-    
-
 
 #----------------------------------------------------------------------
 
@@ -300,9 +259,7 @@ class HoldingsPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-
-    GetHoldings()
-
+    
     # Get the data from the ListCtrl sample to play with, converting it
     # from a dictionary to a list of lists, including the dictionary key
     # as the first element of each sublist.
@@ -334,5 +291,6 @@ hierarchical relationships in the data.)
 if __name__ == '__main__':
     import sys,os
     import run
+
     run.main(['', os.path.basename(sys.argv[0])] + sys.argv[1:])
 

@@ -72,6 +72,8 @@ from six import exec_, BytesIO
 from six.moves import cPickle
 from six.moves import urllib
 
+import pandas as pd
+
 import version
 
 # We won't import the images module yet, but we'll assign it to this
@@ -96,6 +98,10 @@ from viewdata import _viewPngs, _treeList
 
 #---------------------------------------------------------------------------
 
+# The tickers dataframe
+_tickers_df = None
+
+#---------------------------------------------------------------------------
 _styleTable = '<h3>Window %s</h3>\n' \
               '<p>This class supports the following window %s:\n' \
               '<p><table bgcolor=\"#ffffff\" border cols=1>'
@@ -359,6 +365,51 @@ def FindImages(text, widgetName):
             winAppearance[plat] = path
 
     return winAppearance
+
+#---------------------------------------------------------------------------
+# Get portfolio holdings from tickers.csv
+
+def GetHoldings():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Get the global holdings table
+    global _tickers_df
+
+    try:
+        _tickers_df = pd.read_csv(sp.GetUserDataDir() + "/tickers.csv")
+    except OSError as e:
+        # Create an empty DataFrame with unordered columns
+        _tickers_df = pd.DataFrame.from_dict({
+            "Ticker": ["SPY", "FUSEX"],
+            "Shares": ["100", "150"],
+            "Cost Basis": ["150000.00", "100.00"],
+            "Purchase Date": ["2/3/2011", "2/4/2011"]
+        })
+        
+        # Order the columns
+        _tickers_df = _tickers_df[["Ticker", 
+                                   "Shares", 
+                                   "Cost Basis", 
+                                   "Purchase Date"]]
+
+    _tickers_df.fillna("", inplace=True)
+    print(_tickers_df)
+    
+#---------------------------------------------------------------------------
+# Save portfolio holdings to tickers.csv
+
+def SaveHoldings():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Get the global holdings table
+    global _tickers_df
+
+    # Save the holdings table
+    df = _tickers_df.set_index("Ticker", inplace=False)
+    df.to_csv(sp.GetUserDataDir() + "/tickers_out.csv")
+    
 
 
 #---------------------------------------------------------------------------
@@ -2698,7 +2749,12 @@ def main():
         os.chdir(demoPath)
     except:
         pass
+
     app = MyApp(False)
+
+    # Read the initial portfolio holdings
+    GetHoldings()
+
     app.MainLoop()
 
 #---------------------------------------------------------------------------
