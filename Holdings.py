@@ -6,9 +6,8 @@ import wx.dataview as dv
 import os, sys
 import csv
 import pandas as pd
-from Main import _tickers_df # The tickers dataframe
-from Main import GetHoldings, SaveHoldings 
-
+from DataAgent import _tickers_df
+from DataAgent import *
 #---------------------------------------------------------------------------
 
 #----------------------------------------------------------------------

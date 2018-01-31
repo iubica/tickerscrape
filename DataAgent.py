@@ -4,6 +4,10 @@
 Globals for the main.py wxPython views.
 """
 
+import wx
+import pandas as pd
+
+
 #-------------------------------------------------------------------------------
 #
 # _viewPngs
@@ -303,3 +307,55 @@ _treeList = [
     ('Check out the samples dir too', []),
 
 ]
+
+#---------------------------------------------------------------------------
+
+# The tickers dataframe
+_tickers_df = None
+
+
+#---------------------------------------------------------------------------
+# Get portfolio holdings from tickers.csv
+
+def GetHoldings():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Get the global holdings table
+    global _tickers_df
+
+    try:
+        _tickers_df = pd.read_csv(sp.GetUserDataDir() + "/tickers.csv")
+    except OSError as e:
+        # Create an empty DataFrame with unordered columns
+        _tickers_df = pd.DataFrame.from_dict({
+            "Ticker": ["SPY", "FUSEX"],
+            "Shares": ["100", "150"],
+            "Cost Basis": ["150000.00", "100.00"],
+            "Purchase Date": ["2/3/2011", "2/4/2011"]
+        })
+        
+        # Order the columns
+        _tickers_df = _tickers_df[["Ticker", 
+                                   "Shares", 
+                                   "Cost Basis", 
+                                   "Purchase Date"]]
+
+    _tickers_df.fillna("", inplace=True)
+    #print(_tickers_df)
+    
+#---------------------------------------------------------------------------
+# Save portfolio holdings to tickers.csv
+
+def SaveHoldings():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Get the global holdings table
+    global _tickers_df
+
+    # Save the holdings table
+    df = _tickers_df.set_index("Ticker", inplace=False)    
+    df.to_csv(sp.GetUserDataDir() + "/tickers.csv")
+    
+
