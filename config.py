@@ -342,7 +342,7 @@ def GetHoldings():
                                    "Purchase Date"]]
 
     _tickers_df.fillna("", inplace=True)
-    print(_tickers_df)
+    #print(_tickers_df)
     
 #---------------------------------------------------------------------------
 # Save portfolio holdings to tickers.csv

@@ -6,8 +6,7 @@ import wx.dataview as dv
 import os, sys
 import csv
 import pandas as pd
-from DataAgent import _tickers_df
-from DataAgent import *
+import config
 #---------------------------------------------------------------------------
 
 #----------------------------------------------------------------------
@@ -267,7 +266,10 @@ def runTest(frame, nb, log):
     musicdata = sorted(ListCtrl.musicdata.items())
     musicdata = [[str(k)] + list(v) for k,v in musicdata]
 
-    win = HoldingsPanel(nb, log, data=_tickers_df)
+    if config._tickers_df is None:
+        config.GetHoldings()
+
+    win = HoldingsPanel(nb, log, data=config._tickers_df)
     return win
 
 #----------------------------------------------------------------------

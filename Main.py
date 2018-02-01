@@ -27,7 +27,7 @@
 # * save file positions (new field in demoModules) (@ LoadDemoSource)
 # * Update main overview
 
-# * Why don't we move _treeList into a separate module
+# * Why don't we move config._treeList into a separate module
 
 # =====================
 # = EXTERNAL Packages =
@@ -73,6 +73,7 @@ from six.moves import cPickle
 from six.moves import urllib
 
 import version
+import config
 
 # We won't import the images module yet, but we'll assign it to this
 # global when we do.
@@ -91,11 +92,6 @@ DEFAULT_PERSPECTIVE = "Default Perspective"
 
 #---------------------------------------------------------------------------
 
-# get images and demo list
-from DataAgent import _viewPngs, _treeList
-from DataAgent import *
-
-#---------------------------------------------------------------------------
 _styleTable = '<h3>Window %s</h3>\n' \
               '<p>This class supports the following window %s:\n' \
               '<p><table bgcolor=\"#ffffff\" border cols=1>'
@@ -968,7 +964,7 @@ def HuntExternalDemos():
 
     # Modify the tree items and icons
     index = 0
-    for category, demos in _treeList:
+    for category, demos in config._treeList:
         # We put the external packages right before the
         # More Windows/Controls item
         if category == "More Windows/Controls":
@@ -984,12 +980,12 @@ def HuntExternalDemos():
     # Loop over all external packages
     for extern in keys:
         package = externalDemos[extern]
-        # Insert a new package in the _treeList of demos
-        _treeList.insert(index, package.GetDemos())
+        # Insert a new package in the config._treeList of demos
+        config._treeList.insert(index, package.GetDemos())
         # Get the recent additions for this package
-        _treeList[1][1].extend(package.GetRecentAdditions())
+        config._treeList[1][1].extend(package.GetRecentAdditions())
         # Extend the demo bitmaps and the catalog
-        _viewPngs.insert(index+1, extern)
+        config._viewPngs.insert(index+1, extern)
         images.catalog[extern] = package.GetDemoBitmap()
 
     # That's all folks...
@@ -1663,13 +1659,13 @@ class wxPortfolioFrame(wx.Frame):
 
         # Make a Views menu
         menu = wx.Menu()
-        for indx, item in enumerate(_treeList[:-1]):
+        for indx, item in enumerate(config._treeList[:-1]):
             menuItem = wx.MenuItem(menu, -1, item[0])
             submenu = wx.Menu()
             for childItem in item[1]:
                 mi = submenu.Append(-1, childItem)
                 self.Bind(wx.EVT_MENU, self.OnViewsMenu, mi)
-            menuItem.SetBitmap(images.catalog[_viewPngs[indx+1]].GetBitmap())
+            menuItem.SetBitmap(images.catalog[config._viewPngs[indx+1]].GetBitmap())
             menuItem.SetSubMenu(submenu)
             menu.Append(menuItem)
         self.mainmenu.Append(menu, '&Views')
@@ -1830,7 +1826,7 @@ class wxPortfolioFrame(wx.Frame):
         filter = self.filter.GetValue()
         count = 0
 
-        for category, items in _treeList:
+        for category, items in config._treeList:
             count += 1
             if filter:
                 if fullSearch:
@@ -1845,7 +1841,7 @@ class wxPortfolioFrame(wx.Frame):
                 for childItem in items:
                     image = count
                     if DoesModifiedExist(childItem):
-                        image = len(_viewPngs)
+                        image = len(config._viewPngs)
                     theDemo = self.tree.AppendItem(child, childItem, image=image)
                     self.tree.SetItemData(theDemo, count)
                     self.treeMap[childItem] = theDemo
@@ -1912,7 +1908,7 @@ class wxPortfolioFrame(wx.Frame):
 
         wx.BeginBusyCursor()
 
-        for category, items in _treeList:
+        for category, items in config._treeList:
             self.searchItems[category] = []
             for childItem in items:
                 if SearchDemo(childItem, value):
@@ -1925,7 +1921,7 @@ class wxPortfolioFrame(wx.Frame):
     def SetTreeModified(self, modified):
         item = self.tree.GetSelection()
         if modified:
-            image = len(_viewPngs)
+            image = len(config._viewPngs)
         else:
             image = self.tree.GetItemData(item)
         self.tree.SetItemImage(item, image)
@@ -2644,7 +2640,7 @@ class wxPortfolioTree(ExpansionState, TreeBaseClass):
 
     def BuildTreeImageList(self):
         imgList = wx.ImageList(16, 16)
-        for png in _viewPngs:
+        for png in config._viewPngs:
             imgList.Add(images.catalog[png].GetBitmap())
 
         # add the image for modified demos.
@@ -2710,7 +2706,7 @@ def main():
     app = MyApp(False)
 
     # Read the initial portfolio holdings
-    GetHoldings()
+    config.GetHoldings()
 
     app.MainLoop()
 
