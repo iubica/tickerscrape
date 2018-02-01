@@ -25,9 +25,8 @@ import config
 # real life you can use whatever you want or need to hold your data.
 
 class HoldingsModel(dv.DataViewIndexListModel):
-    def __init__(self, data, log):
-        dv.DataViewIndexListModel.__init__(self, len(data))
-        self.data = data
+    def __init__(self, log):
+        dv.DataViewIndexListModel.__init__(self, len(config.tickers_df))
         self.log = log
 
     # Convert model column to data frame column
@@ -72,7 +71,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         
         value = ""
         if dataFrameCol is not None:
-            value = str(self.data.iloc[row, dataFrameCol])
+            value = str(config.tickers_df.iloc[row, dataFrameCol])
 
         #self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
         return value
@@ -84,7 +83,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
 
         if dataFrameCol is not None:
-            self.data.iloc[row, dataFrameCol] = value
+            config.tickers_df.iloc[row, dataFrameCol] = value
             return True
 
         return False
@@ -96,7 +95,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # Report the number of rows in the model
     def GetCount(self):
         #self.log.write('GetCount')
-        return self.data.count + 1
+        return config.tickers_df.count + 1
 
     # Called to check if non-standard attributes should be used in the
     # cell at (row, col)
@@ -121,9 +120,9 @@ class HoldingsModel(dv.DataViewIndexListModel):
         row1 = self.GetRow(item1)
         row2 = self.GetRow(item2)
         if col == 0:
-            return cmp(int(self.data.iloc[row1, col]), int(self.data.iloc[row2, col]))
+            return cmp(int(config.tickers_df.iloc[row1, col]), int(config.tickers_df.iloc[row2, col]))
         else:
-            return cmp(self.data.iloc[row1, col], self.idata[row2, col])
+            return cmp(config.tickers_df.iloc[row1, col], self.idata[row2, col])
 
 
     def DeleteRows(self, rows):
@@ -134,21 +133,21 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
         for row in rows:
             # remove it from our data structure
-            del self.data[row]
+            del config.tickers_df[row]
             # notify the view(s) using this model that it has been removed
             self.RowDeleted(row)
 
 
     def AddRow(self, value):
         # update data structure
-        self.data.append(value)
+        config.tickers_df.append(value)
         # notify views
         self.RowAppended()
 
 
 
 class HoldingsPanel(wx.Panel):
-    def __init__(self, parent, log, model=None, data=None):
+    def __init__(self, parent, log, model=None):
         self.log = log
         wx.Panel.__init__(self, parent, -1)
 
@@ -163,7 +162,7 @@ class HoldingsPanel(wx.Panel):
 
         # Create an instance of our simple model...
         if model is None:
-            self.model = HoldingsModel(data, log)
+            self.model = HoldingsModel(log)
         else:
             self.model = model
 
@@ -240,7 +239,7 @@ class HoldingsPanel(wx.Panel):
 
     def OnAddRow(self, evt):
         # Add some bogus data to a new row in the model's data
-        id = len(self.model.data) + 1
+        id = len(config.tickers_df) + 1
         value = [str(id),
                  'new artist %d' % id,
                  'new title %d' % id,
@@ -269,7 +268,7 @@ def runTest(frame, nb, log):
     if config.tickers_df is None:
         config.GetHoldings()
 
-    win = HoldingsPanel(nb, log, data=config.tickers_df)
+    win = HoldingsPanel(nb, log)
     return win
 
 #----------------------------------------------------------------------
