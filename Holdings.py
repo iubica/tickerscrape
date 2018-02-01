@@ -62,7 +62,14 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # All of our columns are strings.  If the model or the renderers
     # in the view are other types then that should be reflected here.
     def GetColumnType(self, col):
-        return "string"
+        colType = "string"
+        
+        if col == 2:
+            colType = "int"
+        elif col == 3:
+            colType = "float"
+
+        return colType
 
     # This method is called to provide the data object for a
     # particular row,col
@@ -94,7 +101,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
     # Report the number of rows in the model
     def GetCount(self):
-        #self.log.write('GetCount')
+        self.log.write('GetCount')
         return config.tickers_df.count + 1
 
     # Called to check if non-standard attributes should be used in the
@@ -139,6 +146,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
 
     def AddRow(self, value):
+        self.log.write('AddRow(%s)' % value)
         # update data structure
         config.tickers_df.append(value)
         # notify views
