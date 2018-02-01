@@ -311,7 +311,7 @@ _treeList = [
 #---------------------------------------------------------------------------
 
 # The tickers dataframe
-_tickers_df = None
+tickers_df = None
 
 
 #---------------------------------------------------------------------------
@@ -322,13 +322,13 @@ def GetHoldings():
     sp = wx.StandardPaths.Get()
 
     # Get the global holdings table
-    global _tickers_df
+    global tickers_df
 
     try:
-        _tickers_df = pd.read_csv(sp.GetUserDataDir() + "/tickers.csv")
+        tickers_df = pd.read_csv(sp.GetUserDataDir() + "/tickers.csv")
     except OSError as e:
         # Create an empty DataFrame with unordered columns
-        _tickers_df = pd.DataFrame.from_dict({
+        tickers_df = pd.DataFrame.from_dict({
             "Ticker": ["SPY", "FUSEX"],
             "Shares": ["100", "150"],
             "Cost Basis": ["150000.00", "100.00"],
@@ -336,13 +336,13 @@ def GetHoldings():
         })
         
         # Order the columns
-        _tickers_df = _tickers_df[["Ticker", 
-                                   "Shares", 
-                                   "Cost Basis", 
-                                   "Purchase Date"]]
+        tickers_df = tickers_df[["Ticker", 
+                                 "Shares", 
+                                 "Cost Basis", 
+                                 "Purchase Date"]]
 
-    _tickers_df.fillna("", inplace=True)
-    #print(_tickers_df)
+    tickers_df.fillna("", inplace=True)
+    #print(tickers_df)
     
 #---------------------------------------------------------------------------
 # Save portfolio holdings to tickers.csv
@@ -351,11 +351,8 @@ def SaveHoldings():
     # Get the wxPython standard paths
     sp = wx.StandardPaths.Get()
 
-    # Get the global holdings table
-    global _tickers_df
-
     # Save the holdings table
-    df = _tickers_df.set_index("Ticker", inplace=False)    
+    df = tickers_df.set_index("Ticker", inplace=False)    
     df.to_csv(sp.GetUserDataDir() + "/tickers.csv")
     
 

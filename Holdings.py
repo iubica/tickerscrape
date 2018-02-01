@@ -266,10 +266,10 @@ def runTest(frame, nb, log):
     musicdata = sorted(ListCtrl.musicdata.items())
     musicdata = [[str(k)] + list(v) for k,v in musicdata]
 
-    if config._tickers_df is None:
+    if config.tickers_df is None:
         config.GetHoldings()
 
-    win = HoldingsPanel(nb, log, data=config._tickers_df)
+    win = HoldingsPanel(nb, log, data=config.tickers_df)
     return win
 
 #----------------------------------------------------------------------
