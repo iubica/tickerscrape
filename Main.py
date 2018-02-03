@@ -2510,6 +2510,13 @@ class wxPortfolioFrame(wx.Frame):
         cPickle.dump(self.pickledData, fid, cPickle.HIGHEST_PROTOCOL)
         fid.close()
 
+        # Has portfolio config changed?
+        if Config.HoldingsChanged(None):
+            if wx.MessageBox("Save updated portfolio holdings?",
+                             "Please confirm",
+                             wx.ICON_QUESTION | wx.YES_NO) == wx.YES:
+                Config.SaveHoldings()
+
         self.Destroy()
 
 
