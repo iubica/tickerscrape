@@ -1405,7 +1405,7 @@ class wxPortfolioFrame(wx.Frame):
         self.loaded = False
         self.cwd = os.getcwd()
         self.curOverview = ""
-        self.demoPage = None
+        self.viewPage = None
         self.codePage = None
         self.shell = None
         self.firstTime = True
@@ -2046,20 +2046,20 @@ class wxPortfolioFrame(wx.Frame):
                 overviewText = module.overview
 
             try:
-                self.demoPage = module.runTest(self, self.nb, self)
+                self.viewPage = module.runTest(self, self.nb, self)
             except:
-                self.demoPage = ViewModuleErrorPanel(self.nb, self.codePage,
+                self.viewPage = ViewModuleErrorPanel(self.nb, self.codePage,
                                                      ViewModuleError(sys.exc_info()), self)
 
             bg = self.nb.GetThemeBackgroundColour()
             if bg:
-                self.demoPage.SetBackgroundColour(bg)
+                self.viewPage.SetBackgroundColour(bg)
 
-            assert self.demoPage is not None, "runTest must return a window!"
+            assert self.viewPage is not None, "runTest must return a window!"
 
         else:
             # There was a previous error in compiling or exec-ing
-            self.demoPage = ViewModuleErrorPanel(self.nb, self.codePage,
+            self.viewPage = ViewModuleErrorPanel(self.nb, self.codePage,
                                                  self.demoModules.GetErrorInfo(), self)
 
         self.SetOverview(self.demoModules.name + " Help", overviewText)
@@ -2074,12 +2074,12 @@ class wxPortfolioFrame(wx.Frame):
 
     #---------------------------------------------
     def ShutdownDemoModule(self):
-        if self.demoPage:
+        if self.viewPage:
             # inform the window that it's time to quit if it cares
-            if hasattr(self.demoPage, "ShutdownDemo"):
-                self.demoPage.ShutdownDemo()
+            if hasattr(self.viewPage, "ShutdownDemo"):
+                self.viewPage.ShutdownDemo()
 ##            wx.YieldIfNeeded() # in case the page has pending events
-            self.demoPage = None
+            self.viewPage = None
 
     #---------------------------------------------
     def UpdateNotebook(self, select = -1):
@@ -2121,7 +2121,7 @@ class wxPortfolioFrame(wx.Frame):
             select = nb.GetSelection()
 
         UpdatePage(self.codePage, "Code")
-        UpdatePage(self.demoPage, "View")
+        UpdatePage(self.viewPage, "View")
 
         if select >= 0 and select < nb.GetPageCount():
             nb.SetSelection(select)
@@ -2488,7 +2488,7 @@ class wxPortfolioFrame(wx.Frame):
     def OnCloseWindow(self, event):
         self.mgr.UnInit()
         self.dying = True
-        self.demoPage = None
+        self.viewPage = None
         self.codePage = None
         self.mainmenu = None
         self.StopDownload()
@@ -2524,7 +2524,7 @@ class wxPortfolioFrame(wx.Frame):
     def OnIdle(self, event):
         if self.otherWin:
             self.otherWin.Raise()
-            self.demoPage = self.otherWin
+            self.viewPage = self.otherWin
             self.otherWin = None
 
 
