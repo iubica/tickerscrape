@@ -2621,7 +2621,7 @@ class MySplashScreen(SplashScreen):
         portfolioFrame.Show()
         if self.fc.IsRunning():
             self.Raise()
-        wx.CallAfter(frame.ShowTip)
+        wx.CallAfter(portfolioFrame.ShowTip)
 
 
 
