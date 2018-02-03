@@ -40,7 +40,7 @@ _viewPngs = ["overview", "custom", "recent", "frame", "dialog",
 #
 #-------------------------------------------------------------------------------
 
-_treeList = [
+treeList = [
     # portfolio views
     ('Portfolio', [
         'Holdings',
