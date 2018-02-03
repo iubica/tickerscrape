@@ -2232,7 +2232,7 @@ class wxPortfolioFrame(wx.Frame):
 
     # Menu methods
     def OnFileSave(self, *event):
-        config.holdings_save()
+        config.SaveHoldings()
         self.statusBar.SetStatusText("Holdings saved", 0)
 
     def OnFileExit(self, *event):
@@ -2706,7 +2706,7 @@ def main():
     app = MyApp(False)
 
     # Read the initial portfolio holdings
-    config.holdings_get()
+    config.GetHoldings()
 
     app.MainLoop()
 

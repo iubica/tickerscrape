@@ -311,26 +311,26 @@ _treeList = [
 #---------------------------------------------------------------------------
 
 # The holdings dataframe
-holdings_df = None
+holdingsDf = None
 
 # Set to True if holdings have changed
-holdings_df_changed = False
+holdingsDfChanged = False
 
 #---------------------------------------------------------------------------
 # Get portfolio holdings from holdings.csv
 
-def holdings_get():
+def GetHoldings():
     # Get the wxPython standard paths
     sp = wx.StandardPaths.Get()
 
     # Get the global holdings table
-    global holdings_df
+    global holdingsDf
 
     try:
-        holdings_df = pd.read_csv(sp.GetUserDataDir() + "/holdings.csv")
+        holdingsDf = pd.read_csv(sp.GetUserDataDir() + "/holdings.csv")
     except OSError as e:
         # Create an empty DataFrame with unordered columns
-        holdings_df = pd.DataFrame.from_dict({
+        holdingsDf = pd.DataFrame.from_dict({
             "Ticker": ["SPY", "FUSEX"],
             "Shares": ["100", "150"],
             "Cost Basis": ["150000.00", "100.00"],
@@ -338,29 +338,29 @@ def holdings_get():
         })
         
         # Order the columns
-        holdings_df = holdings_df[["Ticker", 
+        holdingsDf = holdingsDf[["Ticker", 
                                  "Shares", 
                                  "Cost Basis", 
                                  "Purchase Date"]]
 
         # Holdings need to be saved
-        holdings_df_changed = True
+        holdingsDfChanged = True
 
-    holdings_df.fillna("", inplace=True)
-    #print(holdings_df)
+    holdingsDf.fillna("", inplace=True)
+    #print(holdingsDf)
 
 #---------------------------------------------------------------------------
 # Save portfolio holdings to holdings.csv
 
-def holdings_save():
+def SaveHoldings():
     # Get the wxPython standard paths
     sp = wx.StandardPaths.Get()
 
     # Save the holdings table
-    df = holdings_df.set_index("Ticker", inplace=False)    
+    df = holdingsDf.set_index("Ticker", inplace=False)    
     df.to_csv(sp.GetUserDataDir() + "/holdings.csv")
 
     # Holdings are now in sync
-    global holdings_df_changed
-    holdings_df_changed = False
+    global holdingsDfChanged
+    holdingsDfChanged = False
 
