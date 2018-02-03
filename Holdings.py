@@ -141,7 +141,9 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
         for row in rows:
             # remove it from our data structure
-            del Config.holdingsDf[row]
+            Config.holdingsDf.drop([row])
+            Config.HoldingsChanged(True)
+
             # notify the view(s) using this model that it has been removed
             self.RowDeleted(row)
 
@@ -243,6 +245,7 @@ class HoldingsPanel(wx.Panel):
         # happened.
         items = self.dvc.GetSelections()
         rows = [self.model.GetRow(item) for item in items]
+
         self.model.DeleteRows(rows)
 
 
