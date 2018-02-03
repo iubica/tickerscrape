@@ -19,10 +19,22 @@ import Main
 #
 #-------------------------------------------------------------------------------
 
-viewPngs = ["overview", "custom", "recent", "frame", "dialog", 
-            "moredialog", "core",
-            "book", "customcontrol", "morecontrols", "layout", "process",
-            "clipboard", "images", "miscellaneous"]
+viewPngs = ["overview", # Top level views
+            "custom", # Portfolio
+            "custom", # Performance
+            "recent", # Recent Additions/Updates
+            "frame",  # ...
+            "dialog", 
+            "moredialog", 
+            "core",
+            "book", 
+            "customcontrol", 
+            "morecontrols", 
+            "layout", 
+            "process",
+            "clipboard", 
+            "images", 
+            "miscellaneous"]
 
 
 #-------------------------------------------------------------------------------
@@ -43,6 +55,10 @@ viewPngs = ["overview", "custom", "recent", "frame", "dialog",
 viewTree = [
     # portfolio views
     ('Portfolio', [
+        'Holdings',
+    ]),
+
+    ('Performance', [
         'Holdings',
     ]),
 
