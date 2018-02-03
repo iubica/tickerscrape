@@ -213,17 +213,23 @@ class HoldingsPanel(wx.Panel):
         self.Sizer.Add(self.dvc, 1, wx.EXPAND)
 
         # Add some buttons to help out with the tests
-        b1 = wx.Button(self, label="New View", name="newView")
-        self.Bind(wx.EVT_BUTTON, self.OnNewView, b1)
-        b2 = wx.Button(self, label="Add Row")
-        self.Bind(wx.EVT_BUTTON, self.OnAddRow, b2)
-        b3 = wx.Button(self, label="Delete Row(s)")
-        self.Bind(wx.EVT_BUTTON, self.OnDeleteRows, b3)
+        self.buttonNewView = wx.Button(self, label="New View", name="newView")
+        self.Bind(wx.EVT_BUTTON, self.OnNewView, self.buttonNewView)
+        self.buttonAddRow = wx.Button(self, label="Add Row")
+        self.Bind(wx.EVT_BUTTON, self.OnAddRow, self.buttonAddRow)
+        self.buttonDeleteRows = wx.Button(self, label="Delete Row(s)")
+        self.Bind(wx.EVT_BUTTON, self.OnDeleteRows, self.buttonDeleteRows)
+        self.buttonMoveUp = wx.Button(self, label="Move Up")
+        self.Bind(wx.EVT_BUTTON, self.OnMoveUp, self.buttonMoveUp)
+        self.buttonMoveDown = wx.Button(self, label="Move Down")
+        self.Bind(wx.EVT_BUTTON, self.OnMoveDown, self.buttonMoveDown)
 
         btnbox = wx.BoxSizer(wx.HORIZONTAL)
-        btnbox.Add(b1, 0, wx.LEFT|wx.RIGHT, 5)
-        btnbox.Add(b2, 0, wx.LEFT|wx.RIGHT, 5)
-        btnbox.Add(b3, 0, wx.LEFT|wx.RIGHT, 5)
+        btnbox.Add(self.buttonNewView, 0, wx.LEFT|wx.RIGHT, 5)
+        btnbox.Add(self.buttonAddRow, 0, wx.LEFT|wx.RIGHT, 5)
+        btnbox.Add(self.buttonDeleteRows, 0, wx.LEFT|wx.RIGHT, 5)
+        btnbox.Add(self.buttonMoveUp, 0, wx.LEFT|wx.RIGHT, 5)
+        btnbox.Add(self.buttonMoveDown, 0, wx.LEFT|wx.RIGHT, 5)
         self.Sizer.Add(btnbox, 0, wx.TOP|wx.BOTTOM, 5)
 
         # Bind some events so we can see what the DVC sends us
@@ -256,6 +262,15 @@ class HoldingsPanel(wx.Panel):
         value = ["New ticker", "", "", ""]
         self.model.AddRow(id, value)
 
+    def OnMoveUp(self, evt):
+        items = self.dvc.GetSelections()
+        id = self.model.GetRow(items[0])
+        self.log.write("OnMoveUp() id %d\n" % id)
+
+    def OnMoveDown(self, evt):
+        items = self.dvc.GetSelections()
+        id = self.model.GetRow(items[0])
+        self.log.write("OnMoveDown() id %d\n" % id)
 
     def OnEditingDone(self, evt):
         self.log.write("OnEditingDone\n")
