@@ -315,7 +315,7 @@ holdings_df = None
 
 
 #---------------------------------------------------------------------------
-# Get portfolio holdings from tickers.csv
+# Get portfolio holdings from holdings.csv
 
 def GetHoldings():
     # Get the wxPython standard paths
@@ -325,7 +325,7 @@ def GetHoldings():
     global holdings_df
 
     try:
-        holdings_df = pd.read_csv(sp.GetUserDataDir() + "/tickers.csv")
+        holdings_df = pd.read_csv(sp.GetUserDataDir() + "/holdings.csv")
     except OSError as e:
         # Create an empty DataFrame with unordered columns
         holdings_df = pd.DataFrame.from_dict({
@@ -345,7 +345,7 @@ def GetHoldings():
     #print(holdings_df)
     
 #---------------------------------------------------------------------------
-# Save portfolio holdings to tickers.csv
+# Save portfolio holdings to holdings.csv
 
 def SaveHoldings():
     # Get the wxPython standard paths
@@ -353,6 +353,6 @@ def SaveHoldings():
 
     # Save the holdings table
     df = holdings_df.set_index("Ticker", inplace=False)    
-    df.to_csv(sp.GetUserDataDir() + "/tickers.csv")
+    df.to_csv(sp.GetUserDataDir() + "/holdings.csv")
     
 

@@ -2232,7 +2232,7 @@ class wxPortfolioFrame(wx.Frame):
 
     # Menu methods
     def OnFileSave(self, *event):
-        SaveHoldings()
+        config.SaveHoldings()
         self.statusBar.SetStatusText("Holdings saved", 0)
 
     def OnFileExit(self, *event):
