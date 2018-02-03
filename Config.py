@@ -6,7 +6,7 @@ Globals for the main.py wxPython views.
 
 import wx
 import pandas as pd
-
+import Main
 
 #-------------------------------------------------------------------------------
 #
@@ -313,9 +313,6 @@ _treeList = [
 # The holdings dataframe
 holdingsDf = None
 
-# Set to True if holdings have changed
-holdingsDfChanged = False
-
 #---------------------------------------------------------------------------
 # Get portfolio holdings from holdings.csv
 
@@ -343,8 +340,8 @@ def GetHoldings():
                                  "Cost Basis", 
                                  "Purchase Date"]]
 
-        # Holdings need to be saved
-        holdingsDfChanged = True
+        # Holdings have been modified
+        HoldingsModified(True)
 
     holdingsDf.fillna("", inplace=True)
     #print(holdingsDf)
@@ -361,6 +358,12 @@ def SaveHoldings():
     df.to_csv(sp.GetUserDataDir() + "/holdings.csv")
 
     # Holdings are now in sync
-    global holdingsDfChanged
-    holdingsDfChanged = False
+    HoldingsModified(False)
+
+#---------------------------------------------------------------------------
+# Called when holdings are modified (or are saved) to enable (resp. disable)
+# the file menu save item
+
+def HoldingsModified(modified):
+    Main.portfolioFrame.EnableFileMenuSaveItem(True if modified else False)
 

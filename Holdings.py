@@ -6,7 +6,7 @@ import wx.dataview as dv
 import os, sys
 import csv
 import pandas as pd
-import config
+import Config
 #---------------------------------------------------------------------------
 
 #----------------------------------------------------------------------
@@ -26,7 +26,7 @@ import config
 
 class HoldingsModel(dv.DataViewIndexListModel):
     def __init__(self, log):
-        dv.DataViewIndexListModel.__init__(self, len(config.holdingsDf))
+        dv.DataViewIndexListModel.__init__(self, len(Config.holdingsDf))
         self.log = log
 
     # Convert model column to data frame column
@@ -78,7 +78,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         
         value = ""
         if dataFrameCol is not None:
-            value = str(config.holdingsDf.iloc[row, dataFrameCol])
+            value = str(Config.holdingsDf.iloc[row, dataFrameCol])
 
         #self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
         return value
@@ -90,7 +90,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
 
         if dataFrameCol is not None:
-            config.holdingsDf.iloc[row, dataFrameCol] = value
+            Config.holdingsDf.iloc[row, dataFrameCol] = value
             return True
 
         return False
@@ -102,7 +102,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # Report the number of rows in the model
     def GetCount(self):
         self.log.write('GetCount')
-        return config.holdingsDf.count + 1
+        return Config.holdingsDf.count + 1
 
     # Called to check if non-standard attributes should be used in the
     # cell at (row, col)
@@ -127,9 +127,9 @@ class HoldingsModel(dv.DataViewIndexListModel):
         row1 = self.GetRow(item1)
         row2 = self.GetRow(item2)
         if col == 0:
-            return cmp(int(config.holdingsDf.iloc[row1, col]), int(config.holdingsDf.iloc[row2, col]))
+            return cmp(int(Config.holdingsDf.iloc[row1, col]), int(Config.holdingsDf.iloc[row2, col]))
         else:
-            return cmp(config.holdingsDf.iloc[row1, col], self.idata[row2, col])
+            return cmp(Config.holdingsDf.iloc[row1, col], self.idata[row2, col])
 
 
     def DeleteRows(self, rows):
@@ -140,7 +140,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
         for row in rows:
             # remove it from our data structure
-            del config.holdingsDf[row]
+            del Config.holdingsDf[row]
             # notify the view(s) using this model that it has been removed
             self.RowDeleted(row)
 
@@ -148,7 +148,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
     def AddRow(self, value):
         self.log.write('AddRow(%s)' % value)
         # update data structure
-        config.holdingsDf.append(value)
+        Config.holdingsDf.append(value)
         # notify views
         self.RowAppended()
 
@@ -247,7 +247,7 @@ class HoldingsPanel(wx.Panel):
 
     def OnAddRow(self, evt):
         # Add some bogus data to a new row in the model's data
-        id = len(config.holdingsDf) + 1
+        id = len(Config.holdingsDf) + 1
         value = [str(id),
                  'new artist %d' % id,
                  'new title %d' % id,
@@ -273,8 +273,8 @@ def runTest(frame, nb, log):
     musicdata = sorted(ListCtrl.musicdata.items())
     musicdata = [[str(k)] + list(v) for k,v in musicdata]
 
-    if config.holdingsDf is None:
-        config.GetHoldings()
+    if Config.holdingsDf is None:
+        Config.GetHoldings()
 
     win = HoldingsPanel(nb, log)
     return win
