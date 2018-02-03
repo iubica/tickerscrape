@@ -27,7 +27,7 @@
 # * save file positions (new field in demoModules) (@ LoadDemoSource)
 # * Update main overview
 
-# * Why don't we move Config.treeList into a separate module
+# * Why don't we move Config.viewsTree into a separate module
 
 # =====================
 # = EXTERNAL Packages =
@@ -967,7 +967,7 @@ def HuntExternalDemos():
 
     # Modify the tree items and icons
     index = 0
-    for category, demos in Config.treeList:
+    for category, demos in Config.viewsTree:
         # We put the external packages right before the
         # More Windows/Controls item
         if category == "More Windows/Controls":
@@ -983,10 +983,10 @@ def HuntExternalDemos():
     # Loop over all external packages
     for extern in keys:
         package = externalDemos[extern]
-        # Insert a new package in the Config.treeList of demos
-        Config.treeList.insert(index, package.GetDemos())
+        # Insert a new package in the Config.viewsTree of demos
+        Config.viewsTree.insert(index, package.GetDemos())
         # Get the recent additions for this package
-        Config.treeList[1][1].extend(package.GetRecentAdditions())
+        Config.viewsTree[1][1].extend(package.GetRecentAdditions())
         # Extend the demo bitmaps and the catalog
         Config._viewPngs.insert(index+1, extern)
         images.catalog[extern] = package.GetDemoBitmap()
@@ -1665,7 +1665,7 @@ class wxPortfolioFrame(wx.Frame):
 
         # Make a Views menu
         menu = wx.Menu()
-        for indx, item in enumerate(Config.treeList[:-1]):
+        for indx, item in enumerate(Config.viewsTree[:-1]):
             menuItem = wx.MenuItem(menu, -1, item[0])
             submenu = wx.Menu()
             for childItem in item[1]:
@@ -1835,7 +1835,7 @@ class wxPortfolioFrame(wx.Frame):
         filter = self.filter.GetValue()
         count = 0
 
-        for category, items in Config.treeList:
+        for category, items in Config.viewsTree:
             count += 1
             if filter:
                 if fullSearch:
@@ -1917,7 +1917,7 @@ class wxPortfolioFrame(wx.Frame):
 
         wx.BeginBusyCursor()
 
-        for category, items in Config.treeList:
+        for category, items in Config.viewsTree:
             self.searchItems[category] = []
             for childItem in items:
                 if SearchDemo(childItem, value):

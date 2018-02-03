@@ -27,7 +27,7 @@ _viewPngs = ["overview", "custom", "recent", "frame", "dialog",
 
 #-------------------------------------------------------------------------------
 #
-# _treeList
+# viewsTree
 #
 # These are the View Catagory Headers
 # and View Module Names(Ex: Frame.py without ext)
@@ -40,7 +40,7 @@ _viewPngs = ["overview", "custom", "recent", "frame", "dialog",
 #
 #-------------------------------------------------------------------------------
 
-treeList = [
+viewsTree = [
     # portfolio views
     ('Portfolio', [
         'Holdings',
