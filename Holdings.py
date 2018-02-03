@@ -141,25 +141,15 @@ class HoldingsModel(dv.DataViewIndexListModel):
         self.RowAppended()
 
     def DeleteRows(self, rows):
-        # make a copy since we'll be sorting(mutating) the list
-        rows = list(rows)
-        # use reverse order so the indexes don't change as we remove items
-        rows.sort(reverse=True)
+        self.log.write('DeleteRows(%s)' % rows)
 
-        #print(Config.holdingsDf)
+        # Drop the list of rows from the dataframe
+        Config.holdingsDf.drop(rows, inplace=True)
+        # Reset the dataframe index, and don't add an index column
+        Config.holdingsDf.reset_index(inplace=True, drop=True)
 
-        for row in rows:
-            #print("Deleting %s" % row)
-            # remove it from our data structure
-            Config.holdingsDf.drop(row, inplace=True)
-            # Reset the dataframe index, and don't add an index column
-            Config.holdingsDf.reset_index(inplace=True, drop=True)
-            Config.HoldingsChanged(True)
-
-            #print(Config.holdingsDf)
-
-            # notify the view(s) using this model that it has been removed
-            self.RowDeleted(row)
+        # notify the view(s) using this model that it has been removed
+        self.Reset(Config.holdingsDf.shape[0])        
 
     def MoveUp(self, rows):
         self.log.write("MoveUp() rows %s\n" % rows)
