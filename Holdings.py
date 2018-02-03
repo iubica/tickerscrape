@@ -101,9 +101,10 @@ class HoldingsModel(dv.DataViewIndexListModel):
         return 5
 
     # Report the number of rows in the model
-    def GetCount(self):
-        self.log.write('GetCount')
-        return Config.holdingsDf.count + 1
+    def GetRowCount(self):
+        rowCount = Config.holdingsDf.shape[0]
+        #self.log.write('GetRowCount() = %d' % rowCount)
+        return rowCount
 
     # Called to check if non-standard attributes should be used in the
     # cell at (row, col)
@@ -232,9 +233,15 @@ class HoldingsPanel(wx.Panel):
         btnbox.Add(self.buttonMoveDown, 0, wx.LEFT|wx.RIGHT, 5)
         self.Sizer.Add(btnbox, 0, wx.TOP|wx.BOTTOM, 5)
 
+        # Initial state for buttons
+        self.buttonDeleteRows.Disable()
+        self.buttonMoveUp.Disable()
+        self.buttonMoveDown.Disable()
+
         # Bind some events so we can see what the DVC sends us
         self.Bind(dv.EVT_DATAVIEW_ITEM_EDITING_DONE, self.OnEditingDone, self.dvc)
         self.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.OnValueChanged, self.dvc)
+        self.Bind(dv.EVT_DATAVIEW_SELECTION_CHANGED, self.OnSelectionChanged, self.dvc)
 
 
     def OnNewView(self, evt):
@@ -278,6 +285,30 @@ class HoldingsPanel(wx.Panel):
     def OnValueChanged(self, evt):
         self.log.write("OnValueChanged\n")
 
+    def OnSelectionChanged(self, evt):
+        self.log.write("OnSelectionChanged\n")
+
+        items = self.dvc.GetSelections()
+        rows = [self.model.GetRow(item) for item in items]
+        
+        # Is there any selection?
+        if rows == []:
+            self.buttonDeleteRows.Disable()
+        else:
+            self.buttonDeleteRows.Enable()
+
+        # Is the top line selected?
+        if 0 in rows:
+            self.buttonMoveUp.Disable()
+        else:
+            self.buttonMoveUp.Enable()
+
+        # Is the bottom line selected?
+        if (self.model.GetRowCount() - 1) in rows:
+            self.buttonMoveDown.Disable()
+        else:
+            self.buttonMoveDown.Enable()
+            
 
 #----------------------------------------------------------------------
 
