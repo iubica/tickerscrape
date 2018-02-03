@@ -133,6 +133,12 @@ class HoldingsModel(dv.DataViewIndexListModel):
         else:
             return cmp(Config.holdingsDf.iloc[row1, col], self.idata[row2, col])
 
+    def AddRow(self, id, value):
+        self.log.write('AddRow(%s)' % value)
+        # update data structure
+        Config.holdingsDf.loc[id-1] = value
+        # notify views
+        self.RowAppended()
 
     def DeleteRows(self, rows):
         # make a copy since we'll be sorting(mutating) the list
@@ -148,14 +154,33 @@ class HoldingsModel(dv.DataViewIndexListModel):
             # notify the view(s) using this model that it has been removed
             self.RowDeleted(row)
 
+    def MoveUp(self, rows):
+        self.log.write("MoveUp() rows %s\n" % rows)
 
-    def AddRow(self, id, value):
-        self.log.write('AddRow(%s)' % value)
-        # update data structure
-        Config.holdingsDf.loc[id-1] = value
-        # notify views
-        self.RowAppended()
+        if rows:
+            for row in rows:
+                a = Config.holdingsDf.iloc[row-1].copy()
+                b = Config.holdingsDf.iloc[row].copy()
+                Config.holdingsDf.iloc[row-1] = b
+                Config.holdingsDf.iloc[row] = a
+                Config.HoldingsChanged(True)
 
+            # notify the view(s) using this model that it has been removed
+            self.Reset(Config.holdingsDf.shape[0])        
+
+    def MoveDown(self, rows):
+        self.log.write("MoveDown() rows %s\n" % rows)
+
+        if rows:
+            for row in rows:
+                a = Config.holdingsDf.iloc[row+1].copy()
+                b = Config.holdingsDf.iloc[row].copy()
+                Config.holdingsDf.iloc[row+1] = b
+                Config.holdingsDf.iloc[row] = a
+                Config.HoldingsChanged(True)
+
+            # notify the view(s) using this model that it has been removed
+            self.Reset(Config.holdingsDf.shape[0])        
 
 
 class HoldingsPanel(wx.Panel):
@@ -271,13 +296,15 @@ class HoldingsPanel(wx.Panel):
 
     def OnMoveUp(self, evt):
         items = self.dvc.GetSelections()
-        id = self.model.GetRow(items[0])
-        self.log.write("OnMoveUp() id %d\n" % id)
+        rows = [self.model.GetRow(item) for item in items]
+
+        self.model.MoveUp(rows)
 
     def OnMoveDown(self, evt):
         items = self.dvc.GetSelections()
-        id = self.model.GetRow(items[0])
-        self.log.write("OnMoveDown() id %d\n" % id)
+        rows = [self.model.GetRow(item) for item in items]
+
+        self.model.MoveDown(rows)
 
     def OnEditingDone(self, evt):
         self.log.write("OnEditingDone\n")
