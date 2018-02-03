@@ -1157,7 +1157,7 @@ class DemoModules(object):
 
 #---------------------------------------------------------------------------
 
-class DemoError(object):
+class ViewModuleError(object):
     """Wraps and stores information about the current exception"""
     def __init__(self, exc_info):
         import copy
@@ -1200,7 +1200,7 @@ class DemoError(object):
 
 #---------------------------------------------------------------------------
 
-class DemoErrorPanel(wx.Panel):
+class ViewModuleErrorPanel(wx.Panel):
     """Panel put into the demo tab when the demo fails to run due  to errors"""
 
     def __init__(self, parent, codePanel, demoError, log):
@@ -1212,7 +1212,7 @@ class DemoErrorPanel(wx.Panel):
         self.box = wx.BoxSizer(wx.VERTICAL)
 
         # Main Label
-        self.box.Add(wx.StaticText(self, -1, "An error has occurred while trying to run the demo")
+        self.box.Add(wx.StaticText(self, -1, "An error has occurred while trying to run the view module")
                      , 0, wx.ALIGN_CENTER | wx.TOP, 10)
 
         # Exception Information
@@ -1243,7 +1243,7 @@ class DemoErrorPanel(wx.Panel):
         self.box.Add(wx.StaticText(self, -1, "Traceback:")
                      , 0, wx.ALIGN_CENTER | wx.TOP, 5)
         self.box.Add(self.list, 1, wx.GROW | wx.ALIGN_CENTER | wx.ALL, 5)
-        self.box.Add(wx.StaticText(self, -1, "Entries from the demo module are shown in blue\n"
+        self.box.Add(wx.StaticText(self, -1, "Entries from the view module are shown in blue\n"
                                            + "Double-click on them to go to the offending line")
                      , 0, wx.ALIGN_CENTER | wx.BOTTOM, 5)
 
@@ -2041,15 +2041,15 @@ class wxPortfolioFrame(wx.Frame):
         # o If an error occurs (or has occurred before) an error tab is created.
 
         if module is not None:
-            wx.LogMessage("Running demo module...")
+            wx.LogMessage("Loading view module...")
             if hasattr(module, "overview"):
                 overviewText = module.overview
 
             try:
                 self.demoPage = module.runTest(self, self.nb, self)
             except:
-                self.demoPage = DemoErrorPanel(self.nb, self.codePage,
-                                               DemoError(sys.exc_info()), self)
+                self.demoPage = ViewModuleErrorPanel(self.nb, self.codePage,
+                                                     ViewModuleError(sys.exc_info()), self)
 
             bg = self.nb.GetThemeBackgroundColour()
             if bg:
@@ -2059,8 +2059,8 @@ class wxPortfolioFrame(wx.Frame):
 
         else:
             # There was a previous error in compiling or exec-ing
-            self.demoPage = DemoErrorPanel(self.nb, self.codePage,
-                                           self.demoModules.GetErrorInfo(), self)
+            self.demoPage = ViewModuleErrorPanel(self.nb, self.codePage,
+                                                 self.demoModules.GetErrorInfo(), self)
 
         self.SetOverview(self.demoModules.name + " Help", overviewText)
 

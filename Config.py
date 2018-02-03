@@ -44,11 +44,16 @@ viewPngs = ["overview", # Top level views
 # These are the View Catagory Headers
 # and View Module Names(Ex: Frame.py without ext)
 #
-# ('View Catagory Name String', [
+# ('View Category Name', [
 #       'ViewModuleName1',
 #       'ViewModuleName2',
 #       'Etc',
 #       ]),
+#
+# The ViewModuleName should correspond to a ViewModuleName.py file in the
+# top folder, with the following globals and methods:
+#   overview - HTML string showing in the Help tab 
+#   runTest(frame, nb, log) - returns panel object for module
 #
 #-------------------------------------------------------------------------------
 
