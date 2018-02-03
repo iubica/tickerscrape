@@ -146,10 +146,17 @@ class HoldingsModel(dv.DataViewIndexListModel):
         # use reverse order so the indexes don't change as we remove items
         rows.sort(reverse=True)
 
+        #print(Config.holdingsDf)
+
         for row in rows:
+            print("Deleting %s" % row)
             # remove it from our data structure
-            Config.holdingsDf.drop([row])
+            Config.holdingsDf.drop(row, inplace=True)
+            # Reset the dataframe index, and don't add an index column
+            Config.holdingsDf.reset_index(inplace=True, drop=True)
             Config.HoldingsChanged(True)
+
+            #print(Config.holdingsDf)
 
             # notify the view(s) using this model that it has been removed
             self.RowDeleted(row)
@@ -284,6 +291,7 @@ class HoldingsPanel(wx.Panel):
         items = self.dvc.GetSelections()
         rows = [self.model.GetRow(item) for item in items]
 
+        self.log.write("OnDeleteRows() rows %s\n" % rows)
         self.model.DeleteRows(rows)
 
 
@@ -310,10 +318,11 @@ class HoldingsPanel(wx.Panel):
         self.log.write("OnEditingDone\n")
 
     def OnValueChanged(self, evt):
+        # Can be used to verify format validity
         self.log.write("OnValueChanged\n")
 
     def OnSelectionChanged(self, evt):
-        self.log.write("OnSelectionChanged\n")
+        #self.log.write("OnSelectionChanged\n")
 
         items = self.dvc.GetSelections()
         rows = [self.model.GetRow(item) for item in items]
