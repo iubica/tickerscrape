@@ -79,6 +79,9 @@ import config
 # global when we do.
 images = None
 
+# The main frame class instance
+portfolioFrame = None
+
 # For debugging
 ##wx.Trap();
 ##print("wx.VERSION_STRING = %s (%s)" % (wx.VERSION_STRING, wx.USE_UNICODE and 'unicode' or 'ansi'))
@@ -1640,22 +1643,24 @@ class wxPortfolioFrame(wx.Frame):
 
         # Make a File menu
         self.mainmenu = wx.MenuBar()
-        menu = wx.Menu()
-        item = menu.Append(-1, '&Redirect Output',
-                           'Redirect print statements to a window',
-                           wx.ITEM_CHECK)
+        self.fileMenu = wx.Menu()
+        item = self.fileMenu.Append(-1, '&Redirect Output',
+                                    'Redirect print statements to a window',
+                                    wx.ITEM_CHECK)
         self.Bind(wx.EVT_MENU, self.OnToggleRedirect, item)
 
-        saveItem = wx.MenuItem(menu, -1, '&Save\tCtrl-S', 'Save the portfolio')
-        menu.Append(saveItem)
+        saveItem = wx.MenuItem(self.fileMenu, -1, '&Save\tCtrl-S', 'Save the portfolio')
+        self.menuSaveItemId = saveItem.GetId()
+        self.fileMenu.Append(saveItem)
         self.Bind(wx.EVT_MENU, self.OnFileSave, saveItem)
 
         wx.App.SetMacExitMenuItemId(9123)
-        exitItem = wx.MenuItem(menu, 9123, 'E&xit\tCtrl-Q', 'Terminate the application')
+        exitItem = wx.MenuItem(self.fileMenu, 9123, 
+                               'E&xit\tCtrl-Q', 'Terminate the application')
         exitItem.SetBitmap(images.catalog['exit'].GetBitmap())
-        menu.Append(exitItem)
+        self.fileMenu.Append(exitItem)
         self.Bind(wx.EVT_MENU, self.OnFileExit, exitItem)
-        self.mainmenu.Append(menu, '&File')
+        self.mainmenu.Append(self.fileMenu, '&File')
 
         # Make a Views menu
         menu = wx.Menu()
@@ -2600,8 +2605,9 @@ class MySplashScreen(SplashScreen):
 
 
     def ShowMain(self):
-        frame = wxPortfolioFrame(None, "wxPortfolio")
-        frame.Show()
+        global portfolioFrame
+        portfolioFrame = wxPortfolioFrame(None, "wxPortfolio")
+        portfolioFrame.Show()
         if self.fc.IsRunning():
             self.Raise()
         wx.CallAfter(frame.ShowTip)
