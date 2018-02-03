@@ -317,7 +317,7 @@ holdings_df = None
 #---------------------------------------------------------------------------
 # Get portfolio holdings from holdings.csv
 
-def GetHoldings():
+def holdings_get():
     # Get the wxPython standard paths
     sp = wx.StandardPaths.Get()
 

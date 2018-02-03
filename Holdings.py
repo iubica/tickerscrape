@@ -274,7 +274,7 @@ def runTest(frame, nb, log):
     musicdata = [[str(k)] + list(v) for k,v in musicdata]
 
     if config.holdings_df is None:
-        config.GetHoldings()
+        config.holdings_get()
 
     win = HoldingsPanel(nb, log)
     return win

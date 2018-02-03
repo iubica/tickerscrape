@@ -2706,7 +2706,7 @@ def main():
     app = MyApp(False)
 
     # Read the initial portfolio holdings
-    config.GetHoldings()
+    config.holdings_get()
 
     app.MainLoop()
 
