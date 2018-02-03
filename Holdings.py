@@ -91,6 +91,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
         if dataFrameCol is not None:
             Config.holdingsDf.iloc[row, dataFrameCol] = value
+            Config.HoldingsChanged(True)
             return True
 
         return False

@@ -312,6 +312,7 @@ _treeList = [
 
 # The holdings dataframe
 holdingsDf = None
+_holdingsChanged = False
 
 #---------------------------------------------------------------------------
 # Get portfolio holdings from holdings.csv
@@ -325,6 +326,8 @@ def GetHoldings():
 
     try:
         holdingsDf = pd.read_csv(sp.GetUserDataDir() + "/holdings.csv")
+
+        HoldingsChanged(False)
     except OSError as e:
         # Create an empty DataFrame with unordered columns
         holdingsDf = pd.DataFrame.from_dict({
@@ -341,7 +344,7 @@ def GetHoldings():
                                  "Purchase Date"]]
 
         # Holdings have been modified
-        HoldingsModified(True)
+        HoldingsChanged(True)
 
     holdingsDf.fillna("", inplace=True)
     #print(holdingsDf)
@@ -358,12 +361,19 @@ def SaveHoldings():
     df.to_csv(sp.GetUserDataDir() + "/holdings.csv")
 
     # Holdings are now in sync
-    HoldingsModified(False)
+    HoldingsChanged(False)
 
 #---------------------------------------------------------------------------
-# Called when holdings are modified (or are saved) to enable (resp. disable)
-# the file menu save item
+# Called with changed = True or False when holdings are different (or unchanged)
+# from the holdings.csv, and called with changed = None to just return
+# the status of the holdings (whether they have changed or not)
 
-def HoldingsModified(modified):
-    Main.portfolioFrame.EnableFileMenuSaveItem(True if modified else False)
+def HoldingsChanged(changed):
+    global _holdingsChanged
 
+    if changed is not None:
+        if Main.portfolioFrame:
+            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
+        _holdingsChanged = changed
+
+    return _holdingsChanged

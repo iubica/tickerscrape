@@ -1652,6 +1652,7 @@ class wxPortfolioFrame(wx.Frame):
         saveItem = wx.MenuItem(self.fileMenu, -1, '&Save\tCtrl-S', 'Save the portfolio')
         self.menuSaveItemId = saveItem.GetId()
         self.fileMenu.Append(saveItem)
+        self.fileMenu.Enable(self.menuSaveItemId, Config.HoldingsChanged(None))
         self.Bind(wx.EVT_MENU, self.OnFileSave, saveItem)
 
         wx.App.SetMacExitMenuItemId(9123)
@@ -2240,7 +2241,7 @@ class wxPortfolioFrame(wx.Frame):
 
     # Menu methods
     def OnFileSave(self, *event):
-        config.SaveHoldings()
+        Config.SaveHoldings()
         self.statusBar.SetStatusText("Holdings saved", 0)
 
     def OnFileExit(self, *event):
