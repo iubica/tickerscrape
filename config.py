@@ -310,9 +310,11 @@ _treeList = [
 
 #---------------------------------------------------------------------------
 
-# The tickers dataframe
+# The holdings dataframe
 holdings_df = None
 
+# Set to True if holdings have changed
+holdings_df_changed = False
 
 #---------------------------------------------------------------------------
 # Get portfolio holdings from holdings.csv
@@ -341,18 +343,24 @@ def holdings_get():
                                  "Cost Basis", 
                                  "Purchase Date"]]
 
+        # Holdings need to be saved
+        holdings_df_changed = True
+
     holdings_df.fillna("", inplace=True)
     #print(holdings_df)
-    
+
 #---------------------------------------------------------------------------
 # Save portfolio holdings to holdings.csv
 
-def SaveHoldings():
+def holdings_save():
     # Get the wxPython standard paths
     sp = wx.StandardPaths.Get()
 
     # Save the holdings table
     df = holdings_df.set_index("Ticker", inplace=False)    
     df.to_csv(sp.GetUserDataDir() + "/holdings.csv")
-    
+
+    # Holdings are now in sync
+    global holdings_df_changed
+    holdings_df_changed = False
 
