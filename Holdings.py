@@ -87,7 +87,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
     def SetValueByRow(self, value, row, col):
         dataFrameCol = self._GetDataFrameCol(col)
  
-        self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
+        #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
 
         if dataFrameCol is not None:
             Config.holdingsDf.iloc[row, dataFrameCol] = value
@@ -148,10 +148,10 @@ class HoldingsModel(dv.DataViewIndexListModel):
             self.RowDeleted(row)
 
 
-    def AddRow(self, value):
+    def AddRow(self, id, value):
         self.log.write('AddRow(%s)' % value)
         # update data structure
-        Config.holdingsDf.append(value)
+        Config.holdingsDf.loc[id-1] = value
         # notify views
         self.RowAppended()
 
@@ -252,11 +252,9 @@ class HoldingsPanel(wx.Panel):
     def OnAddRow(self, evt):
         # Add some bogus data to a new row in the model's data
         id = len(Config.holdingsDf) + 1
-        value = [str(id),
-                 'new artist %d' % id,
-                 'new title %d' % id,
-                 'genre %d' % id]
-        self.model.AddRow(value)
+        self.log.write("OnAddRow() id %d\n" % id)
+        value = ["New ticker", "", "", ""]
+        self.model.AddRow(id, value)
 
 
     def OnEditingDone(self, evt):
