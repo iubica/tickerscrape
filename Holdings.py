@@ -149,7 +149,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         #print(Config.holdingsDf)
 
         for row in rows:
-            print("Deleting %s" % row)
+            #print("Deleting %s" % row)
             # remove it from our data structure
             Config.holdingsDf.drop(row, inplace=True)
             # Reset the dataframe index, and don't add an index column
