@@ -10,24 +10,24 @@ import Main
 
 #-------------------------------------------------------------------------------
 #
-# _viewPngs
+# viewPngs
 #
 # These are the images names used in the wxPortfolio treectrl.
 # These come from images.py or bitmaps/imagename.ext
 #
-# _viewPngs = ["imagename1", "imagename2", "etc"]
+# viewPngs = ["imagename1", "imagename2", "etc"]
 #
 #-------------------------------------------------------------------------------
 
-_viewPngs = ["overview", "custom", "recent", "frame", "dialog", 
-             "moredialog", "core",
-             "book", "customcontrol", "morecontrols", "layout", "process",
-             "clipboard", "images", "miscellaneous"]
+viewPngs = ["overview", "custom", "recent", "frame", "dialog", 
+            "moredialog", "core",
+            "book", "customcontrol", "morecontrols", "layout", "process",
+            "clipboard", "images", "miscellaneous"]
 
 
 #-------------------------------------------------------------------------------
 #
-# viewsTree
+# viewTree
 #
 # These are the View Catagory Headers
 # and View Module Names(Ex: Frame.py without ext)
@@ -40,7 +40,7 @@ _viewPngs = ["overview", "custom", "recent", "frame", "dialog",
 #
 #-------------------------------------------------------------------------------
 
-viewsTree = [
+viewTree = [
     # portfolio views
     ('Portfolio', [
         'Holdings',
