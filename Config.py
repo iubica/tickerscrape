@@ -64,7 +64,7 @@ viewTree = [
     ]),
 
     ('Performance', [
-        'Holdings',
+        'PerformanceHistory',
     ]),
 
     # new stuff
