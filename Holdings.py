@@ -7,6 +7,8 @@ import os, sys
 import csv
 import pandas as pd
 import Config
+import tickerscrape.morningstar
+
 #---------------------------------------------------------------------------
 
 #----------------------------------------------------------------------
@@ -74,6 +76,10 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # This method is called to provide the data object for a
     # particular row,col
     def GetValueByRow(self, row, col):
+        if col == 1:
+            value = tickerscrape.morningstar.name(Config.holdingsDf.iloc[row, 0])
+            return value if value else ""
+
         dataFrameCol = self._GetDataFrameCol(col)
         
         value = ""
