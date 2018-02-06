@@ -65,6 +65,7 @@ viewTree = [
 
     ('Performance', [
         'PerformanceHistory',
+        'TrailingTotalReturns',
     ]),
 
     # new stuff

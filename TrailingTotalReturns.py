@@ -18,7 +18,7 @@ def runTest(frame, nb, log):
         Config.GetHoldings()
 
     # Get the SPY performance history
-    pfh1 = tickerscrape.morningstar.performance_history("SPY")
+    pfh1 = tickerscrape.morningstar.trailing_total_returns("SPY")
 
     # Remove last row
     pfh = pfh1.drop(pfh1.index[[0]])
@@ -27,7 +27,7 @@ def runTest(frame, nb, log):
     for i in range(Config.holdingsDf.shape[0]):
         ticker = Config.holdingsDf.iloc[i, 0]
         
-        df = tickerscrape.morningstar.performance_history(ticker)
+        df = tickerscrape.morningstar.trailing_total_returns(ticker)
         if df is not None:
             pfh = pfh.append(df)
             
