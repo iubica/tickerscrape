@@ -41,10 +41,13 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # particular row,col
     def GetValueByRow(self, row, col):
         value = ""
-        if self.df.iloc[row, col]:
-            value = str(self.df.iloc[row, col])
 
-        self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
+        if col == 0:
+            value = self.df.index.tolist()[row]
+        elif self.df.iloc[row, col-1]:
+                value = str(self.df.iloc[row, col-1])
+
+        #self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
         return value
 
     # This method is called when the user edits a data item in the view.
@@ -110,10 +113,12 @@ class HoldingsPanel(wx.Panel):
         idx = 0
         header_list = list(self.df.columns)
 
+        table_name = self.df.index.name if self.df.index.name else ""
+        self.dvc.AppendTextColumn(table_name, 0, width=100)
+
         for column in df:
-            self.dvc.AppendTextColumn(header_list[idx], idx, width=100, 
-                                      mode=dv.DATAVIEW_CELL_EDITABLE)
-            print(df[column])
+            self.dvc.AppendTextColumn(header_list[idx], idx+1, width=100)
+            #print(df[column])
             idx += 1
 
         # Through the magic of Python we can also access the columns
