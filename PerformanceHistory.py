@@ -25,85 +25,40 @@ import Config
 # real life you can use whatever you want or need to hold your data.
 
 class HoldingsModel(dv.DataViewIndexListModel):
-    def __init__(self, log):
-        dv.DataViewIndexListModel.__init__(self, len(Config.holdingsDf))
+    def __init__(self, df, log):
+        dv.DataViewIndexListModel.__init__(self, df.shape[0])
+        self.df = df
         self.log = log
-
-    # Convert model column to data frame column
-    def _GetDataFrameCol(self, modelCol):
-        dataFrameCol = None
-        
-        if modelCol == 0:
-            dataFrameCol = 0
-        elif modelCol == 2:
-            dataFrameCol = 1
-        elif modelCol == 3:
-            dataFrameCol = 2
-        elif modelCol == 4:
-            dataFrameCol = 3
-
-        return dataFrameCol
-
-    # Convert data frame column to model column
-    def _GetModelCol(self, dataFrameCol):
-        modelCol = None
-
-        if dataFrameCol == 0:
-            modelCol = 0
-        elif dataFrameCol == 1:
-            modelCol = 2
-        elif dataFrameCol == 2:
-            modelCol = 3
-        elif dataFrameCol == 3:
-            modelCol = 4
-
-        return modelCol
 
     # All of our columns are strings.  If the model or the renderers
     # in the view are other types then that should be reflected here.
     def GetColumnType(self, col):
         colType = "string"
         
-        if col == 2:
-            colType = "int"
-        elif col == 3:
-            colType = "float"
-
         return colType
 
     # This method is called to provide the data object for a
     # particular row,col
     def GetValueByRow(self, row, col):
-        dataFrameCol = self._GetDataFrameCol(col)
-        
         value = ""
-        if dataFrameCol is not None:
-            value = str(Config.holdingsDf.iloc[row, dataFrameCol])
+        if self.df.iloc[row, col]:
+            value = str(self.df.iloc[row, col])
 
-        #self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
+        self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
         return value
 
     # This method is called when the user edits a data item in the view.
     def SetValueByRow(self, value, row, col):
-        dataFrameCol = self._GetDataFrameCol(col)
- 
-        #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
-
-        if dataFrameCol is not None:
-            Config.holdingsDf.iloc[row, dataFrameCol] = value
-            Config.HoldingsChanged(True)
-            return True
-
         return False
 
     # Report how many columns this model provides data for.
     def GetColumnCount(self):
-        return 5
+        return len(self.df.columns) + 1
 
     # Report the number of rows in the model
-    def GetRowCount(self):
-        rowCount = Config.holdingsDf.shape[0]
-        #self.log.write('GetRowCount() = %d' % rowCount)
+    def GetCount(self):
+        rowCount = self.df.shape[0]
+        self.log.write('GetRowCount() = %d' % rowCount)
         return rowCount
 
     # Called to check if non-standard attributes should be used in the
@@ -116,71 +71,9 @@ class HoldingsModel(dv.DataViewIndexListModel):
             return True
         return False
 
-
-    # This is called to assist with sorting the data in the view.  The
-    # first two args are instances of the DataViewItem class, so we
-    # need to convert them to row numbers with the GetRow method.
-    # Then it's just a matter of fetching the right values from our
-    # data set and comparing them.  The return value is -1, 0, or 1,
-    # just like Python's cmp() function.
-    def Compare(self, item1, item2, col, ascending):
-        if not ascending: # swap sort order?
-            item2, item1 = item1, item2
-        row1 = self.GetRow(item1)
-        row2 = self.GetRow(item2)
-        if col == 0:
-            return cmp(int(Config.holdingsDf.iloc[row1, col]), int(Config.holdingsDf.iloc[row2, col]))
-        else:
-            return cmp(Config.holdingsDf.iloc[row1, col], self.idata[row2, col])
-
-    def AddRow(self, id, value):
-        self.log.write('AddRow(%s)' % value)
-        # update data structure
-        Config.holdingsDf.loc[id-1] = value
-        # notify views
-        self.RowAppended()
-
-    def DeleteRows(self, rows):
-        self.log.write('DeleteRows(%s)' % rows)
-
-        # Drop the list of rows from the dataframe
-        Config.holdingsDf.drop(rows, inplace=True)
-        # Reset the dataframe index, and don't add an index column
-        Config.holdingsDf.reset_index(inplace=True, drop=True)
-
-        # notify the view(s) using this model that it has been removed
-        self.Reset(Config.holdingsDf.shape[0])        
-
-    def MoveUp(self, rows):
-        self.log.write("MoveUp() rows %s\n" % rows)
-
-        if rows:
-            for row in rows:
-                a = Config.holdingsDf.iloc[row-1].copy()
-                b = Config.holdingsDf.iloc[row].copy()
-                Config.holdingsDf.iloc[row-1] = b
-                Config.holdingsDf.iloc[row] = a
-                Config.HoldingsChanged(True)
-
-            # notify the view(s) using this model that it has been removed
-            self.Reset(Config.holdingsDf.shape[0])        
-
-    def MoveDown(self, rows):
-        self.log.write("MoveDown() rows %s\n" % rows)
-
-        if rows:
-            for row in rows:
-                a = Config.holdingsDf.iloc[row+1].copy()
-                b = Config.holdingsDf.iloc[row].copy()
-                Config.holdingsDf.iloc[row+1] = b
-                Config.holdingsDf.iloc[row] = a
-                Config.HoldingsChanged(True)
-
-            # notify the view(s) using this model that it has been removed
-            self.Reset(Config.holdingsDf.shape[0])        
-
 class HoldingsPanel(wx.Panel):
-    def __init__(self, parent, log, model=None):
+    def __init__(self, parent, df, log, model=None):
+        self.df = df
         self.log = log
         wx.Panel.__init__(self, parent, -1)
 
@@ -195,7 +88,7 @@ class HoldingsPanel(wx.Panel):
 
         # Create an instance of our simple model...
         if model is None:
-            self.model = HoldingsModel(log)
+            self.model = HoldingsModel(self.df, log)
         else:
             self.model = model
 
@@ -213,22 +106,22 @@ class HoldingsPanel(wx.Panel):
         # fetch the data from.  This means that you can have views
         # using the same model that show different columns of data, or
         # that they can be in a different order than in the model.
-        self.dvc.AppendTextColumn("Ticker", 0, width=70, 
-                                  mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Name", 1, width=260)
-        self.dvc.AppendTextColumn("Shares", 2, width=80, 
-                                  mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Cost Basis", 3, width=100, 
-                                  mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Purchase Date", 4, width=100, 
-                                  mode=dv.DATAVIEW_CELL_EDITABLE)
+
+        idx = 0
+        header_list = list(self.df.columns)
+
+        for column in df:
+            self.dvc.AppendTextColumn(header_list[idx], idx, width=100, 
+                                      mode=dv.DATAVIEW_CELL_EDITABLE)
+            print(df[column])
+            idx += 1
 
         # Through the magic of Python we can also access the columns
         # as a list via the Columns property.  Here we'll mark them
         # all as sortable and reorderable.
         for c in self.dvc.Columns:
-            c.Sortable = True
-            c.Reorderable = True
+            c.Sortable = False
+            c.Reorderable = False
 
         # set the Sizer property (same as SetSizer)
         self.Sizer = wx.BoxSizer(wx.VERTICAL)
@@ -237,104 +130,18 @@ class HoldingsPanel(wx.Panel):
         # Add some buttons to help out with the tests
         self.buttonNewView = wx.Button(self, label="New View", name="newView")
         self.Bind(wx.EVT_BUTTON, self.OnNewView, self.buttonNewView)
-        self.buttonAddRow = wx.Button(self, label="Add Row")
-        self.Bind(wx.EVT_BUTTON, self.OnAddRow, self.buttonAddRow)
-        self.buttonDeleteRows = wx.Button(self, label="Delete Row(s)")
-        self.Bind(wx.EVT_BUTTON, self.OnDeleteRows, self.buttonDeleteRows)
-        self.buttonMoveUp = wx.Button(self, label="Move Up")
-        self.Bind(wx.EVT_BUTTON, self.OnMoveUp, self.buttonMoveUp)
-        self.buttonMoveDown = wx.Button(self, label="Move Down")
-        self.Bind(wx.EVT_BUTTON, self.OnMoveDown, self.buttonMoveDown)
 
         btnbox = wx.BoxSizer(wx.HORIZONTAL)
         btnbox.Add(self.buttonNewView, 0, wx.LEFT|wx.RIGHT, 5)
-        btnbox.Add(self.buttonAddRow, 0, wx.LEFT|wx.RIGHT, 5)
-        btnbox.Add(self.buttonDeleteRows, 0, wx.LEFT|wx.RIGHT, 5)
-        btnbox.Add(self.buttonMoveUp, 0, wx.LEFT|wx.RIGHT, 5)
-        btnbox.Add(self.buttonMoveDown, 0, wx.LEFT|wx.RIGHT, 5)
         self.Sizer.Add(btnbox, 0, wx.TOP|wx.BOTTOM, 5)
-
-        # Initial state for buttons
-        self.buttonDeleteRows.Disable()
-        self.buttonMoveUp.Disable()
-        self.buttonMoveDown.Disable()
-
-        # Bind some events so we can see what the DVC sends us
-        self.Bind(dv.EVT_DATAVIEW_ITEM_EDITING_DONE, self.OnEditingDone, self.dvc)
-        self.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.OnValueChanged, self.dvc)
-        self.Bind(dv.EVT_DATAVIEW_SELECTION_CHANGED, self.OnSelectionChanged, self.dvc)
 
 
     def OnNewView(self, evt):
         f = wx.Frame(None, title="New view, shared model", size=(600,400))
-        HoldingsPanel(f, self.log, self.model)
+        HoldingsPanel(f, self.df, self.log, self.model)
         b = f.FindWindowByName("newView")
         b.Disable()
         f.Show()
-
-
-    def OnDeleteRows(self, evt):
-        # Remove the selected row(s) from the model. The model will take care
-        # of notifying the view (and any other observers) that the change has
-        # happened.
-        items = self.dvc.GetSelections()
-        rows = [self.model.GetRow(item) for item in items]
-
-        self.log.write("OnDeleteRows() rows %s\n" % rows)
-        self.model.DeleteRows(rows)
-
-
-    def OnAddRow(self, evt):
-        # Add some bogus data to a new row in the model's data
-        id = len(Config.holdingsDf) + 1
-        self.log.write("OnAddRow() id %d\n" % id)
-        value = ["New ticker", "", "", ""]
-        self.model.AddRow(id, value)
-
-    def OnMoveUp(self, evt):
-        items = self.dvc.GetSelections()
-        rows = [self.model.GetRow(item) for item in items]
-
-        self.model.MoveUp(rows)
-
-    def OnMoveDown(self, evt):
-        items = self.dvc.GetSelections()
-        rows = [self.model.GetRow(item) for item in items]
-
-        self.model.MoveDown(rows)
-
-    def OnEditingDone(self, evt):
-        self.log.write("OnEditingDone\n")
-
-    def OnValueChanged(self, evt):
-        # Can be used to verify format validity
-        self.log.write("OnValueChanged\n")
-
-    def OnSelectionChanged(self, evt):
-
-        items = self.dvc.GetSelections()
-        rows = [self.model.GetRow(item) for item in items]
-
-        self.log.write("OnSelectionChanged, rows selected %s\n" % rows)
-        
-        # Is there any selection?
-        if rows == []:
-            self.buttonDeleteRows.Disable()
-        else:
-            self.buttonDeleteRows.Enable()
-
-        # Is the top line selected?
-        if 0 in rows:
-            self.buttonMoveUp.Disable()
-        else:
-            self.buttonMoveUp.Enable()
-
-        # Is the bottom line selected?
-        if (self.model.GetRowCount() - 1) in rows:
-            self.buttonMoveDown.Disable()
-        else:
-            self.buttonMoveDown.Enable()
-            
 
 #----------------------------------------------------------------------
 
@@ -343,7 +150,7 @@ def runTest(frame, nb, log):
     if Config.holdingsDf is None:
         Config.GetHoldings()
 
-    win = HoldingsPanel(nb, log)
+    win = HoldingsPanel(nb, Config.holdingsDf, log)
     return win
 
 #----------------------------------------------------------------------

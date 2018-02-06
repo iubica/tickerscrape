@@ -26,7 +26,7 @@ import Config
 
 class HoldingsModel(dv.DataViewIndexListModel):
     def __init__(self, log):
-        dv.DataViewIndexListModel.__init__(self, len(Config.holdingsDf))
+        dv.DataViewIndexListModel.__init__(self, Config.holdingsDf.shape[0])
         self.log = log
 
     # Convert model column to data frame column
