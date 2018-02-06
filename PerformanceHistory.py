@@ -340,13 +340,6 @@ class HoldingsPanel(wx.Panel):
 
 def runTest(frame, nb, log):
     
-    # Get the data from the ListCtrl sample to play with, converting it
-    # from a dictionary to a list of lists, including the dictionary key
-    # as the first element of each sublist.
-    import ListCtrl
-    musicdata = sorted(ListCtrl.musicdata.items())
-    musicdata = [[str(k)] + list(v) for k,v in musicdata]
-
     if Config.holdingsDf is None:
         Config.GetHoldings()
 
