@@ -344,7 +344,7 @@ class HoldingsPanel(wx.Panel):
 
 #----------------------------------------------------------------------
 
-def runTest(frame, nb, log):
+def GetWindow(frame, nb, log):
     
     if Config.holdingsDf is None:
         Config.GetHoldings()

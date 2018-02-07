@@ -11,7 +11,7 @@ import tickerscrape.morningstar
 
 #----------------------------------------------------------------------
 
-def runTest(frame, nb, log):
+def GetWindow(frame, nb, log):
     
     # Create the dataframe. First get the tickers.
     if Config.holdingsDf is None:

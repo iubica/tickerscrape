@@ -2046,7 +2046,10 @@ class wxPortfolioFrame(wx.Frame):
                 overviewText = module.overview
 
             try:
-                self.viewPage = module.runTest(self, self.nb, self)
+                if hasattr(module, "GetWindow"):
+                    self.viewPage = module.GetWindow(self, self.nb, self)
+                elif hasattr(module, "runTest"): # Obsoleted
+                    self.viewPage = module.runTest(self, self.nb, self)
             except:
                 self.viewPage = ViewModuleErrorPanel(self.nb, self.codePage,
                                                      ViewModuleError(sys.exc_info()), self)
