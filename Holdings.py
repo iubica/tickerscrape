@@ -194,10 +194,10 @@ class HoldingsPanel(wx.Panel):
         self.dvc = dv.DataViewCtrl(self,
                                    style=wx.BORDER_THEME
                                    | dv.DV_ROW_LINES # nice alternating bg colors
-                                   #| dv.DV_HORIZ_RULES
+                                #| dv.DV_HORIZ_RULES
                                    | dv.DV_VERT_RULES
                                    | dv.DV_MULTIPLE
-                                   )
+                               )
 
         # Create an instance of our simple model...
         if model is None:
@@ -219,7 +219,7 @@ class HoldingsPanel(wx.Panel):
         # fetch the data from.  This means that you can have views
         # using the same model that show different columns of data, or
         # that they can be in a different order than in the model.
-        self.dvc.AppendTextColumn("Ticker", 0, width=70, 
+        self.dvc.AppendTextColumn("Ticker", 0, width=70,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Name", 1, width=260)
         self.dvc.AppendTextColumn("Shares", 2, width=80, 
@@ -297,17 +297,32 @@ class HoldingsPanel(wx.Panel):
         value = ["New ticker", "", "", ""]
         self.model.AddRow(id, value)
 
+        # Clear the selection
+        self.dvc.SetSelections(dv.DataViewItemArray())
+
     def OnMoveUp(self, evt):
         items = self.dvc.GetSelections()
         rows = [self.model.GetRow(item) for item in items]
 
         self.model.MoveUp(rows)
 
+        # Keep the moved-up rows selected
+        items = dv.DataViewItemArray()
+        for row in rows:
+            items.append(self.model.GetItem(row - 1))
+            self.dvc.SetSelections(items)
+
     def OnMoveDown(self, evt):
         items = self.dvc.GetSelections()
         rows = [self.model.GetRow(item) for item in items]
 
         self.model.MoveDown(rows)
+
+        # Keep the moved-down rows selected
+        items = dv.DataViewItemArray()
+        for row in rows:
+            items.append(self.model.GetItem(row + 1))
+            self.dvc.SetSelections(items)
 
     def OnEditingDone(self, evt):
         self.log.write("OnEditingDone\n")
