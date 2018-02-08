@@ -241,8 +241,6 @@ class HoldingsPanel(wx.Panel):
         self.Sizer.Add(self.dvc, 1, wx.EXPAND)
 
         # Add some buttons to help out with the tests
-        self.buttonNewView = wx.Button(self, label="New View", name="newView")
-        self.Bind(wx.EVT_BUTTON, self.OnNewView, self.buttonNewView)
         self.buttonAddRow = wx.Button(self, label="Add Row")
         self.Bind(wx.EVT_BUTTON, self.OnAddRow, self.buttonAddRow)
         self.buttonDeleteRows = wx.Button(self, label="Delete Row(s)")
@@ -253,7 +251,6 @@ class HoldingsPanel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnMoveDown, self.buttonMoveDown)
 
         btnbox = wx.BoxSizer(wx.HORIZONTAL)
-        btnbox.Add(self.buttonNewView, 0, wx.LEFT|wx.RIGHT, 5)
         btnbox.Add(self.buttonAddRow, 0, wx.LEFT|wx.RIGHT, 5)
         btnbox.Add(self.buttonDeleteRows, 0, wx.LEFT|wx.RIGHT, 5)
         btnbox.Add(self.buttonMoveUp, 0, wx.LEFT|wx.RIGHT, 5)
@@ -269,14 +266,6 @@ class HoldingsPanel(wx.Panel):
         self.Bind(dv.EVT_DATAVIEW_ITEM_EDITING_DONE, self.OnEditingDone, self.dvc)
         self.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.OnValueChanged, self.dvc)
         self.Bind(dv.EVT_DATAVIEW_SELECTION_CHANGED, self.OnSelectionChanged, self.dvc)
-
-
-    def OnNewView(self, evt):
-        f = wx.Frame(None, title="New view, shared model", size=(600,400))
-        HoldingsPanel(f, self.log, self.model)
-        b = f.FindWindowByName("newView")
-        b.Disable()
-        f.Show()
 
 
     def OnDeleteRows(self, evt):
