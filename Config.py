@@ -61,6 +61,7 @@ viewTree = [
     # portfolio views
     ('Portfolio', [
         'Holdings',
+        'Accounts',
     ]),
 
     ('Performance', [
@@ -331,6 +332,26 @@ viewTree = [
 ]
 
 #---------------------------------------------------------------------------
+# Get the entire portfolio
+def PortfolioRead():
+    GetHoldings()
+    GetAccounts()
+
+#---------------------------------------------------------------------------
+# Save the entire portfolio
+def PortfolioSave():
+    SaveHoldings()
+    SaveAccounts()
+
+#---------------------------------------------------------------------------
+# Called with changed = True or False when holdings are different (or unchanged)
+# from the holdings.csv, and called with changed = None to just return
+# the status of the holdings (whether they have changed or not)
+
+def PortfolioChanged():
+    return _holdingsChanged or _accountsChanged
+
+#---------------------------------------------------------------------------
 
 # The holdings dataframe
 holdingsDf = None
@@ -399,3 +420,74 @@ def HoldingsChanged(changed):
         _holdingsChanged = changed
 
     return _holdingsChanged
+
+
+#---------------------------------------------------------------------------
+
+# The accounts dataframe
+accountsDf = None
+_accountsChanged = False
+
+#---------------------------------------------------------------------------
+# Get portfolio accounts from accounts.csv
+
+def GetAccounts():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Get the global accounts table
+    global accountsDf
+
+    try:
+        accountsDf = pd.read_csv(sp.GetUserDataDir() + "/accounts.csv")
+
+        AccountsChanged(False)
+    except OSError as e:
+        # Create an empty DataFrame with unordered columns
+        accountsDf = pd.DataFrame.from_dict({
+            "Ticker": ["SPY", "FUSEX"],
+            "Shares": ["100", "150"],
+            "Cost Basis": ["150000.00", "100.00"],
+            "Purchase Date": ["2/3/2011", "2/4/2011"]
+        })
+        
+        # Order the columns
+        accountsDf = accountsDf[["Ticker", 
+                                 "Shares", 
+                                 "Cost Basis", 
+                                 "Purchase Date"]]
+
+        # Accounts have been modified
+        AccountsChanged(True)
+
+    accountsDf.fillna("", inplace=True)
+    #print(accountsDf)
+
+#---------------------------------------------------------------------------
+# Save portfolio accounts to accounts.csv
+
+def SaveAccounts():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Save the accounts table
+    df = accountsDf.set_index("Ticker", inplace=False)    
+    df.to_csv(sp.GetUserDataDir() + "/accounts.csv")
+
+    # Accounts are now in sync
+    AccountsChanged(False)
+
+#---------------------------------------------------------------------------
+# Called with changed = True or False when accounts are different (or unchanged)
+# from the accounts.csv, and called with changed = None to just return
+# the status of the accounts (whether they have changed or not)
+
+def AccountsChanged(changed):
+    global _accountsChanged
+
+    if changed is not None:
+        if Main.portfolioFrame:
+            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
+        _accountsChanged = changed
+
+    return _accountsChanged

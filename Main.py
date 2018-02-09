@@ -1652,7 +1652,7 @@ class wxPortfolioFrame(wx.Frame):
         saveItem = wx.MenuItem(self.fileMenu, -1, '&Save\tCtrl-S', 'Save the portfolio')
         self.menuSaveItemId = saveItem.GetId()
         self.fileMenu.Append(saveItem)
-        self.fileMenu.Enable(self.menuSaveItemId, Config.HoldingsChanged(None))
+        self.fileMenu.Enable(self.menuSaveItemId, Config.PortfolioChanged())
         self.Bind(wx.EVT_MENU, self.OnFileSave, saveItem)
 
         wx.App.SetMacExitMenuItemId(9123)
@@ -2244,8 +2244,8 @@ class wxPortfolioFrame(wx.Frame):
 
     # Menu methods
     def OnFileSave(self, *event):
-        Config.SaveHoldings()
-        self.statusBar.SetStatusText("Holdings saved", 0)
+        Config.PortfolioSave()
+        self.statusBar.SetStatusText("Portfolio saved", 0)
 
     def OnFileExit(self, *event):
         self.Close()
@@ -2514,11 +2514,11 @@ class wxPortfolioFrame(wx.Frame):
         fid.close()
 
         # Has portfolio config changed?
-        if Config.HoldingsChanged(None):
-            if wx.MessageBox("Save updated portfolio holdings?",
+        if Config.PortfolioChanged():
+            if wx.MessageBox("Save updated portfolio?",
                              "Please confirm",
                              wx.ICON_QUESTION | wx.YES_NO) == wx.YES:
-                Config.SaveHoldings()
+                Config.PortfolioSave()
 
         self.Destroy()
 
@@ -2726,7 +2726,7 @@ def main():
     app = MyApp(False)
 
     # Read the initial portfolio holdings
-    Config.GetHoldings()
+    Config.PortfolioRead()
 
     app.MainLoop()
 
