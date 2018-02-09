@@ -351,7 +351,7 @@ class HoldingsPanel(wx.Panel):
 def GetWindow(frame, nb, log):
     
     if Config.holdingsDf is None:
-        Config.GetHoldings()
+        Config.HoldingsRead()
 
     win = HoldingsPanel(nb, log)
     return win

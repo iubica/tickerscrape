@@ -334,14 +334,14 @@ viewTree = [
 #---------------------------------------------------------------------------
 # Get the entire portfolio
 def PortfolioRead():
-    GetHoldings()
-    GetAccounts()
+    HoldingsRead()
+    AccountsRead()
 
 #---------------------------------------------------------------------------
 # Save the entire portfolio
 def PortfolioSave():
-    SaveHoldings()
-    SaveAccounts()
+    HoldingsSave()
+    AccountsSave()
 
 #---------------------------------------------------------------------------
 # Called with changed = True or False when holdings are different (or unchanged)
@@ -360,7 +360,7 @@ _holdingsChanged = False
 #---------------------------------------------------------------------------
 # Get portfolio holdings from holdings.csv
 
-def GetHoldings():
+def HoldingsRead():
     # Get the wxPython standard paths
     sp = wx.StandardPaths.Get()
 
@@ -395,7 +395,7 @@ def GetHoldings():
 #---------------------------------------------------------------------------
 # Save portfolio holdings to holdings.csv
 
-def SaveHoldings():
+def HoldingsSave():
     # Get the wxPython standard paths
     sp = wx.StandardPaths.Get()
 
@@ -431,7 +431,7 @@ _accountsChanged = False
 #---------------------------------------------------------------------------
 # Get portfolio accounts from accounts.csv
 
-def GetAccounts():
+def AccountsRead():
     # Get the wxPython standard paths
     sp = wx.StandardPaths.Get()
 
@@ -466,7 +466,7 @@ def GetAccounts():
 #---------------------------------------------------------------------------
 # Save portfolio accounts to accounts.csv
 
-def SaveAccounts():
+def AccountsSave():
     # Get the wxPython standard paths
     sp = wx.StandardPaths.Get()
 
