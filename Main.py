@@ -986,7 +986,7 @@ def HuntExternalDemos():
         # Insert a new package in the Config.viewTree of demos
         Config.viewTree.insert(index, package.GetDemos())
         # Get the recent additions for this package
-        Config.viewTree[2][1].extend(package.GetRecentAdditions())
+        Config.viewTree[3][1].extend(package.GetRecentAdditions())
         # Extend the demo bitmaps and the catalog
         Config.viewPngs.insert(index+1, extern)
         images.catalog[extern] = package.GetDemoBitmap()

@@ -22,6 +22,7 @@ import Main
 viewPngs = ["overview", # Top level views
             "custom", # Portfolio
             "custom", # Performance
+            "custom", # Config
             "recent", # Recent Additions/Updates
             "frame",  # ...
             "dialog", 
@@ -67,6 +68,11 @@ viewTree = [
     ('Performance', [
         'PerformanceHistory',
         'TrailingTotalReturns',
+    ]),
+
+    ('Config', [
+        'Holdings',
+        'Accounts',
     ]),
 
     # new stuff
