@@ -24,7 +24,7 @@
 
 # TODO List:
 # * UI design more professional (is the new version more professional?)
-# * save file positions (new field in demoModules) (@ LoadDemoSource)
+# * save file positions (new field in demoModules) (@ LoadViewSource)
 # * Update main overview
 
 # * Why don't we move Config.viewTree into a separate module
@@ -699,7 +699,7 @@ class CodePanel(wx.Panel):
 
 
     # Loads a demo from a DemoModules object
-    def LoadDemo(self, demoModules):
+    def LoadView(self, demoModules):
         self.demoModules = demoModules
         if (modDefault == modModified) and demoModules.Exists(modModified):
             demoModules.SetActive(modModified)
@@ -710,14 +710,14 @@ class CodePanel(wx.Panel):
 
 
     def ActiveModuleChanged(self):
-        self.LoadDemoSource(self.demoModules.GetSource())
+        self.LoadViewSource(self.demoModules.GetSource())
         self.UpdateControlState()
         self.mainFrame.pnl.Freeze()
         self.ReloadDemo()
         self.mainFrame.pnl.Thaw()
 
 
-    def LoadDemoSource(self, source):
+    def LoadViewSource(self, source):
         self.editor.Clear()
         self.editor.SetValue(source)
         self.JumpToLine(0)
@@ -1565,7 +1565,7 @@ class wxPortfolioFrame(wx.Frame):
         self.tree.SelectItem(self.root)
 
         # Load 'Main' module
-        self.LoadDemo(self.overviewText)
+        self.LoadView(self.overviewText)
         self.loaded = True
 
         # select some other initial module?
@@ -1976,12 +1976,12 @@ class wxPortfolioFrame(wx.Frame):
 
         item = event.GetItem()
         itemText = self.tree.GetItemText(item)
-        self.LoadDemo(itemText)
+        self.LoadView(itemText)
 
         self.StartDownload()
 
     #---------------------------------------------
-    def LoadDemo(self, demoName):
+    def LoadView(self, demoName):
         try:
             wx.BeginBusyCursor()
             self.pnl.Freeze()
@@ -1995,13 +1995,13 @@ class wxPortfolioFrame(wx.Frame):
                 # Changing the main window at runtime not yet supported...
                 self.demoModules = DemoModules(__name__)
                 self.SetOverview(self.overviewText, mainOverview)
-                self.LoadDemoSource()
+                self.LoadViewSource()
                 self.UpdateNotebook(0)
             else:
                 if os.path.exists(GetOriginalFilename(demoName)):
                     wx.LogMessage("Loading view %s.py..." % demoName)
                     self.demoModules = DemoModules(demoName)
-                    self.LoadDemoSource()
+                    self.LoadViewSource()
 
                 else:
                     package, overview = LookForExternals(self.externalViews, demoName)
@@ -2009,7 +2009,7 @@ class wxPortfolioFrame(wx.Frame):
                     if package:
                         wx.LogMessage("Loading view %s.py..." % ("%s/%s"%(package, demoName)))
                         self.demoModules = DemoModules("%s/%s"%(package, demoName))
-                        self.LoadDemoSource()
+                        self.LoadViewSource()
                     elif overview:
                         self.SetOverview(demoName, overview)
                         self.codePage = None
@@ -2024,10 +2024,10 @@ class wxPortfolioFrame(wx.Frame):
             self.pnl.Thaw()
 
     #---------------------------------------------
-    def LoadDemoSource(self):
+    def LoadViewSource(self):
         self.codePage = None
         self.codePage = CodePanel(self.nb, self)
-        self.codePage.LoadDemo(self.demoModules)
+        self.codePage.LoadView(self.demoModules)
 
     #---------------------------------------------
     def RunModule(self):
