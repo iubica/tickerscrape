@@ -222,7 +222,7 @@ class HoldingsPanel(wx.Panel):
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Ticker", 1, width=70,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Name", 2, width=260)
+        self.dvc.AppendTextColumn("Name", 2, width=150)
         self.dvc.AppendTextColumn("Shares", 3, width=80, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Cost Basis", 4, width=100, 
@@ -284,7 +284,7 @@ class HoldingsPanel(wx.Panel):
         # Add some bogus data to a new row in the model's data
         id = len(Config.holdingsDf) + 1
         self.log.write("OnAddRow() id %d\n" % id)
-        value = ["New ticker", "", "", ""]
+        value = ["", "New ticker", "", "", ""]
         self.model.AddRow(id, value)
 
         # Clear the selection

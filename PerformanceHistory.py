@@ -25,7 +25,7 @@ def GetWindow(frame, nb, log):
 
     # For each ticker in the config...
     for i in range(Config.holdingsDf.shape[0]):
-        ticker = Config.holdingsDf.iloc[i, 0]
+        ticker = Config.holdingsDf.iloc[i, 1]
         
         df = tickerscrape.morningstar.performance_history(ticker)
         if df is not None:

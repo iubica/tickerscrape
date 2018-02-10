@@ -23,10 +23,17 @@ def GetWindow(frame, nb, log):
     # Remove last row
     pfh = pfh1.drop(pfh1.index[[0]])
 
+    ticker_list = list()
+
     # For each ticker in the config...
     for i in range(Config.holdingsDf.shape[0]):
-        ticker = Config.holdingsDf.iloc[i, 0]
+        ticker = Config.holdingsDf.iloc[i, 1]
         
+        if ticker in ticker_list:
+            continue
+
+        ticker_list.append(ticker)
+
         df = tickerscrape.morningstar.trailing_total_returns(ticker)
         if df is not None:
             pfh = pfh.append(df)
