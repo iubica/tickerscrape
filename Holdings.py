@@ -107,10 +107,8 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
     def ValidateValueByRow(self, value, row, col):
         if col == 0:
-            acctList = Config.accountsDf.iloc[:,0].tolist()
-            if value not in acctList:
-                self.log.write("%s: Invalid account\n" % (value))
-                self.log.write("Configured accounts: %s\n" % (acctList))
+            if not Config.AccountFind(value):
+                self.log.write("Invalid account '%s', should be one of %s\n" % (value, Config.AccountList()))
                 return False
 
         return True

@@ -491,3 +491,18 @@ def AccountsChanged(changed):
         _accountsChanged = changed
 
     return _accountsChanged
+
+#---------------------------------------------------------------------------
+def AccountList():
+    return accountsDf.iloc[:,0].tolist()
+
+#---------------------------------------------------------------------------
+def AccountFind(acct):
+    acctList = accountsDf.iloc[:,0].tolist()
+    if acct in acctList:
+        return True
+    return False
+
+#---------------------------------------------------------------------------
+def AccountChange(acct):
+    return accountsDf.iloc[:,0].tolist()
