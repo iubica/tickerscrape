@@ -46,9 +46,9 @@
 #   (or the full set) of the package's views;
 #
 # * GetViews: returns a tuple. The first item of the tuple is the package's name
-#   as will be displayed in the wxPortfolio demo tree, right after 
+#   as will be displayed in the wxPortfolio view tree, right after 
 #   the "Custom Controls" item. The second element of the tuple is the list of
-#   demos for the external package.
+#   views for the external package.
 #
 # * GetOverview: returns a wx.html-ready representation of the 
 #   package's documentation.
@@ -433,7 +433,7 @@ class MyLog(wx.Log):
 
 
 #---------------------------------------------------------------------------
-# A class to be used to display source code in the demo.  Try using the
+# A class to be used to display source code in the view.  Try using the
 # wxSTC in the StyledTextCtrl_2 sample first, fall back to wxTextCtrl
 # if there is an error, such as the stc module not being present.
 #
@@ -500,7 +500,7 @@ try:
 
         def SetUpEditor(self):
             """
-            This method carries out the work of setting up the demo editor.
+            This method carries out the work of setting up the view editor.
             It's seperate so as not to clutter up the init code.
             """
             import keyword
@@ -701,7 +701,7 @@ class CodePanel(wx.Panel):
         self.SetSizer(self.box)
 
 
-    # Loads a demo from a DemoModules object
+    # Loads a view from a ViewModule object
     def LoadView(self, demoModules):
         self.demoModules = demoModules
         if (modDefault == modModified) and demoModules.Exists(modModified):
@@ -1037,9 +1037,9 @@ class ModuleDictWrapper(object):
         else:
             raise AttributeError
 
-class DemoModules(object):
+class ViewModule(object):
     """
-    Dynamically manages the original/modified versions of a demo
+    Dynamically manages the original/modified versions of a view
     module
     """
     def __init__(self, name):
@@ -1996,14 +1996,14 @@ class wxPortfolioFrame(wx.Frame):
                 # User selected the "Views" node
                 # ie: _this_ module
                 # Changing the main window at runtime not yet supported...
-                self.demoModules = DemoModules(__name__)
+                self.demoModules = ViewModule(__name__)
                 self.SetOverview(self.overviewText, mainOverview)
                 self.LoadViewSource()
                 self.UpdateNotebook(0)
             else:
                 if os.path.exists(GetOriginalFilename(demoName)):
                     wx.LogMessage("Loading view %s.py..." % demoName)
-                    self.demoModules = DemoModules(demoName)
+                    self.demoModules = ViewModule(demoName)
                     self.LoadViewSource()
 
                 else:
@@ -2011,7 +2011,7 @@ class wxPortfolioFrame(wx.Frame):
 
                     if package:
                         wx.LogMessage("Loading view %s.py..." % ("%s/%s"%(package, demoName)))
-                        self.demoModules = DemoModules("%s/%s"%(package, demoName))
+                        self.demoModules = ViewModule("%s/%s"%(package, demoName))
                         self.LoadViewSource()
                     elif overview:
                         self.SetOverview(demoName, overview)
