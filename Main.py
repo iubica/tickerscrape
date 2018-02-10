@@ -24,7 +24,7 @@
 
 # TODO List:
 # * UI design more professional (is the new version more professional?)
-# * save file positions (new field in demoModules) (@ LoadViewSource)
+# * save file positions (new field in viewModule) (@ LoadViewSource)
 # * Update main overview
 
 # * Why don't we move Config.viewTree into a separate module
@@ -702,18 +702,18 @@ class CodePanel(wx.Panel):
 
 
     # Loads a view from a ViewModule object
-    def LoadView(self, demoModules):
-        self.demoModules = demoModules
-        if (modDefault == modModified) and demoModules.Exists(modModified):
-            demoModules.SetActive(modModified)
+    def LoadView(self, viewModule):
+        self.viewModule = viewModule
+        if (modDefault == modModified) and viewModule.Exists(modModified):
+            viewModule.SetActive(modModified)
         else:
-            demoModules.SetActive(modOriginal)
-        self.radioButtons[demoModules.GetActiveID()].Enable(True)
+            viewModule.SetActive(modOriginal)
+        self.radioButtons[viewModule.GetActiveID()].Enable(True)
         self.ActiveModuleChanged()
 
 
     def ActiveModuleChanged(self):
-        self.LoadViewSource(self.demoModules.GetSource())
+        self.LoadViewSource(self.viewModule.GetSource())
         self.UpdateControlState()
         self.mainFrame.pnl.Freeze()
         self.ReloadDemo()
@@ -735,7 +735,7 @@ class CodePanel(wx.Panel):
 
 
     def UpdateControlState(self):
-        active = self.demoModules.GetActiveID()
+        active = self.viewModule.GetActiveID()
         # Update the radio/restore buttons
         for moduleID in self.radioButtons:
             btn = self.radioButtons[moduleID]
@@ -744,7 +744,7 @@ class CodePanel(wx.Panel):
             else:
                 btn.SetValue(False)
 
-            if self.demoModules.Exists(moduleID):
+            if self.viewModule.Exists(moduleID):
                 btn.Enable(True)
                 if moduleID == modModified:
                     self.btnRestore.Enable(True)
@@ -757,14 +757,14 @@ class CodePanel(wx.Panel):
     def OnRadioButton(self, event):
         radioSelected = event.GetEventObject()
         modSelected = radioSelected.modID
-        if modSelected != self.demoModules.GetActiveID():
+        if modSelected != self.viewModule.GetActiveID():
             busy = wx.BusyInfo("Reloading view module...")
-            self.demoModules.SetActive(modSelected)
+            self.viewModule.SetActive(modSelected)
             self.ActiveModuleChanged()
 
 
     def ReloadDemo(self):
-        if self.demoModules.name != __name__:
+        if self.viewModule.name != __name__:
             self.mainFrame.RunModule()
 
 
@@ -773,8 +773,8 @@ class CodePanel(wx.Panel):
 
 
     def OnSave(self, event):
-        if self.demoModules.Exists(modModified):
-            if self.demoModules.GetActiveID() == modOriginal:
+        if self.viewModule.Exists(modModified):
+            if self.viewModule.GetActiveID() == modOriginal:
                 overwriteMsg = "You are about to overwrite an already existing modified copy\n" + \
                                "Do you want to continue?"
                 dlg = wx.MessageDialog(self, overwriteMsg, "wxPython Demo",
@@ -784,8 +784,8 @@ class CodePanel(wx.Panel):
                     return
                 dlg.Destroy()
 
-        self.demoModules.SetActive(modModified)
-        modifiedFilename = GetModifiedFilename(self.demoModules.name)
+        self.viewModule.SetActive(modModified)
+        modifiedFilename = GetModifiedFilename(self.viewModule.name)
 
         # Create the demo directory if one doesn't already exist
         if not os.path.exists(GetModifiedDirectory()):
@@ -808,16 +808,16 @@ class CodePanel(wx.Panel):
         finally:
             f.close()
 
-        busy = wx.BusyInfo("Reloading demo module...")
-        self.demoModules.LoadFromFile(modModified, modifiedFilename)
+        busy = wx.BusyInfo("Reloading view module...")
+        self.viewModule.LoadFromFile(modModified, modifiedFilename)
         self.ActiveModuleChanged()
 
         self.mainFrame.SetTreeModified(True)
 
 
     def OnRestore(self, event): # Handles the "Delete Modified" button
-        modifiedFilename = GetModifiedFilename(self.demoModules.name)
-        self.demoModules.Delete(modModified)
+        modifiedFilename = GetModifiedFilename(self.viewModule.name)
+        self.viewModule.Delete(modModified)
         os.unlink(modifiedFilename) # Delete the modified copy
         busy = wx.BusyInfo("Reloading demo module...")
 
@@ -1991,20 +1991,20 @@ class wxPortfolioFrame(wx.Frame):
             self.pnl.Freeze()
 
             os.chdir(self.cwd)
-            self.ShutdownDemoModule()
+            self.ShutdownViewModule()
 
             if demoName == self.overviewText:
                 # User selected the "Views" node
                 # ie: _this_ module
                 # Changing the main window at runtime not yet supported...
-                self.demoModules = ViewModule(__name__)
+                self.viewModule = ViewModule(__name__)
                 self.SetOverview(self.overviewText, mainOverview)
                 self.LoadViewSource()
                 self.UpdateNotebook(0)
             else:
                 if os.path.exists(GetOriginalFilename(demoName)):
                     wx.LogMessage("Loading view %s.py..." % demoName)
-                    self.demoModules = ViewModule(demoName)
+                    self.viewModule = ViewModule(demoName)
                     self.LoadViewSource()
 
                 else:
@@ -2012,7 +2012,7 @@ class wxPortfolioFrame(wx.Frame):
 
                     if package:
                         wx.LogMessage("Loading view %s.py..." % ("%s/%s"%(package, demoName)))
-                        self.demoModules = ViewModule("%s/%s"%(package, demoName))
+                        self.viewModule = ViewModule("%s/%s"%(package, demoName))
                         self.LoadViewSource()
                     elif overview:
                         self.SetOverview(demoName, overview)
@@ -2031,14 +2031,14 @@ class wxPortfolioFrame(wx.Frame):
     def LoadViewSource(self):
         self.codePage = None
         self.codePage = CodePanel(self.nb, self)
-        self.codePage.LoadView(self.demoModules)
+        self.codePage.LoadView(self.viewModule)
 
     #---------------------------------------------
     def RunModule(self):
         """Runs the active module"""
 
-        module = self.demoModules.GetActive()
-        self.ShutdownDemoModule()
+        module = self.viewModule.GetActive()
+        self.ShutdownViewModule()
         overviewText = ""
 
         # o The RunTest() for all samples must now return a window that can
@@ -2070,9 +2070,9 @@ class wxPortfolioFrame(wx.Frame):
         else:
             # There was a previous error in compiling or exec-ing
             self.viewPage = ViewModuleErrorPanel(self.nb, self.codePage,
-                                                 self.demoModules.GetErrorInfo(), self)
+                                                 self.viewModule.GetErrorInfo(), self)
 
-        self.SetOverview(self.demoModules.name + " Help", overviewText)
+        self.SetOverview(self.viewModule.name + " Help", overviewText)
 
         if self.firstTime:
             # change to the view page the first time a module is run
@@ -2083,12 +2083,16 @@ class wxPortfolioFrame(wx.Frame):
             self.UpdateNotebook()
 
     #---------------------------------------------
-    def ShutdownDemoModule(self):
+    def ShutdownViewModule(self):
         if self.viewPage:
             # inform the window that it's time to quit if it cares
-            if hasattr(self.viewPage, "ShutdownDemo"):
+            if hasattr(self.viewPage, "ShutdownView"):
+                self.viewPage.ShutdownView()
+                # wx.YieldIfNeeded() # in case the page has pending events
+            elif hasattr(self.viewPage, "ShutdownDemo"):
+                # Backward compatibility
                 self.viewPage.ShutdownDemo()
-##            wx.YieldIfNeeded() # in case the page has pending events
+                # wx.YieldIfNeeded() # in case the page has pending events
             self.viewPage = None
 
     #---------------------------------------------
