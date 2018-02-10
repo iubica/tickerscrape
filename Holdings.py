@@ -132,23 +132,6 @@ class HoldingsModel(dv.DataViewIndexListModel):
             return True
         return False
 
-
-    # This is called to assist with sorting the data in the view.  The
-    # first two args are instances of the DataViewItem class, so we
-    # need to convert them to row numbers with the GetRow method.
-    # Then it's just a matter of fetching the right values from our
-    # data set and comparing them.  The return value is -1, 0, or 1,
-    # just like Python's cmp() function.
-    def Compare(self, item1, item2, col, ascending):
-        if not ascending: # swap sort order?
-            item2, item1 = item1, item2
-        row1 = self.GetRow(item1)
-        row2 = self.GetRow(item2)
-        if col == 0:
-            return cmp(int(Config.holdingsDf.iloc[row1, col]), int(Config.holdingsDf.iloc[row2, col]))
-        else:
-            return cmp(Config.holdingsDf.iloc[row1, col], self.idata[row2, col])
-
     def AddRow(self, id, value):
         self.log.write('AddRow(%s)' % value)
         # update data structure
@@ -241,12 +224,9 @@ class HoldingsPanel(wx.Panel):
         self.dvc.AppendTextColumn("Purchase Date", 5, width=100, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
 
-        # Through the magic of Python we can also access the columns
-        # as a list via the Columns property.  Here we'll mark them
-        # all as sortable and reorderable.
         for c in self.dvc.Columns:
-            c.Sortable = True
-            c.Reorderable = True
+            c.Sortable = False
+            c.Reorderable = False
 
         # set the Sizer property (same as SetSizer)
         self.Sizer = wx.BoxSizer(wx.VERTICAL)
@@ -370,7 +350,7 @@ def GetWindow(frame, nb, log):
     if Config.accountsDf is None:
         Config.AccountsRead()
 
-    print(Config.holdingsDf)
+    #print(Config.holdingsDf)
 
     win = HoldingsPanel(nb, log)
     return win

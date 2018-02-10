@@ -1997,7 +1997,7 @@ class wxPortfolioFrame(wx.Frame):
                 self.UpdateNotebook(0)
             else:
                 if os.path.exists(GetOriginalFilename(demoName)):
-                    wx.LogMessage("Loading demo %s.py..." % demoName)
+                    #wx.LogMessage("Loading view %s.py..." % demoName)
                     self.demoModules = DemoModules(demoName)
                     self.LoadDemoSource()
 
@@ -2006,7 +2006,7 @@ class wxPortfolioFrame(wx.Frame):
                     package, overview = LookForExternals(self.externalDemos, demoName)
 
                     if package:
-                        wx.LogMessage("Loading demo %s.py..." % ("%s/%s"%(package, demoName)))
+                        wx.LogMessage("Loading view %s.py..." % ("%s/%s"%(package, demoName)))
                         self.demoModules = DemoModules("%s/%s"%(package, demoName))
                         self.LoadDemoSource()
                     elif overview:
@@ -2041,7 +2041,7 @@ class wxPortfolioFrame(wx.Frame):
         # o If an error occurs (or has occurred before) an error tab is created.
 
         if module is not None:
-            wx.LogMessage("Loading view module...")
+            #wx.LogMessage("Loading view module...")
             if hasattr(module, "overview"):
                 overviewText = module.overview
 
