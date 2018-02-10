@@ -755,7 +755,7 @@ class CodePanel(wx.Panel):
         radioSelected = event.GetEventObject()
         modSelected = radioSelected.modID
         if modSelected != self.demoModules.GetActiveID():
-            busy = wx.BusyInfo("Reloading demo module...")
+            busy = wx.BusyInfo("Reloading view module...")
             self.demoModules.SetActive(modSelected)
             self.ActiveModuleChanged()
 
