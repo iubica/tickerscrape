@@ -2041,7 +2041,7 @@ class wxPortfolioFrame(wx.Frame):
         # o If an error occurs (or has occurred before) an error tab is created.
 
         if module is not None:
-            #wx.LogMessage("Loading view module...")
+            wx.LogMessage("Loading view module...")
             if hasattr(module, "overview"):
                 overviewText = module.overview
 

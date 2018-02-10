@@ -71,8 +71,7 @@ viewTree = [
     ]),
 
     ('Config', [
-        'Holdings',
-        'Accounts',
+        'AccountTypes',
     ]),
 
     # new stuff
@@ -342,12 +341,14 @@ viewTree = [
 def PortfolioRead():
     HoldingsRead()
     AccountsRead()
+    AccountTypesRead()
 
 #---------------------------------------------------------------------------
 # Save the entire portfolio
 def PortfolioSave():
     HoldingsSave()
     AccountsSave()
+    AccountTypesSave()
 
 #---------------------------------------------------------------------------
 # Called with changed = True or False when holdings are different (or unchanged)
@@ -355,7 +356,7 @@ def PortfolioSave():
 # the status of the holdings (whether they have changed or not)
 
 def PortfolioChanged():
-    return _holdingsChanged or _accountsChanged
+    return _holdingsChanged or _accountsChanged or _accountTypesChanged
 
 #---------------------------------------------------------------------------
 
@@ -536,5 +537,111 @@ def AccountChange(acctOld, acctNew):
 
     if holdingsChanged:
         HoldingsChanged(True)
+
+    return True, None
+
+
+#---------------------------------------------------------------------------
+
+# The accounts dataframe
+accountTypesDf = None
+_accountTypesChanged = False
+
+#---------------------------------------------------------------------------
+# Get portfolio account types from accountTypes.csv
+
+def AccountTypesRead():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Get the global accounts table
+    global accountTypesDf
+
+    try:
+        accountTypesDf = pd.read_csv(sp.GetUserDataDir() + "/accountTypes.csv")
+
+        AccountTypesChanged(False)
+    except OSError as e:
+        # Create an empty DataFrame with unordered columns
+        accountTypesDf = pd.DataFrame.from_dict({
+            "Account Name": ["Account One", "Account Two"],
+            "Account Number": ["100", "101"],
+            "Type": ["Brokerage", "401K"],
+        })
+        
+        # Order the columns
+        accountTypesDf = accountsDf[["Account Name", 
+                                     "Account Number", 
+                                     "Type"]]
+
+        # Accounts have been modified
+        AccountTypesChanged(True)
+
+    accountTypesDf.fillna("", inplace=True)
+    #print(accountsDf)
+
+#---------------------------------------------------------------------------
+# Save portfolio account types to accountTypes.csv
+
+def AccountTypesSave():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Save the accounts table
+    df = accountTypesDf.set_index("Account Name", inplace=False)    
+    df.to_csv(sp.GetUserDataDir() + "/accountTypes.csv")
+
+    # AccountTypes are now in sync
+    AccountTypesChanged(False)
+
+#---------------------------------------------------------------------------
+def AccountTypesChanged(changed):
+    global _accountTypesChanged
+
+    if changed is not None:
+        if Main.portfolioFrame:
+            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
+        _accountTypesChanged = changed
+
+    return _accountTypesChanged
+
+#---------------------------------------------------------------------------
+def AccountTypesList():
+    return accountTypesDf.iloc[:,0].tolist()
+
+#---------------------------------------------------------------------------
+def AccountTypesFind(acct):
+    acctList = accountTypesDf.iloc[:,0].tolist()
+    if acct in acctList:
+        return True
+    return False
+
+#---------------------------------------------------------------------------
+def AccountTypesChange(acctTypeOld, acctTypeNew):
+    acctTypesChanged = False
+    acctChanged = False
+
+    if AccountTypesFind(acctTypeNew):
+        return False, "Account type '%s' already configured" % acctTypeNew
+
+    for i in range(accountTypesDf.shape[0]):
+        if accountTypesDf.iloc[i,0] == acctTypeOld:
+            accountTypesDf.iloc[i,0] = acctTypeNew
+            acctTypesChanged = True
+
+    if not acctTypesChanged:
+        return False, "Account type '%s' does not exist" % acctTypeOld
+
+    # Also change the holdings
+    for i in range(accountsDf.shape[0]):
+        if accountsDf.iloc[i,0] == acctTypeOld:
+            accountsDf.iloc[i,0] = acctTypeNew
+            acctChanged = True
+
+    if acctTypesChanged:
+        AccountTypesChanged(True)
+
+    if acctChanged:
+        AccountsChanged(True)
 
     return True, None
