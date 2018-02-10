@@ -946,7 +946,7 @@ def HuntExternalDemos():
     must have a __demo__.py file in their directory.
     """
 
-    externalDemos = {}
+    externalViews = {}
     originalDir = os.getcwd()
     listDir = os.listdir(originalDir)
     # Loop over the content of the demo directory
@@ -959,9 +959,9 @@ def HuntExternalDemos():
         if "__demo__.py" in dirFile:
             # Extend sys.path and import the external demos
             sys.path.append(item)
-            externalDemos[item] = __import__("__demo__")
+            externalViews[item] = __import__("__demo__")
 
-    if not externalDemos:
+    if not externalViews:
         # Nothing to import...
         return {}
 
@@ -976,13 +976,13 @@ def HuntExternalDemos():
 
     # Sort and reverse the external demos keys so that they
     # come back in alphabetical order
-    keys = list(externalDemos.keys())
+    keys = list(externalViews.keys())
     keys.sort()
     keys.reverse()
 
     # Loop over all external packages
     for extern in keys:
-        package = externalDemos[extern]
+        package = externalViews[extern]
         # Insert a new package in the Config.viewTree of demos
         Config.viewTree.insert(index, package.GetDemos())
         # Get the recent additions for this package
@@ -992,10 +992,10 @@ def HuntExternalDemos():
         images.catalog[extern] = package.GetDemoBitmap()
 
     # That's all folks...
-    return externalDemos
+    return externalViews
 
 
-def LookForExternals(externalDemos, demoName):
+def LookForExternals(externalViews, demoName):
     """
     Checks if a demo name is in any of the external packages (like AGW) or
     if the user clicked on one of the external packages parent items in the
@@ -1004,7 +1004,7 @@ def LookForExternals(externalDemos, demoName):
 
     pkg = overview = None
     # Loop over all the external demos
-    for key, package in externalDemos.items():
+    for key, package in externalViews.items():
         # Get the tree item name for the package and its demos
         treeName, treeDemos = package.GetDemos()
         # Get the overview for the package
@@ -1459,7 +1459,7 @@ class wxPortfolioFrame(wx.Frame):
         def EmptyHandler(evt): pass
 
         self.ReadConfigurationFile()
-        self.externalDemos = HuntExternalDemos()
+        self.externalViews = HuntExternalDemos()
 
         # Create a Notebook
         self.nb = wx.Notebook(pnl, -1, style=wx.CLIP_CHILDREN)
@@ -1997,13 +1997,12 @@ class wxPortfolioFrame(wx.Frame):
                 self.UpdateNotebook(0)
             else:
                 if os.path.exists(GetOriginalFilename(demoName)):
-                    #wx.LogMessage("Loading view %s.py..." % demoName)
+                    wx.LogMessage("Loading view %s.py..." % demoName)
                     self.demoModules = DemoModules(demoName)
                     self.LoadDemoSource()
 
                 else:
-
-                    package, overview = LookForExternals(self.externalDemos, demoName)
+                    package, overview = LookForExternals(self.externalViews, demoName)
 
                     if package:
                         wx.LogMessage("Loading view %s.py..." % ("%s/%s"%(package, demoName)))
@@ -2053,6 +2052,8 @@ class wxPortfolioFrame(wx.Frame):
             except:
                 self.viewPage = ViewModuleErrorPanel(self.nb, self.codePage,
                                                      ViewModuleError(sys.exc_info()), self)
+
+            wx.LogMessage("Loaded %s for module %s" % (self.viewPage, module))
 
             bg = self.nb.GetThemeBackgroundColour()
             if bg:
