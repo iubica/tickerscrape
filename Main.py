@@ -38,12 +38,14 @@
 # should contain a Python file called __init__wxPortfolio__.py which, when imported, should
 # contain the following methods:
 #
-# * GetDemoBitmap: returns the bitmap to be used in the wxPython demo tree control
-#   in a PyEmbeddedImage format;
+# * GetViewBitmap: returns the bitmap to be used in the wxPython view tree
+#   control in a PyEmbeddedImage format;
+#
 # * GetRecentAdditions: returns a list of demos which will be displayed under the
 #   "Recent Additions/Updates" tree item. This list should be a subset (or the full
 #   set) of the package's demos;
-# * GetDemos: returns a tuple. The first item of the tuple is the package's name
+#
+# * GetViews: returns a tuple. The first item of the tuple is the package's name
 #   as will be displayed in the wxPython demo tree, right after the "Custom Controls"
 #   item. The second element of the tuple is the list of demos for the external package.
 # * GetOverview: returns a wx.html-ready representation of the package's documentation.
@@ -984,36 +986,36 @@ def HuntExternalDemos():
     for extern in keys:
         package = externalViews[extern]
         # Insert a new package in the Config.viewTree of demos
-        Config.viewTree.insert(index, package.GetDemos())
+        Config.viewTree.insert(index, package.GetViews())
         # Get the recent additions for this package
         Config.viewTree[3][1].extend(package.GetRecentAdditions())
         # Extend the demo bitmaps and the catalog
         Config.viewPngs.insert(index+1, extern)
-        images.catalog[extern] = package.GetDemoBitmap()
+        images.catalog[extern] = package.GetViewBitmap()
 
     # That's all folks...
     return externalViews
 
 
-def LookForExternals(externalViews, demoName):
+def LookForExternals(externalViews, viewName):
     """
-    Checks if a demo name is in any of the external packages (like AGW) or
+    Checks if a view name is in any of the external packages (like AGW) or
     if the user clicked on one of the external packages parent items in the
     tree, in which case it returns the html overview for the package.
     """
 
     pkg = overview = None
-    # Loop over all the external demos
+    # Loop over all the external views
     for key, package in externalViews.items():
-        # Get the tree item name for the package and its demos
-        treeName, treeDemos = package.GetDemos()
+        # Get the tree item name for the package and its views
+        treeName, treeViews = package.GetViews()
         # Get the overview for the package
         treeOverview = package.GetOverview()
-        if treeName == demoName:
+        if treeName == viewName:
             # The user clicked on the parent tree item, return the overview
             return pkg, treeOverview
-        elif demoName in treeDemos:
-            # The user clicked on a real demo, return the package
+        elif viewName in treeViews:
+            # The user clicked on a real view, return the package
             return key, overview
 
     # No match found, return None for both

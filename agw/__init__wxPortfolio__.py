@@ -10,7 +10,7 @@ this module returns the following information:
 * GetRecentAdditions: returns a subset (or the whole set) of demos in
   the AGW package which will appear under the Recent Additions tree
   item in the wxPython demo;
-* GetDemos: returns all the demos in the AGW package;
+* GetViews: returns all the demos in the AGW package;
 * GetOverview: returns a wx.html-ready representation of the AGW docs.
 
 These meta data are merged into the wxPython demo tree at startup.
@@ -40,7 +40,7 @@ _agwDocs = wx.lib.agw.__doc__
 # ========================================
 
 
-def GetDemoBitmap():
+def GetViewBitmap():
     """ Returns the bitmap to be used in the demo tree for the AGW package. """
 
     # Get the image as PyEmbeddedImage
@@ -98,7 +98,7 @@ def GetRecentAdditions():
     return recentAdditions
 
 
-def GetDemos():
+def GetViews():
     """
     Returns all the demo names in the AGW package, together with the tree item
     name which will go in the wxPython demo tree control.
@@ -108,7 +108,7 @@ def GetDemos():
     AGWTreeItem = "Advanced Generic Widgets"
 
     # The AGW demos
-    AGWDemos = ['AdvancedSplash', 'AquaButton', 'AUI', 'BalloonTip',
+    AGWViews = ['AdvancedSplash', 'AquaButton', 'AUI', 'BalloonTip',
                 'ButtonPanel', 'CubeColourDialog', 'CustomTreeCtrl',
                 'FlatMenu', 'FlatNotebook', 'FloatSpin',
                 'FoldPanelBar', 'FourWaySplitter', 'GenericMessageDialog',
@@ -120,7 +120,7 @@ def GetDemos():
                 'SuperToolTip', 'ThumbnailCtrl', 'ToasterBox',
                 'UltimateListCtrl', 'XLSGrid', 'ZoomBar']
 
-    return AGWTreeItem, AGWDemos
+    return AGWTreeItem, AGWViews
 
 
 def GetOverview():
@@ -147,7 +147,7 @@ def GetOverview():
     strs = "<html><body>\n<h2><center>Advanced Generic Widgets (AGW)</center></h2>\n\n"
 
     # Get the number of widgets in the package...
-    numWidgets = len(GetDemos()[1])
+    numWidgets = len(GetViews()[1])
     widgetsFound, endRemarks = 0, 0
     for line in splitted:
         # Loop over the lines in the AGW documentation
