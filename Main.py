@@ -35,7 +35,7 @@
 # In order to let a package (like AGW) be included in the wxPython demo,
 # the package owner should create a sub-directory of the wxPython demo folder
 # in which all the package's demos should live. In addition, the sub-folder
-# should contain a Python file called __demo__.py which, when imported, should
+# should contain a Python file called __init__wxPortfolio__.py which, when imported, should
 # contain the following methods:
 #
 # * GetDemoBitmap: returns the bitmap to be used in the wxPython demo tree control
@@ -48,7 +48,7 @@
 #   item. The second element of the tuple is the list of demos for the external package.
 # * GetOverview: returns a wx.html-ready representation of the package's documentation.
 #
-# Please see the __demo__.py file in the wxPortfolio/agw/ folder for an example.
+# Please see the __init__wxPortfolio__.py file in the wxPortfolio/agw/ folder for an example.
 # Last updated: Andrea Gavana, 20 Oct 2008, 18.00 GMT
 
 import sys, os, time, traceback
@@ -943,7 +943,7 @@ def HuntExternalDemos():
     """
     Searches for external demos (i.e. packages like AGW) in the wxPython
     demo sub-directories. In order to be found, these external packages
-    must have a __demo__.py file in their directory.
+    must have a __init__wxPortfolio__.py file in their directory.
     """
 
     externalViews = {}
@@ -955,11 +955,11 @@ def HuntExternalDemos():
             # Not a directory, continue
             continue
         dirFile = os.listdir(item)
-        # See if a __demo__.py file is there
-        if "__demo__.py" in dirFile:
+        # See if a __init__wxPortfolio__.py file is there
+        if "__init__wxPortfolio__.py" in dirFile:
             # Extend sys.path and import the external demos
             sys.path.append(item)
-            externalViews[item] = __import__("__demo__")
+            externalViews[item] = __import__("__init__wxPortfolio__")
 
     if not externalViews:
         # Nothing to import...
