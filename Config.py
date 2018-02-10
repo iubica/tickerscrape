@@ -374,6 +374,7 @@ def HoldingsRead():
     except OSError as e:
         # Create an empty DataFrame with unordered columns
         holdingsDf = pd.DataFrame.from_dict({
+            "Account": ["", ""],
             "Ticker": ["SPY", "FUSEX"],
             "Shares": ["100", "150"],
             "Cost Basis": ["150000.00", "100.00"],
@@ -381,7 +382,8 @@ def HoldingsRead():
         })
         
         # Order the columns
-        holdingsDf = holdingsDf[["Ticker", 
+        holdingsDf = holdingsDf[["Account",
+                                 "Ticker", 
                                  "Shares", 
                                  "Cost Basis", 
                                  "Purchase Date"]]
@@ -400,7 +402,7 @@ def HoldingsSave():
     sp = wx.StandardPaths.Get()
 
     # Save the holdings table
-    df = holdingsDf.set_index("Ticker", inplace=False)    
+    df = holdingsDf.set_index("Account", inplace=False)    
     df.to_csv(sp.GetUserDataDir() + "/holdings.csv")
 
     # Holdings are now in sync

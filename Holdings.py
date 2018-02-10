@@ -37,12 +37,14 @@ class HoldingsModel(dv.DataViewIndexListModel):
         
         if modelCol == 0:
             dataFrameCol = 0
-        elif modelCol == 2:
+        elif modelCol == 1:
             dataFrameCol = 1
         elif modelCol == 3:
             dataFrameCol = 2
         elif modelCol == 4:
             dataFrameCol = 3
+        elif modelCol == 5:
+            dataFrameCol = 4
 
         return dataFrameCol
 
@@ -53,11 +55,13 @@ class HoldingsModel(dv.DataViewIndexListModel):
         if dataFrameCol == 0:
             modelCol = 0
         elif dataFrameCol == 1:
-            modelCol = 2
+            modelCol = 1
         elif dataFrameCol == 2:
             modelCol = 3
         elif dataFrameCol == 3:
             modelCol = 4
+        elif dataFrameCol == 4:
+            modelCol = 5
 
         return modelCol
 
@@ -66,18 +70,13 @@ class HoldingsModel(dv.DataViewIndexListModel):
     def GetColumnType(self, col):
         colType = "string"
         
-        if col == 2:
-            colType = "int"
-        elif col == 3:
-            colType = "float"
-
         return colType
 
     # This method is called to provide the data object for a
     # particular row,col
     def GetValueByRow(self, row, col):
-        if col == 1:
-            value = tickerscrape.morningstar.name(Config.holdingsDf.iloc[row, 0])
+        if col == 2:
+            value = tickerscrape.morningstar.name(Config.holdingsDf.iloc[row, 1])
             return value if value else ""
 
         dataFrameCol = self._GetDataFrameCol(col)
@@ -219,14 +218,16 @@ class HoldingsPanel(wx.Panel):
         # fetch the data from.  This means that you can have views
         # using the same model that show different columns of data, or
         # that they can be in a different order than in the model.
-        self.dvc.AppendTextColumn("Ticker", 0, width=70,
+        self.dvc.AppendTextColumn("Account", 0, width=150,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Name", 1, width=260)
-        self.dvc.AppendTextColumn("Shares", 2, width=80, 
+        self.dvc.AppendTextColumn("Ticker", 1, width=70,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Cost Basis", 3, width=100, 
+        self.dvc.AppendTextColumn("Name", 2, width=260)
+        self.dvc.AppendTextColumn("Shares", 3, width=80, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Purchase Date", 4, width=100, 
+        self.dvc.AppendTextColumn("Cost Basis", 4, width=100, 
+                                  mode=dv.DATAVIEW_CELL_EDITABLE)
+        self.dvc.AppendTextColumn("Purchase Date", 5, width=100, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
 
         # Through the magic of Python we can also access the columns
@@ -352,6 +353,8 @@ def GetWindow(frame, nb, log):
     
     if Config.holdingsDf is None:
         Config.HoldingsRead()
+
+    print(Config.holdingsDf)
 
     win = HoldingsPanel(nb, log)
     return win
