@@ -76,7 +76,8 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # particular row,col
     def GetValueByRow(self, row, col):
         if col == 2:
-            value = tickerscrape.morningstar.name(Config.holdingsDf.iloc[row, 1])
+            ticker = Config.holdingsDf.iloc[row, 1]
+            value = tickerscrape.morningstar.name(ticker)
             return value if value else ""
 
         dataFrameCol = self._GetDataFrameCol(col)
@@ -90,18 +91,12 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
     # This method is called when the user edits a data item in the view.
     def SetValueByRow(self, value, row, col):
+        #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
         dataFrameCol = self._GetDataFrameCol(col)
  
-        #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
-
-        acctList = Config.accountsDf.iloc[:,0].tolist()
-
         # Account should be on the Account list
-        if col == 0:
-            if value not in acctList:
-                self.log.write("%s: Invalid account\n" % (value))
-                self.log.write("Configured accounts: %s\n" % (acctList))
-                return False
+        if not self.ValidateValueByRow(value, row, col):
+            return False
 
         if dataFrameCol is not None:
             Config.holdingsDf.iloc[row, dataFrameCol] = value
@@ -109,6 +104,16 @@ class HoldingsModel(dv.DataViewIndexListModel):
             return True
 
         return False
+
+    def ValidateValueByRow(self, value, row, col):
+        if col == 0:
+            acctList = Config.accountsDf.iloc[:,0].tolist()
+            if value not in acctList:
+                self.log.write("%s: Invalid account\n" % (value))
+                self.log.write("Configured accounts: %s\n" % (acctList))
+                return False
+
+        return True
 
     # Report how many columns this model provides data for.
     def GetColumnCount(self):
