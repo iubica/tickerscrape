@@ -504,5 +504,31 @@ def AccountFind(acct):
     return False
 
 #---------------------------------------------------------------------------
-def AccountChange(acct):
-    return accountsDf.iloc[:,0].tolist()
+def AccountChange(acctOld, acctNew):
+    acctChanged = False
+    holdingsChanged = False
+
+    if AccountFind(acctNew):
+        return False, "Account '%s' already configured" % acctNew
+
+    for i in range(accountsDf.shape[0]):
+        if accountsDf.iloc[i,0] == acctOld:
+            accountsDf.iloc[i,0] = acctNew
+            acctChanged = True
+
+    if not acctChanged:
+        return False, "Account '%s' does not exist" % acctOld
+
+    # Also change the holdings
+    for i in range(holdingsDf.shape[0]):
+        if accountsDf.iloc[i,0] == acctOld:
+            accountsDf.iloc[i,0] = acctNew
+            holdingsChanged = True
+
+    if acctChanged:
+        AccountsChanged(True)
+
+    if holdingsChanged:
+        HoldingsChanged(True)
+
+    return True, None
