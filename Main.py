@@ -716,7 +716,7 @@ class CodePanel(wx.Panel):
         self.LoadViewSource(self.viewModule.GetSource())
         self.UpdateControlState()
         self.mainFrame.pnl.Freeze()
-        self.ReloadDemo()
+        self.ReloadView()
         self.mainFrame.pnl.Thaw()
 
 
@@ -763,7 +763,7 @@ class CodePanel(wx.Panel):
             self.ActiveModuleChanged()
 
 
-    def ReloadDemo(self):
+    def ReloadView(self):
         if self.viewModule.name != __name__:
             self.mainFrame.RunModule()
 
@@ -1985,7 +1985,7 @@ class wxPortfolioFrame(wx.Frame):
         self.StartDownload()
 
     #---------------------------------------------
-    def LoadView(self, demoName):
+    def LoadView(self, viewName):
         try:
             wx.BeginBusyCursor()
             self.pnl.Freeze()
@@ -1993,7 +1993,7 @@ class wxPortfolioFrame(wx.Frame):
             os.chdir(self.cwd)
             self.ShutdownViewModule()
 
-            if demoName == self.overviewText:
+            if viewName == self.overviewText:
                 # User selected the "Views" node
                 # ie: _this_ module
                 # Changing the main window at runtime not yet supported...
@@ -2002,20 +2002,20 @@ class wxPortfolioFrame(wx.Frame):
                 self.LoadViewSource()
                 self.UpdateNotebook(0)
             else:
-                if os.path.exists(GetOriginalFilename(demoName)):
-                    wx.LogMessage("Loading view %s.py..." % demoName)
-                    self.viewModule = ViewModule(demoName)
+                if os.path.exists(GetOriginalFilename(viewName)):
+                    wx.LogMessage("Loading view %s.py..." % viewName)
+                    self.viewModule = ViewModule(viewName)
                     self.LoadViewSource()
 
                 else:
-                    package, overview = LookForExternals(self.externalViews, demoName)
+                    package, overview = LookForExternals(self.externalViews, viewName)
 
                     if package:
-                        wx.LogMessage("Loading view %s.py..." % ("%s/%s"%(package, demoName)))
-                        self.viewModule = ViewModule("%s/%s"%(package, demoName))
+                        wx.LogMessage("Loading view %s.py..." % ("%s/%s"%(package, viewName)))
+                        self.viewModule = ViewModule("%s/%s"%(package, viewName))
                         self.LoadViewSource()
                     elif overview:
-                        self.SetOverview(demoName, overview)
+                        self.SetOverview(viewName, overview)
                         self.codePage = None
                         self.UpdateNotebook(0)
                     else:
@@ -2040,6 +2040,8 @@ class wxPortfolioFrame(wx.Frame):
         module = self.viewModule.GetActive()
         self.ShutdownViewModule()
         overviewText = ""
+
+        wx.LogMessage("RunModule(): module = %s" % module)
 
         # o The RunTest() for all samples must now return a window that can
         #   be placed in a tab in the main notebook.
