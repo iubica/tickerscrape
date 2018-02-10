@@ -15,7 +15,6 @@
 # * Problems with flickering related to ERASE_BACKGROUND
 #     and the splitters. Might be a problem with this 2.5 beta...?
 #     UPDATE: can't see on 2.5.2 GTK - maybe just a faster machine :)
-# * Demo Code menu?
 # * Annoying switching between tabs and resulting flicker
 #     how to replace a page in the notebook without deleting/adding?
 #     Where is SetPage!? tried freeze...tried reparent of dummy panel....
@@ -945,7 +944,7 @@ def SearchView(name, keyword):
     return False
 
 
-def HuntExternalDemos():
+def HuntExternalViews():
     """
     Searches for external demos (i.e. packages like AGW) in the wxPython
     demo sub-directories. In order to be found, these external packages
@@ -1465,7 +1464,7 @@ class wxPortfolioFrame(wx.Frame):
         def EmptyHandler(evt): pass
 
         self.ReadConfigurationFile()
-        self.externalViews = HuntExternalDemos()
+        self.externalViews = HuntExternalViews()
 
         # Create a Notebook
         self.nb = wx.Notebook(pnl, -1, style=wx.CLIP_CHILDREN)
