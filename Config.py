@@ -521,8 +521,8 @@ def AccountChange(acctOld, acctNew):
 
     # Also change the holdings
     for i in range(holdingsDf.shape[0]):
-        if accountsDf.iloc[i,0] == acctOld:
-            accountsDf.iloc[i,0] = acctNew
+        if holdingsDf.iloc[i,0] == acctOld:
+            holdingsDf.iloc[i,0] = acctNew
             holdingsChanged = True
 
     if acctChanged:

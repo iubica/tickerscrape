@@ -94,7 +94,6 @@ class HoldingsModel(dv.DataViewIndexListModel):
         #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
         dataFrameCol = self._GetDataFrameCol(col)
  
-        # Account should be on the Account list
         if not self.ValidateValueByRow(value, row, col):
             return False
 
