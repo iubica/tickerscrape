@@ -818,7 +818,7 @@ class CodePanel(wx.Panel):
         modifiedFilename = GetModifiedFilename(self.viewModule.name)
         self.viewModule.Delete(modModified)
         os.unlink(modifiedFilename) # Delete the modified copy
-        busy = wx.BusyInfo("Reloading demo module...")
+        busy = wx.BusyInfo("Reloading view module...")
 
         self.ActiveModuleChanged()
 
@@ -863,7 +863,7 @@ def GetModifiedFilename(name):
 
 def GetOriginalFilename(name):
     """
-    Returns the filename of the original version of the specified demo
+    Returns the filename of the original version of the specified view
     """
     if not name.endswith(".py"):
         name = name + ".py"
@@ -2039,8 +2039,6 @@ class wxPortfolioFrame(wx.Frame):
         module = self.viewModule.GetActive()
         self.ShutdownViewModule()
         overviewText = ""
-
-        wx.LogMessage("RunModule(): module = %s" % module)
 
         # o The RunTest() for all samples must now return a window that can
         #   be placed in a tab in the main notebook.
