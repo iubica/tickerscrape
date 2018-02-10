@@ -930,8 +930,8 @@ def GetDocImagesDir():
     return os.path.join(GetDataDir(), "docs", "images")
 
 
-def SearchDemo(name, keyword):
-    """ Returns whether a demo contains the search keyword or not. """
+def SearchView(name, keyword):
+    """ Returns whether a view contains the search keyword or not. """
     fid = open(GetOriginalFilename(name), "rt")
     fullText = fid.read()
     fid.close()
@@ -1926,7 +1926,7 @@ class wxPortfolioFrame(wx.Frame):
         for category, items in Config.viewTree:
             self.searchItems[category] = []
             for childItem in items:
-                if SearchDemo(childItem, value):
+                if SearchView(childItem, value):
                     self.searchItems[category].append(childItem)
 
         wx.EndBusyCursor()
