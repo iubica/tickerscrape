@@ -32,26 +32,29 @@
 # =====================
 # = EXTERNAL Packages =
 # =====================
-# In order to let a package (like AGW) be included in the wxPython demo,
-# the package owner should create a sub-directory of the wxPython demo folder
-# in which all the package's demos should live. In addition, the sub-folder
-# should contain a Python file called __init__wxPortfolio__.py which, when imported, should
-# contain the following methods:
+# In order to let a package (like AGW) be included into the wxPortfolio tree,
+# create a sub-directory of the wxPortfolio install folder
+# in which all the package's views should live. In addition, the sub-folder
+# should contain a Python file called __init__wxPortfolio__.py which, 
+# when imported, should contain the following methods:
 #
 # * GetViewBitmap: returns the bitmap to be used in the wxPython view tree
 #   control in a PyEmbeddedImage format;
 #
-# * GetRecentAdditions: returns a list of demos which will be displayed under the
-#   "Recent Additions/Updates" tree item. This list should be a subset (or the full
-#   set) of the package's demos;
+# * GetRecentAdditions: returns a list of views to be displayed under the
+#   "Recent Additions/Updates" tree item. This list should be a subset 
+#   (or the full set) of the package's views;
 #
 # * GetViews: returns a tuple. The first item of the tuple is the package's name
-#   as will be displayed in the wxPython demo tree, right after the "Custom Controls"
-#   item. The second element of the tuple is the list of demos for the external package.
-# * GetOverview: returns a wx.html-ready representation of the package's documentation.
+#   as will be displayed in the wxPortfolio demo tree, right after 
+#   the "Custom Controls" item. The second element of the tuple is the list of
+#   demos for the external package.
 #
-# Please see the __init__wxPortfolio__.py file in the wxPortfolio/agw/ folder for an example.
-# Last updated: Andrea Gavana, 20 Oct 2008, 18.00 GMT
+# * GetOverview: returns a wx.html-ready representation of the 
+#   package's documentation.
+#
+# Please see the __init__wxPortfolio__.py file in the wxPortfolio/agw/ folder 
+# for an example.
 
 import sys, os, time, traceback
 import re
