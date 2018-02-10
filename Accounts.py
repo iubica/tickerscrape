@@ -69,7 +69,7 @@ class AccountsModel(dv.DataViewIndexListModel):
                 # Change account name both in accountsDf and holdingsDf
                 ret, err = Config.AccountChange(Config.accountsDf.iloc[row, dataFrameCol], value)
                 if not ret:
-                    self.log.write("%s\n", err)
+                    self.log.write("%s" % err)
                 return ret
             else:
                 # Simple change of values
