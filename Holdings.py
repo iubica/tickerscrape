@@ -94,6 +94,15 @@ class HoldingsModel(dv.DataViewIndexListModel):
  
         #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
 
+        acctList = Config.accountsDf.iloc[:,0].tolist()
+
+        # Account should be on the Account list
+        if col == 0:
+            if value not in acctList:
+                self.log.write("%s: Invalid account\n" % (value))
+                self.log.write("Configured accounts: %s\n" % (acctList))
+                return False
+
         if dataFrameCol is not None:
             Config.holdingsDf.iloc[row, dataFrameCol] = value
             Config.HoldingsChanged(True)
@@ -315,11 +324,13 @@ class HoldingsPanel(wx.Panel):
             self.dvc.SetSelections(items)
 
     def OnEditingDone(self, evt):
-        self.log.write("OnEditingDone\n")
+        #self.log.write("OnEditingDone\n")
+        pass
 
     def OnValueChanged(self, evt):
         # Can be used to verify format validity
-        self.log.write("OnValueChanged\n")
+        #self.log.write("OnValueChanged\n")
+        pass
 
     def OnSelectionChanged(self, evt):
 
@@ -353,6 +364,9 @@ def GetWindow(frame, nb, log):
     
     if Config.holdingsDf is None:
         Config.HoldingsRead()
+
+    if Config.accountsDf is None:
+        Config.AccountsRead()
 
     print(Config.holdingsDf)
 

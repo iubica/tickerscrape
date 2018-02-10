@@ -1083,7 +1083,7 @@ class DemoModules(object):
                 code = compile(source, description, "exec")
                 exec_(code, self.modules[modID][0])
             except:
-                self.modules[modID][4] = DemoError(sys.exc_info())
+                self.modules[modID][4] = ViewModuleError(sys.exc_info())
                 self.modules[modID][0] = None
             else:
                 self.modules[modID][4] = None
