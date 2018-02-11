@@ -27,7 +27,7 @@ def GetWindow(frame, nb, log):
 
     # For each ticker in the config...
     for i in range(Config.holdingsDf.shape[0]):
-        ticker = Config.holdingsDf.iloc[i, 1]
+        ticker = Config.holdingsDf.ix[i, "Ticker"]
         
         if ticker in tickerList:
             continue
