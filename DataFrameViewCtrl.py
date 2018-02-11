@@ -61,7 +61,7 @@ class Model(dv.DataViewIndexListModel):
     # Report the number of rows in the model
     def GetCount(self):
         rowCount = self.df.shape[0]
-        self.log.write('GetRowCount() = %d' % rowCount)
+        #self.log.write('GetRowCount() = %d' % rowCount)
         return rowCount
 
     # Called to check if non-standard attributes should be used in the

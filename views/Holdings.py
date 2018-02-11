@@ -133,14 +133,14 @@ class HoldingsModel(dv.DataViewIndexListModel):
         return False
 
     def AddRow(self, id, value):
-        self.log.write('AddRow(%s)' % value)
+        #self.log.write('AddRow(%s)' % value)
         # update data structure
         Config.holdingsDf.loc[id-1] = value
         # notify views
         self.RowAppended()
 
     def DeleteRows(self, rows):
-        self.log.write('DeleteRows(%s)' % rows)
+        #self.log.write('DeleteRows(%s)' % rows)
 
         # Drop the list of rows from the dataframe
         Config.holdingsDf.drop(rows, inplace=True)
@@ -151,7 +151,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         self.Reset(Config.holdingsDf.shape[0])        
 
     def MoveUp(self, rows):
-        self.log.write("MoveUp() rows %s\n" % rows)
+        #self.log.write("MoveUp() rows %s\n" % rows)
 
         if rows:
             for row in rows:
@@ -165,7 +165,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
             self.Reset(Config.holdingsDf.shape[0])        
 
     def MoveDown(self, rows):
-        self.log.write("MoveDown() rows %s\n" % rows)
+        #self.log.write("MoveDown() rows %s\n" % rows)
 
         if rows:
             for row in rows:
@@ -267,14 +267,14 @@ class HoldingsPanel(wx.Panel):
         items = self.dvc.GetSelections()
         rows = [self.model.GetRow(item) for item in items]
 
-        self.log.write("OnDeleteRows() rows %s\n" % rows)
+        #self.log.write("OnDeleteRows() rows %s\n" % rows)
         self.model.DeleteRows(rows)
 
 
     def OnAddRow(self, evt):
         # Add some bogus data to a new row in the model's data
         id = len(Config.holdingsDf) + 1
-        self.log.write("OnAddRow() id %d\n" % id)
+        #self.log.write("OnAddRow() id %d\n" % id)
         value = ["", "New ticker", "", "", ""]
         self.model.AddRow(id, value)
 
@@ -319,7 +319,7 @@ class HoldingsPanel(wx.Panel):
         items = self.dvc.GetSelections()
         rows = [self.model.GetRow(item) for item in items]
 
-        self.log.write("OnSelectionChanged, rows selected %s\n" % rows)
+        #self.log.write("OnSelectionChanged, rows selected %s\n" % rows)
         
         # Is there any selection?
         if rows == []:
