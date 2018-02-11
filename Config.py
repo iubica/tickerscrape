@@ -72,6 +72,7 @@ viewTree = [
 
     ('Config', [
         'AccountTypes',
+        'Categories',
     ]),
 
     # new stuff
