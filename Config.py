@@ -675,23 +675,87 @@ def CategoriesRead():
     except OSError as e:
         # Create an empty DataFrame with unordered columns
         categoriesDf = pd.DataFrame.from_dict({
-            "Account Type": ["Brokerage", "401K", "Roth 401K", "IRA", "Roth IRA", "529"],
-            "Long Term Capital Gains Tax": ["15%", "", "", "", "", ""],
-            "Short Term Capital Gains Tax": ["35%", "", "", "", "", ""],
-            "Liquidation Tax": ["", "35%", "", "35%", "", ""],
+            "Category Name": [
+                "Target Date 2036-2040", # Allocation
+                "Target Date 2041-2045", 
+                "Target Date 2046-2050", 
+                "Target Date 2051+", 
+                "Retirement Income", 
+                "Foreign Large Value", # International Equity
+                "Foreign Large Blend",
+                "Foreign Large Growth",
+                "Foreign Small/Mid Value",
+                "Foreign Small/Mid Blend",
+                "Foreign Small/Mid Growth",
+                "World Stock",
+                "Diversified Emerging Markets",
+                "Diversified Pacific/Asia",
+                "Miscellaneous Region",
+                "Europe Stock",
+                "Latin America Stock",
+                "Pacific/Asia ex-Japan Stock",
+                "China Region",
+                "India Equity",
+                "Japan Stock"
+            ],
+            "Category Group": [
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity"
+            ],
+            "Benchmark ETF": [
+                "SPY", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ],
         })
         
         # Order the columns
-        categoriesDf = accountTypesDf[["Account Type", 
-                                         "Long Term Capital Gains Tax", 
-                                         "Short Term Capital Gains Tax", 
-                                         "Liquidation Tax"]]
+        categoriesDf = categoriesDf[["Category Name", 
+                                     "Category Group", 
+                                     "Benchmark ETF"]]
         
         # Accounts have been modified
         CategoriesChanged(True)
 
     categoriesDf.fillna("", inplace=True)
-    #print(categoriesDf)
+    print(categoriesDf)
 
 #---------------------------------------------------------------------------
 # Save categories to categories.csv

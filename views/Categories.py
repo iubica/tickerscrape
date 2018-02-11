@@ -85,8 +85,8 @@ class CategoriesModel(dv.DataViewIndexListModel):
             for i in range(Config.categoriesDf.shape[0]):
                 if i == row:
                     continue
-                if Config.categoriesDf.ix[i,"Account Type"] == value:
-                    self.log.write("Duplicate account type '%s' not allowed\n" % value)
+                if Config.categoriesDf.ix[i,"Category Name"] == value:
+                    self.log.write("Duplicate category name '%s' not allowed\n" % value)
                     return False
 
         return True
@@ -186,13 +186,11 @@ class CategoriesPanel(wx.Panel):
         # fetch the data from.  This means that you can have views
         # using the same model that show different columns of data, or
         # that they can be in a different order than in the model.
-        self.dvc.AppendTextColumn("Account Type", 0, width=110,
+        self.dvc.AppendTextColumn("Category Name", 0, width=200,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Long Term Capital Gains Tax", 1, width=225,
+        self.dvc.AppendTextColumn("Category Group", 1, width=225,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Short Term Capital Gains Tax", 2, width=225,
-                                  mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Liquidation Tax", 3, width=200,
+        self.dvc.AppendTextColumn("Benchmark", 2, width=100,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
 
         for c in self.dvc.Columns:
@@ -246,7 +244,7 @@ class CategoriesPanel(wx.Panel):
         # Add some bogus data to a new row in the model's data
         id = len(Config.categoriesDf) + 1
         self.log.write("OnAddRow() id %d\n" % id)
-        value = ["New account", "", "Brokerage"]
+        value = ["New category name", "", ""]
         self.model.AddRow(id, value)
 
         # Clear the selection
