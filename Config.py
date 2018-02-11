@@ -765,7 +765,7 @@ def CategoriesSave():
     sp = wx.StandardPaths.Get()
 
     # Save the accounts table
-    df = categoriesDf.set_index("Account Type", inplace=False)    
+    df = categoriesDf.set_index("Category Name", inplace=False)    
     df.to_csv(sp.GetUserDataDir() + "/categories.csv")
 
     # AccountTypes are now in sync
@@ -784,7 +784,7 @@ def CategoriesChanged(changed):
 
 #---------------------------------------------------------------------------
 def CategoriesList():
-    return categoriesDf.ix[:,"Account Type"].tolist()
+    return categoriesDf.ix[:,"Category Name"].tolist()
 
 #---------------------------------------------------------------------------
 def CategoriesFind(acct):
@@ -800,8 +800,8 @@ def CategoriesChange(categoryOld, categoryNew):
         return False, "Category '%s' already configured" % categoryNew
 
     for i in range(categoriesDf.shape[0]):
-        if categoriesDf.ix[i,"Account Type"] == categoryOld:
-            categoriesDf.ix[i,"Account Type"] = categoryNew
+        if categoriesDf.ix[i,"Category Name"] == categoryOld:
+            categoriesDf.ix[i,"Category Name"] = categoryNew
             categoriesChanged = True
 
     if not categoriesChanged:

@@ -113,14 +113,14 @@ class AccountsModel(dv.DataViewIndexListModel):
         return False
 
     def AddRow(self, id, value):
-        self.log.write('AddRow(%s)' % value)
+        #self.log.write('AddRow(%s)' % value)
         # update data structure
         Config.accountsDf.loc[id-1] = value
         # notify views
         self.RowAppended()
 
     def DeleteRows(self, rows):
-        self.log.write('DeleteRows(%s)' % rows)
+        #self.log.write('DeleteRows(%s)' % rows)
 
         # Drop the list of rows from the dataframe
         Config.accountsDf.drop(rows, inplace=True)
@@ -131,7 +131,7 @@ class AccountsModel(dv.DataViewIndexListModel):
         self.Reset(Config.accountsDf.shape[0])        
 
     def MoveUp(self, rows):
-        self.log.write("MoveUp() rows %s\n" % rows)
+        #self.log.write("MoveUp() rows %s\n" % rows)
 
         if rows:
             for row in rows:
@@ -145,7 +145,7 @@ class AccountsModel(dv.DataViewIndexListModel):
             self.Reset(Config.accountsDf.shape[0])        
 
     def MoveDown(self, rows):
-        self.log.write("MoveDown() rows %s\n" % rows)
+        #self.log.write("MoveDown() rows %s\n" % rows)
 
         if rows:
             for row in rows:
@@ -242,14 +242,14 @@ class AccountsPanel(wx.Panel):
         items = self.dvc.GetSelections()
         rows = [self.model.GetRow(item) for item in items]
 
-        self.log.write("OnDeleteRows() rows %s\n" % rows)
+        #self.log.write("OnDeleteRows() rows %s\n" % rows)
         self.model.DeleteRows(rows)
 
 
     def OnAddRow(self, evt):
         # Add some bogus data to a new row in the model's data
         id = len(Config.accountsDf) + 1
-        self.log.write("OnAddRow() id %d\n" % id)
+        #self.log.write("OnAddRow() id %d\n" % id)
         value = ["New account", "", "Brokerage"]
         self.model.AddRow(id, value)
 

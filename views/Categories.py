@@ -107,14 +107,14 @@ class CategoriesModel(dv.DataViewIndexListModel):
         return False
 
     def AddRow(self, id, value):
-        self.log.write('AddRow(%s)' % value)
+        #self.log.write('AddRow(%s)' % value)
         # update data structure
         Config.categoriesDf.loc[id-1] = value
         # notify views
         self.RowAppended()
 
     def DeleteRows(self, rows):
-        self.log.write('DeleteRows(%s)' % rows)
+        #self.log.write('DeleteRows(%s)' % rows)
 
         # Drop the list of rows from the dataframe
         Config.categoriesDf.drop(rows, inplace=True)
@@ -125,7 +125,7 @@ class CategoriesModel(dv.DataViewIndexListModel):
         self.Reset(Config.categoriesDf.shape[0])        
 
     def MoveUp(self, rows):
-        self.log.write("MoveUp() rows %s\n" % rows)
+        #self.log.write("MoveUp() rows %s\n" % rows)
 
         if rows:
             for row in rows:
@@ -139,7 +139,7 @@ class CategoriesModel(dv.DataViewIndexListModel):
             self.Reset(Config.categoriesDf.shape[0])        
 
     def MoveDown(self, rows):
-        self.log.write("MoveDown() rows %s\n" % rows)
+        #self.log.write("MoveDown() rows %s\n" % rows)
 
         if rows:
             for row in rows:
