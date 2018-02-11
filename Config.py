@@ -114,6 +114,7 @@ viewTree = [
         'RearrangeDialog',
         'RichMessageDialog',
         'NotificationMessage',
+        'RichToolTip',
     ]),
 
     # dialogs from libraries
