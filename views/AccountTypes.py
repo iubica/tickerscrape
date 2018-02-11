@@ -187,11 +187,13 @@ class AccountTypesPanel(wx.Panel):
         # fetch the data from.  This means that you can have views
         # using the same model that show different columns of data, or
         # that they can be in a different order than in the model.
-        self.dvc.AppendTextColumn("Account Name", 0, width=200,
+        self.dvc.AppendTextColumn("Account Type", 0, width=110,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Account Number", 1, width=200,
+        self.dvc.AppendTextColumn("Long Term Capital Gains Tax", 1, width=225,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Type", 2, width=100, 
+        self.dvc.AppendTextColumn("Short Term Capital Gains Tax", 2, width=225,
+                                  mode=dv.DATAVIEW_CELL_EDITABLE)
+        self.dvc.AppendTextColumn("Liquidation Tax", 3, width=200,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
 
         for c in self.dvc.Columns:

@@ -566,16 +566,18 @@ def AccountTypesRead():
     except OSError as e:
         # Create an empty DataFrame with unordered columns
         accountTypesDf = pd.DataFrame.from_dict({
-            "Account Name": ["Account One", "Account Two"],
-            "Account Number": ["100", "101"],
-            "Type": ["Brokerage", "401K"],
+            "Account Type": ["Brokerage", "401K", "Roth 401K", "IRA", "Roth IRA", "529"],
+            "Long Term Capital Gains Tax": ["15%", "", "", "", "", ""],
+            "Short Term Capital Gains Tax": ["35%", "", "", "", "", ""],
+            "Liquidation Tax": ["", "35%", "", "35%", "", ""],
         })
         
         # Order the columns
-        accountTypesDf = accountsDf[["Account Name", 
-                                     "Account Number", 
-                                     "Type"]]
-
+        accountTypesDf = accountTypesDf[["Account Type", 
+                                         "Long Term Capital Gains Tax", 
+                                         "Short Term Capital Gains Tax", 
+                                         "Liquidation Tax"]]
+        
         # Accounts have been modified
         AccountTypesChanged(True)
 
@@ -590,7 +592,7 @@ def AccountTypesSave():
     sp = wx.StandardPaths.Get()
 
     # Save the accounts table
-    df = accountTypesDf.set_index("Account Name", inplace=False)    
+    df = accountTypesDf.set_index("Account Type", inplace=False)    
     df.to_csv(sp.GetUserDataDir() + "/accountTypes.csv")
 
     # AccountTypes are now in sync
