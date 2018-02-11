@@ -520,8 +520,8 @@ def AccountChange(acctOld, acctNew):
         return False, "Account '%s' already configured" % acctNew
 
     for i in range(accountsDf.shape[0]):
-        if accountsDf.iloc[i,0] == acctOld:
-            accountsDf.iloc[i,0] = acctNew
+        if accountsDf.ix[i,"Account Name"] == acctOld:
+            accountsDf.ix[i,"Account Name"] = acctNew
             acctChanged = True
 
     if not acctChanged:
@@ -529,8 +529,8 @@ def AccountChange(acctOld, acctNew):
 
     # Also change the holdings
     for i in range(holdingsDf.shape[0]):
-        if holdingsDf.iloc[i,0] == acctOld:
-            holdingsDf.iloc[i,0] = acctNew
+        if holdingsDf.ix[i,"Account"] == acctOld:
+            holdingsDf.ix[i,"Account"] = acctNew
             holdingsChanged = True
 
     if acctChanged:
@@ -610,12 +610,11 @@ def AccountTypesChanged(changed):
 
 #---------------------------------------------------------------------------
 def AccountTypesList():
-    return accountTypesDf.iloc[:,0].tolist()
+    return accountTypesDf.ix[:,"Account Type"].tolist()
 
 #---------------------------------------------------------------------------
 def AccountTypesFind(acct):
-    acctList = accountTypesDf.iloc[:,0].tolist()
-    if acct in acctList:
+    if acct in AccountTypesList():
         return True
     return False
 
