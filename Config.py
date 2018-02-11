@@ -681,6 +681,7 @@ def CategoriesRead():
                 "Target Date 2046-2050", 
                 "Target Date 2051+", 
                 "Retirement Income", 
+
                 "Foreign Large Value", # International Equity
                 "Foreign Large Blend",
                 "Foreign Large Growth",
@@ -696,7 +697,24 @@ def CategoriesRead():
                 "Pacific/Asia ex-Japan Stock",
                 "China Region",
                 "India Equity",
-                "Japan Stock"
+                "Japan Stock",
+
+                "Bear Market", # Alternative
+                "Multicurrency",
+                "Single Currency",
+                "Long/Short Equity",
+                "Market Neutral",
+                "Multialternative",
+                "Managed Futures",
+                "Volatility",
+                "Trading--Leveraged Commodities",
+                "Trading--Inverse Commodities",
+                "Trading--Leveraged Debt",
+                "Trading--Inverse Debt",
+                "Trading--Leveraged Equity",
+                "Trading--Inverse Equity",
+                "Trading--Miscellaneous",
+
             ],
             "Category Group": [
                 "Allocation", 
@@ -704,6 +722,7 @@ def CategoriesRead():
                 "Allocation", 
                 "Allocation", 
                 "Allocation", 
+
                 "International Equity", 
                 "International Equity", 
                 "International Equity", 
@@ -719,14 +738,32 @@ def CategoriesRead():
                 "International Equity", 
                 "International Equity", 
                 "International Equity", 
-                "International Equity"
+                "International Equity",
+
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
             ],
             "Benchmark ETF": [
-                "SPY", 
+                "SPY", # Allocation
                 "", 
                 "", 
                 "", 
                 "", 
+
+                "", # International Equity
                 "",
                 "",
                 "",
@@ -742,7 +779,23 @@ def CategoriesRead():
                 "",
                 "",
                 "",
-                ""
+
+                "", # Alternative
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                
             ],
         })
         
