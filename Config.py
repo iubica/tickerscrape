@@ -687,6 +687,22 @@ def CategoriesRead():
                 "Small Growth",
                 "Leveraged Net Long",
 
+                "Communications", # Sector Equity
+                "Consumer Cyclical", 
+                "Consumer Defensive", 
+                "Energy Limited Partnership", 
+                "Equity Energy", 
+                "Equity Precious Metals", 
+                "Financial", 
+                "Global Real Estate", 
+                "Health", 
+                "Industrials", 
+                "Natural Resources", 
+                "Real Estate", 
+                "Technology", 
+                "Utilities", 
+                "Miscellaneous Sector", 
+
                 "Target Date 2036-2040", # Allocation
                 "Target Date 2041-2045", 
                 "Target Date 2046-2050", 
@@ -783,6 +799,22 @@ def CategoriesRead():
                 "U.S. Equity",
                 "U.S. Equity",
 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+
                 "Allocation", 
                 "Allocation", 
                 "Allocation", 
@@ -869,6 +901,22 @@ def CategoriesRead():
             ],
             "Benchmark ETF": [
                 "", # U.S. Equity
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+
+                "", # Sector Equity
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
                 "", 
                 "", 
                 "", 
