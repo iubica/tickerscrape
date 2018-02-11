@@ -868,8 +868,10 @@ def GetOriginalFilename(name):
     if not name.endswith(".py"):
         name = name + ".py"
 
-    if os.path.isfile(name):
-        return name
+    # Stop looking for views and widgets in the top folder, except for Main
+    if name == "Main.py":
+        if os.path.isfile(name):
+            return name
 
     originalDir = os.getcwd()
     listDir = os.listdir(originalDir)
