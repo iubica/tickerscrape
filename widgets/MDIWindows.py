@@ -30,11 +30,11 @@ class TestPanel(wx.Panel):
     # the same app.
     def ShowMDIDemo(self, evt):
         exe, spawn = self.GetPyExecutable()
-        spawn(os.P_NOWAIT, exe, exe, "MDIDemo.py")
+        spawn(os.P_NOWAIT, exe, exe, "widgets/MDIDemo.py")
 
     def ShowMDISashDemo(self, evt):
         exe, spawn = self.GetPyExecutable()
-        spawn(os.P_NOWAIT, exe, exe, "MDISashDemo.py")
+        spawn(os.P_NOWAIT, exe, exe, "widgets/MDISashDemo.py")
 
     def GetPyExecutable(self):
         return sys.executable, os.spawnl
