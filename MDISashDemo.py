@@ -2,7 +2,9 @@
 
 import wx
 import wx.adv
+import sys
 
+sys.path.append("widgets")
 import ScrolledWindow
 
 #----------------------------------------------------------------------

@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import wx
+import sys
 
 # Importing ScrolledWindow demo to make use of the MyCanvas
 # class defined within.
+sys.path.append("widgets")
 import ScrolledWindow
 import images
 
