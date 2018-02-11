@@ -86,7 +86,7 @@ class AccountTypesModel(dv.DataViewIndexListModel):
             for i in range(Config.accountTypesDf.shape[0]):
                 if i == row:
                     continue
-                if Config.accountTypesDf.iloc[i,0] == value:
+                if Config.accountTypesDf.ix[i,"Account Type"] == value:
                     self.log.write("Duplicate account type '%s' not allowed\n" % value)
                     return False
 

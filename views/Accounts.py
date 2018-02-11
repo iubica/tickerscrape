@@ -90,8 +90,8 @@ class AccountsModel(dv.DataViewIndexListModel):
                     self.log.write("Duplicate account '%s' not allowed\n" % value)
                     return False
         elif col == 2:
-            acctTypesAllowed = ["", "Brokerage", "401K", "Roth 401K", "IRA", "Roth IRA", "529"]
-            if value.lower() not in [x.lower() for x in acctTypesAllowed]:
+            acctTypesAllowed = Config.AccountTypesList()
+            if value not in acctTypesAllowed:
                 self.log.write("Account type '%s' not allowed, should be one of %s\n" % (value, acctTypesAllowed))
                 return False
 
