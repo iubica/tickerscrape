@@ -67,7 +67,7 @@ class AccountTypesModel(dv.DataViewIndexListModel):
         if dataFrameCol is not None:
             if col == 0:
                 # Change account type name both in accountTypesDf and accountsDf
-                ret, err = Config.AccountTypeChange(Config.accountTypesDf.iloc[row, dataFrameCol], value)
+                ret, err = Config.AccountTypesChange(Config.accountTypesDf.iloc[row, dataFrameCol], value)
                 if not ret:
                     self.log.write("%s\n", err)
                 return ret

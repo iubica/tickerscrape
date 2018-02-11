@@ -636,10 +636,10 @@ def AccountTypesChange(acctTypeOld, acctTypeNew):
     if not acctTypesChanged:
         return False, "Account type '%s' does not exist" % acctTypeOld
 
-    # Also change the holdings
+    # Also change the accounts
     for i in range(accountsDf.shape[0]):
-        if accountsDf.iloc[i,0] == acctTypeOld:
-            accountsDf.iloc[i,0] = acctTypeNew
+        if accountsDf.ix[i,"Type"] == acctTypeOld:
+            accountsDf.ix[i,"Type"] = acctTypeNew
             acctChanged = True
 
     if acctTypesChanged:
