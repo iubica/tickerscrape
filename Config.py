@@ -676,6 +676,17 @@ def CategoriesRead():
         # Create an empty DataFrame with unordered columns
         categoriesDf = pd.DataFrame.from_dict({
             "Category Name": [
+                "Large Value", # U.S. Equity
+                "Large Blend",
+                "Large Growth",
+                "Mid-Cap Value",
+                "Mid-Cap Blend",
+                "Mid-Cap Growth",
+                "Small Value",
+                "Small Blend",
+                "Small Growth",
+                "Leveraged Net Long",
+
                 "Target Date 2036-2040", # Allocation
                 "Target Date 2041-2045", 
                 "Target Date 2046-2050", 
@@ -761,6 +772,17 @@ def CategoriesRead():
                 "Tax-Free Money Market",
             ],
             "Category Group": [
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+
                 "Allocation", 
                 "Allocation", 
                 "Allocation", 
@@ -846,6 +868,17 @@ def CategoriesRead():
                 "Money Market",
             ],
             "Benchmark ETF": [
+                "", # U.S. Equity
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+
                 "SPY", # Allocation
                 "", 
                 "", 
