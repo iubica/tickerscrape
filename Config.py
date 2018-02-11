@@ -113,6 +113,7 @@ viewTree = [
         'TextEntryDialog',
         'RearrangeDialog',
         'RichMessageDialog',
+        'NotificationMessage',
     ]),
 
     # dialogs from libraries
