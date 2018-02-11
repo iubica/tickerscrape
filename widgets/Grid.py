@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import wx
+import wx, os
 
 #---------------------------------------------------------------------------
 
@@ -37,7 +37,29 @@ class ButtonPanel(wx.Panel):
 
     def OnButton(self, evt):
         modName = buttonDefs[evt.GetId()][0]
-        module = __import__(modName)
+        fullModName = None
+
+        # Find modName either at the top, or in a subfolder
+        if os.path.isfile(modName + ".py"):
+            fullModName = modName
+        else:
+            originalDir = os.getcwd()
+            listDir = os.listdir(originalDir)
+            # Loop over the content of the demo directory
+            for item in listDir:
+                if not os.path.isdir(item):
+                    # Not a directory, continue
+                    continue
+                dirFile = os.listdir(item)
+                # See if a file called "name" is there
+                if (modName + ".py") in dirFile:
+                    fullModName = os.path.join(item, modName)
+
+        if not fullModName:
+            self.log.write("OnButton(): can't locate module %s\n" % modName)
+            return
+            
+        module = __import__(fullModName)
         frame = module.TestFrame(None, self.log)
         frame.Show(True)
 
