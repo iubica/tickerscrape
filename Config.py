@@ -344,6 +344,7 @@ def PortfolioRead():
     HoldingsRead()
     AccountsRead()
     AccountTypesRead()
+    CategoriesRead()
 
 #---------------------------------------------------------------------------
 # Save the entire portfolio
@@ -351,6 +352,7 @@ def PortfolioSave():
     HoldingsSave()
     AccountsSave()
     AccountTypesSave()
+    CategoriesSave()
 
 #---------------------------------------------------------------------------
 # Called with changed = True or False when holdings are different (or unchanged)
@@ -358,7 +360,7 @@ def PortfolioSave():
 # the status of the holdings (whether they have changed or not)
 
 def PortfolioChanged():
-    return _holdingsChanged or _accountsChanged or _accountTypesChanged
+    return _holdingsChanged or _accountsChanged or _accountTypesChanged or _categoriesChanged
 
 #---------------------------------------------------------------------------
 
@@ -645,5 +647,102 @@ def AccountTypesChange(acctTypeOld, acctTypeNew):
 
     if acctChanged:
         AccountsChanged(True)
+
+    return True, None
+
+
+#---------------------------------------------------------------------------
+
+# The accounts dataframe
+categoriesDf = None
+_categoriesChanged = False
+
+#---------------------------------------------------------------------------
+# Get categories from categories.csv
+
+def CategoriesRead():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Get the global accounts table
+    global categoriesDf
+
+    try:
+        categoriesDf = pd.read_csv(sp.GetUserDataDir() + "/categories.csv")
+
+        CategoriesChanged(False)
+    except OSError as e:
+        # Create an empty DataFrame with unordered columns
+        categoriesDf = pd.DataFrame.from_dict({
+            "Account Type": ["Brokerage", "401K", "Roth 401K", "IRA", "Roth IRA", "529"],
+            "Long Term Capital Gains Tax": ["15%", "", "", "", "", ""],
+            "Short Term Capital Gains Tax": ["35%", "", "", "", "", ""],
+            "Liquidation Tax": ["", "35%", "", "35%", "", ""],
+        })
+        
+        # Order the columns
+        categoriesDf = accountTypesDf[["Account Type", 
+                                         "Long Term Capital Gains Tax", 
+                                         "Short Term Capital Gains Tax", 
+                                         "Liquidation Tax"]]
+        
+        # Accounts have been modified
+        CategoriesChanged(True)
+
+    categoriesDf.fillna("", inplace=True)
+    #print(categoriesDf)
+
+#---------------------------------------------------------------------------
+# Save categories to categories.csv
+
+def CategoriesSave():
+    # Get the wxPython standard paths
+    sp = wx.StandardPaths.Get()
+
+    # Save the accounts table
+    df = categoriesDf.set_index("Account Type", inplace=False)    
+    df.to_csv(sp.GetUserDataDir() + "/categories.csv")
+
+    # AccountTypes are now in sync
+    CategoriesChanged(False)
+
+#---------------------------------------------------------------------------
+def CategoriesChanged(changed):
+    global _categoriesChanged
+
+    if changed is not None:
+        if Main.portfolioFrame:
+            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
+        _categoriesChanged = changed
+
+    return _categoriesChanged
+
+#---------------------------------------------------------------------------
+def CategoriesList():
+    return categoriesDf.ix[:,"Account Type"].tolist()
+
+#---------------------------------------------------------------------------
+def CategoriesFind(acct):
+    if acct in CategoriesList():
+        return True
+    return False
+
+#---------------------------------------------------------------------------
+def CategoriesChange(categoryOld, categoryNew):
+    categoriesChanged = False
+
+    if CategoriesFind(categoryNew):
+        return False, "Category '%s' already configured" % categoryNew
+
+    for i in range(categoriesDf.shape[0]):
+        if categoriesDf.ix[i,"Account Type"] == categoryOld:
+            categoriesDf.ix[i,"Account Type"] = categoryNew
+            categoriesChanged = True
+
+    if not categoriesChanged:
+        return False, "Category '%s' does not exist" % categoryOld
+
+    if categoriesChanged:
+        CategoriesChanged(True)
 
     return True, None
