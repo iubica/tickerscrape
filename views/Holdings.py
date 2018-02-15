@@ -77,7 +77,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
     def GetValueByRow(self, row, col):
         if col == 2:
             ticker = Config.holdingsDf.iloc[row, 1]
-            value = tickerscrape.morningstar.name(ticker)
+            value = tickerscrape.morningstar.ticker_name(ticker)
             return value if value else ""
 
         dataFrameCol = self._GetDataFrameCol(col)
