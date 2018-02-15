@@ -1058,7 +1058,7 @@ def CategoriesRead():
         CategoriesChanged(True)
 
     categoriesDf.fillna("", inplace=True)
-    print(categoriesDf)
+    #print(categoriesDf)
 
 #---------------------------------------------------------------------------
 # Save categories to categories.csv
