@@ -2691,11 +2691,19 @@ class MyApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
     def OnInit(self):
 
         # Check runtime version
-        if LooseVersion(version.VERSION_STRING) != LooseVersion(wx.VERSION_STRING):
+        if (LooseVersion(version.WX_PYTHON_VERSION_MIN) >
+            LooseVersion(wx.VERSION_STRING)):
             wx.MessageBox(caption="Warning",
-                          message="You're using version %s of wxPython, but this application was written for version %s.\n"
+                          message="You're using version %s of wxPython, but this application needs version >= %s.\n"
                           "There may be some version incompatibilities..."
-                          % (wx.VERSION_STRING, version.VERSION_STRING))
+                          % (wx.VERSION_STRING, version.WX_PYTHON_VERSION_MIN))
+
+        if (LooseVersion(version.WX_PYTHON_VERSION_MAX) <
+            LooseVersion(wx.VERSION_STRING)):
+            wx.MessageBox(caption="Warning",
+                          message="You're using version %s of wxPython, but this application needs version <= %s.\n"
+                          "There may be some version incompatibilities..."
+                          % (wx.VERSION_STRING, version.WX_PYTHON_VERSION_MAX))
 
         self.InitInspection()  # for the InspectionMixin base class
 
