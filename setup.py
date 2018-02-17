@@ -14,7 +14,8 @@ executables = [
 # Dependencies are automatically detected, but might need fine tuning.
 build_exe_options = {
     'packages': ['pandas', 'numpy'],
-    'includes': ['pandas', 'numpy']
+    'includes': ['pandas', 'numpy'],
+    'include_files': ['bitmaps/']
     }
 
 setup(name='wxPortfolio',
