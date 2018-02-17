@@ -18,6 +18,8 @@ build_exe_options = {
     'include_files': ['bitmaps/']
     }
 
+# To do: need to vastly expand the list of include_files, else wxPython does not find the bits and pieces it needs.
+
 setup(name='wxPortfolio',
       version='0.1',
       description='Portfolio management software',
