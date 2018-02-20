@@ -94,7 +94,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
         dataFrameCol = self._GetDataFrameCol(col)
 
-        parsedValue = self.ValidateValueByRow(value, row, col)
+        parsedValue = self.ParseValueByRow(value, row, col)
         
         if not parsedValue:
             return False
@@ -106,7 +106,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
         return False
 
-    def ValidateValueByRow(self, value, row, col):
+    def ParseValueByRow(self, value, row, col):
         if col == 0:
             if not Config.AccountFind(value):
                 self.log.write("Invalid account '%s', should be one of %s\n" % (value, Config.AccountList()))
@@ -272,7 +272,21 @@ class HoldingsPanel(wx.Panel):
         self.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.OnValueChanged, self.dvc)
         self.Bind(dv.EVT_DATAVIEW_SELECTION_CHANGED, self.OnSelectionChanged, self.dvc)
 
+    def GetColumnIdx(self, columnTitle):
+        i = 0
+        for c in self.dvc.Columns:
+            if c.Title == columnTitle:
+                return i
+            i += 1
 
+        return None
+
+    def GetColumnTitle(self, columnIdx):
+        if columnIdx < len(self.dvc.Columns):
+            return self.dvc.Columns[columnIdx].Title
+
+        return None
+        
     def OnDeleteRows(self, evt):
         # Remove the selected row(s) from the model. The model will take care
         # of notifying the view (and any other observers) that the change has
