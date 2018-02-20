@@ -110,6 +110,19 @@ class HoldingsModel(dv.DataViewIndexListModel):
                 self.log.write("Invalid account '%s', should be one of %s\n" % (value, Config.AccountList()))
                 return False
 
+        if col == 5:
+            try:
+                self.log.write("Validating date '%s'\n" % (value))
+                dt = wx.DateTime()
+                dt.ParseDate(value)
+                self.log.write("ParseDate(%s) = %s\n" % (value, dt))
+                date = "%s/%s/%s" % (dt.GetMonth()+1, dt.GetDay(), dt.GetYear())
+                self.log.write("ParseDate(%s) = %s\n" % (value, date))
+            except:
+                self.log.write("Invalid date format '%s'\n" % (value))
+                return False
+                
+                
         return True
 
     # Report how many columns this model provides data for.
@@ -126,10 +139,10 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # cell at (row, col)
     def GetAttrByRow(self, row, col, attr):
         ##self.log.write('GetAttrByRow: (%d, %d)' % (row, col))
-        if col == 4:
-            attr.SetColour('blue')
-            attr.SetBold(True)
-            return True
+        #if col == 4:
+        #    attr.SetColour('blue')
+        #    attr.SetBold(True)
+        #    return True
         return False
 
     def AddRow(self, id, value):
