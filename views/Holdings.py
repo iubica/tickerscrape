@@ -93,12 +93,14 @@ class HoldingsModel(dv.DataViewIndexListModel):
     def SetValueByRow(self, value, row, col):
         #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
         dataFrameCol = self._GetDataFrameCol(col)
- 
-        if not self.ValidateValueByRow(value, row, col):
+
+        parsedValue = self.ValidateValueByRow(value, row, col)
+        
+        if not parsedValue:
             return False
 
         if dataFrameCol is not None:
-            Config.holdingsDf.iloc[row, dataFrameCol] = value
+            Config.holdingsDf.iloc[row, dataFrameCol] = parsedValue
             Config.HoldingsChanged(True)
             return True
 
@@ -108,22 +110,20 @@ class HoldingsModel(dv.DataViewIndexListModel):
         if col == 0:
             if not Config.AccountFind(value):
                 self.log.write("Invalid account '%s', should be one of %s\n" % (value, Config.AccountList()))
-                return False
+                return None
 
         if col == 5:
             try:
-                self.log.write("Validating date '%s'\n" % (value))
                 dt = wx.DateTime()
                 dt.ParseDate(value)
-                self.log.write("ParseDate(%s) = %s\n" % (value, dt))
                 date = "%s/%s/%s" % (dt.GetMonth()+1, dt.GetDay(), dt.GetYear())
-                self.log.write("ParseDate(%s) = %s\n" % (value, date))
+                #self.log.write("ParseDate(%s) = %s\n" % (value, date))
+                value = date
             except:
-                self.log.write("Invalid date format '%s'\n" % (value))
-                return False
+                self.log.write("Invalid date format '%s', enter date as mm/dd/yyyy.\n" % (value))
+                return None                
                 
-                
-        return True
+        return value
 
     # Report how many columns this model provides data for.
     def GetColumnCount(self):
