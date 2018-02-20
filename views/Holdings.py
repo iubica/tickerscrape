@@ -86,12 +86,12 @@ class HoldingsModel(dv.DataViewIndexListModel):
         if dataFrameCol is not None:
             value = str(Config.holdingsDf.iloc[row, dataFrameCol])
 
-        #self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
+        self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
         return value
 
     # This method is called when the user edits a data item in the view.
     def SetValueByRow(self, value, row, col):
-        #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
+        self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
         dataFrameCol = self._GetDataFrameCol(col)
 
         parsedValue = self.ParseValueByRow(value, row, col)
@@ -272,6 +272,7 @@ class HoldingsPanel(wx.Panel):
         self.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.OnValueChanged, self.dvc)
         self.Bind(dv.EVT_DATAVIEW_SELECTION_CHANGED, self.OnSelectionChanged, self.dvc)
 
+    # Unused for now
     def GetColumnIdx(self, columnTitle):
         i = 0
         for c in self.dvc.Columns:
@@ -281,6 +282,7 @@ class HoldingsPanel(wx.Panel):
 
         return None
 
+    # Unused for now
     def GetColumnTitle(self, columnIdx):
         if columnIdx < len(self.dvc.Columns):
             return self.dvc.Columns[columnIdx].Title
