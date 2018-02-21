@@ -135,12 +135,16 @@ class HoldingsModel(dv.DataViewIndexListModel):
                 self.log.write("Invalid account '%s', should be one of %s\n" % (value, Config.AccountList()))
                 return None
 
+        if col == _GetColumnIdx("Ticker"):
+            if value != "Cash":
+                # Convert tickers to upper case
+                value = value.upper()
+
         if col == _GetColumnIdx("Purchase Date"):
             try:
                 dt = wx.DateTime()
                 dt.ParseDate(value)
                 date = "%s/%s/%s" % (dt.GetMonth()+1, dt.GetDay(), dt.GetYear())
-                #self.log.write("ParseDate(%s) = %s\n" % (value, date))
                 value = date
             except:
                 self.log.write("Invalid date format '%s', enter date as mm/dd/yyyy.\n" % (value))
