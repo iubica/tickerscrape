@@ -68,7 +68,7 @@ class CategoriesModel(dv.DataViewIndexListModel):
             if col == 0:
                 ret, err = Config.CategoriesChange(Config.categoriesDf.iloc[row, dataFrameCol], value)
                 if not ret:
-                    self.log.write("%s\n", err)
+                    self.log.write("%s\n" % (err))
                 return ret
             else:
                 # Simple change of values

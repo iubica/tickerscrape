@@ -519,6 +519,9 @@ def AccountChange(acctOld, acctNew):
     acctChanged = False
     holdingsChanged = False
 
+    if acctOld == acctNew:
+        return True, None
+    
     if AccountFind(acctNew):
         return False, "Account '%s' already configured" % acctNew
 
@@ -625,6 +628,9 @@ def AccountTypesFind(acct):
 def AccountTypesChange(acctTypeOld, acctTypeNew):
     acctTypesChanged = False
     acctChanged = False
+
+    if acctTypeOld == acctTypeNew:
+        return True, None
 
     if AccountTypesFind(acctTypeNew):
         return False, "Account type '%s' already configured" % acctTypeNew
@@ -1098,6 +1104,9 @@ def CategoriesFind(acct):
 #---------------------------------------------------------------------------
 def CategoriesChange(categoryOld, categoryNew):
     categoriesChanged = False
+
+    if categoryOld == categoryNew:
+        return True, None
 
     if CategoriesFind(categoryNew):
         return False, "Category '%s' already configured" % categoryNew
