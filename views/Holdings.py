@@ -4,7 +4,6 @@
 import wx
 import wx.dataview as dv
 import os, sys
-import csv
 import pandas as pd
 import Config
 import tickerscrape.morningstar
@@ -140,6 +139,20 @@ class HoldingsModel(dv.DataViewIndexListModel):
                 # Convert tickers to upper case
                 value = value.upper()
 
+        if col == _GetColumnIdx("Shares"):
+            # Remove commas
+            value = value.replace(",", "")
+            
+            value_float = float(value)
+            if int(value_float) == value_float:
+                # Use no decimal points
+                value = "{:,}".format(int(value_float))
+            elif 100*value_float == int(100*value_float):
+                value = "{:,.2f}".format(value_float)
+            else:
+                value = "{:,.3f}".format(round(value_float, 3))
+                
+                
         if col == _GetColumnIdx("Purchase Date"):
             try:
                 dt = wx.DateTime()
