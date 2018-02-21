@@ -19,13 +19,13 @@ _columnName = { 0 : "Account",
                 5 : "Purchase Date",
 }
 
-def GetColumnName(colIdx):
+def _GetColumnName(colIdx):
     try:
         return _columnName[colIdx]
     except:
         return None
 
-def GetColumnIdx(colName):
+def _GetColumnIdx(colName):
 
     for i in _columnName:
         if _columnName[i] == colName:
@@ -98,7 +98,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # This method is called to provide the data object for a
     # particular row,col
     def GetValueByRow(self, row, col):
-        if col == 2:
+        if _GetColumnName(col) == "Name":
             ticker = Config.holdingsDf.iloc[row, 1]
             value = tickerscrape.morningstar.ticker_name(ticker)
             return value if value else ""
@@ -249,26 +249,26 @@ class HoldingsPanel(wx.Panel):
         # using the same model that show different columns of data, or
         # that they can be in a different order than in the model.
         self.dvc.AppendTextColumn("Account",
-                                  GetColumnIdx("Account"),
+                                  _GetColumnIdx("Account"),
                                   width=150,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Ticker",
-                                  GetColumnIdx("Ticker"),
+                                  _GetColumnIdx("Ticker"),
                                   width=70,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Name",
-                                  GetColumnIdx("Name"),
+                                  _GetColumnIdx("Name"),
                                   width=150)
         self.dvc.AppendTextColumn("Shares",
-                                  GetColumnIdx("Shares"),
+                                  _GetColumnIdx("Shares"),
                                   width=80, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Cost Basis",
-                                  GetColumnIdx("Cost Basis"),
+                                  _GetColumnIdx("Cost Basis"),
                                   width=100, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Purchase Date",
-                                  GetColumnIdx("Purchase Date"),
+                                  _GetColumnIdx("Purchase Date"),
                                   width=100, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
 
