@@ -138,22 +138,41 @@ class HoldingsModel(dv.DataViewIndexListModel):
             if value != "Cash":
                 # Convert tickers to upper case
                 value = value.upper()
-
-        if col == _GetColumnIdx("Shares"):
+        elif col == _GetColumnIdx("Shares"):
             # Remove commas
             value = value.replace(",", "")
             
             value_float = float(value)
-            if int(value_float) == value_float:
-                # Use no decimal points
-                value = "{:,}".format(int(value_float))
+            value_float_rounded2 = round(value_float, 2)
+            value_float_rounded3 = round(value_float, 3)
+            value_int = int(value_float)
+
+            if value_int == value_float_rounded3:
+                # Use comma separator and no decimal points
+                value = "{:,}".format(value_int)
             elif 100*value_float == int(100*value_float):
+                # Use comma separator and two decimal points
                 value = "{:,.2f}".format(value_float)
             else:
+                # Use comma separator and three decimal points
                 value = "{:,.3f}".format(round(value_float, 3))
-                
-                
-        if col == _GetColumnIdx("Purchase Date"):
+
+        elif col == _GetColumnIdx("Cost Basis"):
+            # Remove commas
+            value = value.replace(",", "")
+            
+            value_float = float(value)
+            value_float_rounded2 = round(value_float, 2)
+            value_int = int(value_float)
+
+            if value_float_rounded2 == value_int:
+                # Use comma separator and no decimal points
+                value = "{:,}".format(value_int)
+            else:
+                # Use comma separator and two decimal points
+                value = "{:,.2f}".format(value_float_rounded2)
+
+        elif col == _GetColumnIdx("Purchase Date"):
             try:
                 dt = wx.DateTime()
                 dt.ParseDate(value)
