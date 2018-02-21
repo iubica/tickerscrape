@@ -99,7 +99,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
     def GetValueByRow(self, row, col):
         if _GetColumnName(col) == "Name":
             ticker = Config.holdingsDf.ix[row, "Ticker"]
-            value = tickerscrape.morningstar.ticker_name(ticker)
+            value = tickerscrape.morningstar.ticker_name(ticker.upper())
             return value if value else ""
 
         dataFrameCol = self._GetDataFrameCol(col)
@@ -135,17 +135,22 @@ class HoldingsModel(dv.DataViewIndexListModel):
                 return None
 
         if col == _GetColumnIdx("Ticker"):
-            if value != "Cash":
+            value_upper = value.upper()
+            if value != "Cash" and value != "New ticker":
                 # Convert tickers to upper case
-                value = value.upper()
+                value = value_upper
         elif col == _GetColumnIdx("Shares"):
             # Remove commas
             value = value.replace(",", "")
-            
-            value_float = float(value)
-            value_float_rounded2 = round(value_float, 2)
-            value_float_rounded3 = round(value_float, 3)
-            value_int = int(value_float)
+
+            try:
+                value_float = float(value)
+                value_float_rounded2 = round(value_float, 2)
+                value_float_rounded3 = round(value_float, 3)
+                value_int = int(value_float)
+            except:
+                self.log.write("Invalid number of shares '%s'\n" % (value))
+                return None
 
             if value_int == value_float_rounded3:
                 # Use comma separator and no decimal points
@@ -161,9 +166,13 @@ class HoldingsModel(dv.DataViewIndexListModel):
             # Remove commas
             value = value.replace(",", "")
             
-            value_float = float(value)
-            value_float_rounded2 = round(value_float, 2)
-            value_int = int(value_float)
+            try:
+                value_float = float(value)
+                value_float_rounded2 = round(value_float, 2)
+                value_int = int(value_float)
+            except:
+                self.log.write("Invalid cost basis '%s', enter a dollar amount\n" % (value))
+                return None            
 
             if value_float_rounded2 == value_int:
                 # Use comma separator and no decimal points
