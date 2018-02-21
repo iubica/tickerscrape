@@ -99,7 +99,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # particular row,col
     def GetValueByRow(self, row, col):
         if _GetColumnName(col) == "Name":
-            ticker = Config.holdingsDf.iloc[row, 1]
+            ticker = Config.holdingsDf.ix[row, "Ticker"]
             value = tickerscrape.morningstar.ticker_name(ticker)
             return value if value else ""
 
@@ -109,12 +109,12 @@ class HoldingsModel(dv.DataViewIndexListModel):
         if dataFrameCol is not None:
             value = str(Config.holdingsDf.iloc[row, dataFrameCol])
 
-        self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
+        #self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
         return value
 
     # This method is called when the user edits a data item in the view.
     def SetValueByRow(self, value, row, col):
-        self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
+        #self.log.write("SetValue: (%d,%d) %s\n" % (row, col, value))
         dataFrameCol = self._GetDataFrameCol(col)
 
         parsedValue = self.ParseValueByRow(value, row, col)
@@ -130,12 +130,12 @@ class HoldingsModel(dv.DataViewIndexListModel):
         return False
 
     def ParseValueByRow(self, value, row, col):
-        if col == 0:
+        if col == _GetColumnIdx("Account"):
             if not Config.AccountFind(value):
                 self.log.write("Invalid account '%s', should be one of %s\n" % (value, Config.AccountList()))
                 return None
 
-        if col == 5:
+        if col == _GetColumnIdx("Purchase Date"):
             try:
                 dt = wx.DateTime()
                 dt.ParseDate(value)
