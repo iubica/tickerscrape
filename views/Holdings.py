@@ -11,6 +11,28 @@ import tickerscrape.morningstar
 
 #---------------------------------------------------------------------------
 
+_columnName = { 0 : "Account",
+                1 : "Ticker",
+                2 : "Name",
+                3 : "Shares",
+                4 : "Cost Basis",
+                5 : "Purchase Date",
+}
+
+def GetColumnName(colIdx):
+    try:
+        return _columnName[colIdx]
+    except:
+        return None
+
+def GetColumnIdx(colName):
+
+    for i in _columnName:
+        if _columnName[i] == colName:
+            return i
+
+    return None
+
 #----------------------------------------------------------------------
 
 # This model class provides the data to the view when it is asked for.
@@ -64,6 +86,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
             modelCol = 5
 
         return modelCol
+
 
     # All of our columns are strings.  If the model or the renderers
     # in the view are other types then that should be reflected here.
@@ -225,16 +248,28 @@ class HoldingsPanel(wx.Panel):
         # fetch the data from.  This means that you can have views
         # using the same model that show different columns of data, or
         # that they can be in a different order than in the model.
-        self.dvc.AppendTextColumn("Account", 0, width=150,
+        self.dvc.AppendTextColumn("Account",
+                                  GetColumnIdx("Account"),
+                                  width=150,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Ticker", 1, width=70,
+        self.dvc.AppendTextColumn("Ticker",
+                                  GetColumnIdx("Ticker"),
+                                  width=70,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Name", 2, width=150)
-        self.dvc.AppendTextColumn("Shares", 3, width=80, 
+        self.dvc.AppendTextColumn("Name",
+                                  GetColumnIdx("Name"),
+                                  width=150)
+        self.dvc.AppendTextColumn("Shares",
+                                  GetColumnIdx("Shares"),
+                                  width=80, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Cost Basis", 4, width=100, 
+        self.dvc.AppendTextColumn("Cost Basis",
+                                  GetColumnIdx("Cost Basis"),
+                                  width=100, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Purchase Date", 5, width=100, 
+        self.dvc.AppendTextColumn("Purchase Date",
+                                  GetColumnIdx("Purchase Date"),
+                                  width=100, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
 
         for c in self.dvc.Columns:
@@ -272,23 +307,6 @@ class HoldingsPanel(wx.Panel):
         self.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.OnValueChanged, self.dvc)
         self.Bind(dv.EVT_DATAVIEW_SELECTION_CHANGED, self.OnSelectionChanged, self.dvc)
 
-    # Unused for now
-    def GetColumnIdx(self, columnTitle):
-        i = 0
-        for c in self.dvc.Columns:
-            if c.Title == columnTitle:
-                return i
-            i += 1
-
-        return None
-
-    # Unused for now
-    def GetColumnTitle(self, columnIdx):
-        if columnIdx < len(self.dvc.Columns):
-            return self.dvc.Columns[columnIdx].Title
-
-        return None
-        
     def OnDeleteRows(self, evt):
         # Remove the selected row(s) from the model. The model will take care
         # of notifying the view (and any other observers) that the change has
