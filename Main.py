@@ -2745,6 +2745,7 @@ def main():
     # Add these folders to the module search path
     sys.path.append("views")
     sys.path.append("widgets")
+    sys.path.append("tickerscrape")
     
     app = MyApp(False)
 
