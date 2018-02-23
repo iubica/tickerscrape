@@ -4,7 +4,7 @@
 of tickerscrape should end up being wxPortfolio/tickerscrape.
 
 - Python3 is required; use 'pip install' for all missing packages.
-  - On Windows, install Python3 from python.org. Both the 32 bit and 64 bit versions are supported. Set the python3 executable in the PATH.
+  - On Windows, install Python3 from http://python.org. Both the 32 bit and 64 bit versions are supported. Set the python3 executable in the PATH.
   - On Linux, follow distribution-specific steps to install Python3. On Centos 7, for example, install the python36u rpm package: https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-local-programming-environment-on-centos-7
   - On Mac OSX, install XCode, Homebrew, then install Python3 using Homebrew: http://docs.python-guide.org/en/latest/starting/install3/osx/ 
   
