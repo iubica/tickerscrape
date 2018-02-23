@@ -2743,6 +2743,10 @@ def main():
     except:
         pass
 
+    # Add these folders to the module search path
+    sys.path.append("views")
+    sys.path.append("widgets")
+    
     app = MyApp(False)
 
     # Read the initial portfolio holdings
