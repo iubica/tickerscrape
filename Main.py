@@ -26,8 +26,6 @@
 # * save file positions (new field in viewModule) (@ LoadViewSource)
 # * Update main overview
 
-# * Why don't we move Config.viewTree into a separate module
-
 # =====================
 # = EXTERNAL Packages =
 # =====================
@@ -77,6 +75,7 @@ from six.moves import cPickle
 from six.moves import urllib
 
 import version
+import ViewTree
 import Config
 
 # We won't import the images module yet, but we'll assign it to this
@@ -974,7 +973,7 @@ def HuntExternalViews():
 
     # Modify the tree items and icons
     index = 0
-    for category, demos in Config.viewTree:
+    for category, demos in ViewTree.viewTree:
         # We put the external packages right before the
         # More Windows/Controls item
         if category == "More Windows/Controls":
@@ -990,12 +989,12 @@ def HuntExternalViews():
     # Loop over all external packages
     for extern in keys:
         package = externalViews[extern]
-        # Insert a new package in the Config.viewTree of demos
-        Config.viewTree.insert(index, package.GetViews())
+        # Insert a new package in the ViewTree.viewTree of demos
+        ViewTree.viewTree.insert(index, package.GetViews())
         # Get the recent additions for this package
-        Config.viewTree[3][1].extend(package.GetRecentAdditions())
+        ViewTree.viewTree[3][1].extend(package.GetRecentAdditions())
         # Extend the demo bitmaps and the catalog
-        Config.viewPngs.insert(index+1, extern)
+        ViewTree.viewPngs.insert(index+1, extern)
         images.catalog[extern] = package.GetViewBitmap()
 
     # That's all folks...
@@ -1672,13 +1671,13 @@ class wxPortfolioFrame(wx.Frame):
 
         # Make a Views menu
         menu = wx.Menu()
-        for indx, item in enumerate(Config.viewTree[:-1]):
+        for indx, item in enumerate(ViewTree.viewTree[:-1]):
             menuItem = wx.MenuItem(menu, -1, item[0])
             submenu = wx.Menu()
             for childItem in item[1]:
                 mi = submenu.Append(-1, childItem)
                 self.Bind(wx.EVT_MENU, self.OnViewsMenu, mi)
-            menuItem.SetBitmap(images.catalog[Config.viewPngs[indx+1]].GetBitmap())
+            menuItem.SetBitmap(images.catalog[ViewTree.viewPngs[indx+1]].GetBitmap())
             menuItem.SetSubMenu(submenu)
             menu.Append(menuItem)
         self.mainmenu.Append(menu, '&Views')
@@ -1842,7 +1841,7 @@ class wxPortfolioFrame(wx.Frame):
         filter = self.filter.GetValue()
         count = 0
 
-        for category, items in Config.viewTree:
+        for category, items in ViewTree.viewTree:
             count += 1
             if filter:
                 if fullSearch:
@@ -1857,7 +1856,7 @@ class wxPortfolioFrame(wx.Frame):
                 for childItem in items:
                     image = count
                     if DoesModifiedExist(childItem):
-                        image = len(Config.viewPngs)
+                        image = len(ViewTree.viewPngs)
                     theDemo = self.tree.AppendItem(child, childItem, image=image)
                     self.tree.SetItemData(theDemo, count)
                     self.treeMap[childItem] = theDemo
@@ -1924,7 +1923,7 @@ class wxPortfolioFrame(wx.Frame):
 
         wx.BeginBusyCursor()
 
-        for category, items in Config.viewTree:
+        for category, items in ViewTree.viewTree:
             self.searchItems[category] = []
             for childItem in items:
                 if SearchView(childItem, value):
@@ -1937,7 +1936,7 @@ class wxPortfolioFrame(wx.Frame):
     def SetTreeModified(self, modified):
         item = self.tree.GetSelection()
         if modified:
-            image = len(Config.viewPngs)
+            image = len(ViewTree.viewPngs)
         else:
             image = self.tree.GetItemData(item)
         self.tree.SetItemImage(item, image)
@@ -2672,7 +2671,7 @@ class wxPortfolioTree(ExpansionState, TreeBaseClass):
 
     def BuildTreeImageList(self):
         imgList = wx.ImageList(16, 16)
-        for png in Config.viewPngs:
+        for png in ViewTree.viewPngs:
             imgList.Add(images.catalog[png].GetBitmap())
 
         # add the image for modified demos.
