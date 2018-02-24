@@ -32,6 +32,9 @@ def FloatToString(f, precision):
 
     if precision < 0:
         return None
+
+    # Round the number
+    f = round(f, precision)
     
     # Truncate to integer
     f_int = int(f)
@@ -51,6 +54,5 @@ def FloatToString(f, precision):
             return "{:,.3f}".format(f_rounded3)
 
     # Print with general decimal precision
-    f_rounded = round(f, precision)
     fmt = "{:,.%df}" % precision
-    return fmt.format(round(f, precision))
+    return fmt.format(f)

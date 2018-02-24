@@ -6,6 +6,7 @@ import wx.dataview as dv
 import os, sys
 import pandas as pd
 import Config
+import Format
 import tickerscrape.morningstar
 
 #---------------------------------------------------------------------------
@@ -147,54 +148,20 @@ class HoldingsModel(dv.DataViewIndexListModel):
                 # Convert tickers to upper case
                 value = value_upper
         elif col == _GetColumnIdx("Shares"):
-            # Remove commas
-            value = value.replace(",", "")
-
-            # Strip leading dollar sign
-            if value[0] == "$":
-                value = value[1:]
-
-            try:
-                value_float = float(value)
-                value_float_rounded2 = round(value_float, 2)
-                value_float_rounded3 = round(value_float, 3)
-                value_int = int(value_float)
-            except:
+            f = Format.StringToFloat(value)
+            if not f:
                 self.log.write("Invalid number of shares '%s'\n" % (value))
                 return None
-
-            if value_int == value_float_rounded3:
-                # Use comma separator and no decimal points
-                value = "{:,}".format(value_int)
-            elif 100*value_float == int(100*value_float):
-                # Use comma separator and two decimal points
-                value = "{:,.2f}".format(value_float)
-            else:
-                # Use comma separator and three decimal points
-                value = "{:,.3f}".format(round(value_float, 3))
+                
+            value = Format.FloatToString(f, 3)
 
         elif col == _GetColumnIdx("Cost Basis"):
-            # Remove commas
-            value = value.replace(",", "")
-
-            # Strip leading dollar sign
-            if value[0] == "$":
-                value = value[1:]
-            
-            try:
-                value_float = float(value)
-                value_float_rounded2 = round(value_float, 2)
-                value_int = int(value_float)
-            except:
+            f = Format.StringToFloat(value)
+            if not f:
                 self.log.write("Invalid cost basis '%s', enter a dollar amount\n" % (value))
-                return None            
-
-            if value_float_rounded2 == value_int:
-                # Use comma separator and no decimal points
-                value = "{:,}".format(value_int)
-            else:
-                # Use comma separator and two decimal points
-                value = "{:,.2f}".format(value_float_rounded2)
+                return None
+                
+            value = Format.FloatToString(f, 2)
 
         elif col == _GetColumnIdx("Purchase Date"):
             try:
