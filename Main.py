@@ -2103,7 +2103,7 @@ class wxPortfolioFrame(wx.Frame):
     #---------------------------------------------
     def UpdateNotebook(self, select = -1):
         nb = self.nb
-        debug = True
+        debug = False
         self.pnl.Freeze()
 
         def UpdatePage(page, pageText):
