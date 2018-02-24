@@ -97,17 +97,29 @@ class HoldingsModel(dv.DataViewIndexListModel):
     # This method is called to provide the data object for a
     # particular row,col
     def GetValueByRow(self, row, col):
+
+        ticker = Config.holdingsDf.ix[row, "Ticker"]
+
         if _GetColumnName(col) == "Name":
-            ticker = Config.holdingsDf.ix[row, "Ticker"]
             value = tickerscrape.morningstar.ticker_name(ticker.upper())
             return value if value else ""
-
+            
         dataFrameCol = self._GetDataFrameCol(col)
         
         value = ""
         if dataFrameCol is not None:
             value = str(Config.holdingsDf.iloc[row, dataFrameCol])
 
+        if col == _GetColumnIdx("Shares"):
+            # Prepend a dollar sign only if ticker is Cash or Other
+            if ticker.lower() == "cash" or ticker.lower() == "other":
+                if value != "":
+                    value = "$" + value
+        elif col == _GetColumnIdx("Cost Basis"):
+            # Prepend a dollar sign
+            if value != "":
+                value = "$" + value
+            
         #self.log.write("GetValue: (%d,%d) %s\n" % (row, col, value))
         return value
 
@@ -143,6 +155,10 @@ class HoldingsModel(dv.DataViewIndexListModel):
             # Remove commas
             value = value.replace(",", "")
 
+            # Strip leading dollar sign
+            if value[0] == "$":
+                value = value[1:]
+
             try:
                 value_float = float(value)
                 value_float_rounded2 = round(value_float, 2)
@@ -165,6 +181,10 @@ class HoldingsModel(dv.DataViewIndexListModel):
         elif col == _GetColumnIdx("Cost Basis"):
             # Remove commas
             value = value.replace(",", "")
+
+            # Strip leading dollar sign
+            if value[0] == "$":
+                value = value[1:]
             
             try:
                 value_float = float(value)
