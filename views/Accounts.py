@@ -263,6 +263,7 @@ class AccountsPanel(wx.Panel):
         self.model.MoveUp(rows)
 
         # Keep the moved-up rows selected
+        self.dvc.UnselectAll()
         items = dv.DataViewItemArray()
         for row in rows:
             items.append(self.model.GetItem(row - 1))
@@ -275,6 +276,7 @@ class AccountsPanel(wx.Panel):
         self.model.MoveDown(rows)
 
         # Keep the moved-down rows selected
+        self.dvc.UnselectAll()
         items = dv.DataViewItemArray()
         for row in rows:
             items.append(self.model.GetItem(row + 1))

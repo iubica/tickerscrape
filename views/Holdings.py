@@ -136,7 +136,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
         if col == _GetColumnIdx("Ticker"):
             value_upper = value.upper()
-            if value != "Cash" and value != "New ticker":
+            if value != "Cash" and value != "Other" and value != "New ticker":
                 # Convert tickers to upper case
                 value = value_upper
         elif col == _GetColumnIdx("Shares"):
@@ -380,6 +380,7 @@ class HoldingsPanel(wx.Panel):
         self.model.MoveUp(rows)
 
         # Keep the moved-up rows selected
+        self.dvc.UnselectAll()
         items = dv.DataViewItemArray()
         for row in rows:
             items.append(self.model.GetItem(row - 1))
@@ -392,6 +393,7 @@ class HoldingsPanel(wx.Panel):
         self.model.MoveDown(rows)
 
         # Keep the moved-down rows selected
+        self.dvc.UnselectAll()
         items = dv.DataViewItemArray()
         for row in rows:
             items.append(self.model.GetItem(row + 1))
