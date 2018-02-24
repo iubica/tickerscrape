@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import DataFrameViewCtrl
 import Config
+import Format
 import tickerscrape.morningstar
 
 #---------------------------------------------------------------------------
@@ -40,6 +41,37 @@ def GetWindow(frame, nb, log):
         pf.ix[row, "Ticker"] = ticker
         pf.ix[row, "Name"] = tickerscrape.morningstar.ticker_name(ticker.upper())
         pf.ix[row, "Account"] = account
+
+        # Compute the shares
+        shares = 0
+        sharesSet = True
+        costBasis = 0
+        costBasisSet = True
+        for i in range(Config.holdingsDf.shape[0]):
+            ticker1 = Config.holdingsDf.ix[i, "Ticker"]
+            account1 = Config.holdingsDf.ix[i, "Account"]
+            shares1 = Config.holdingsDf.ix[i, "Shares"]
+            costBasis1 = Config.holdingsDf.ix[i, "Cost Basis"]
+            if ticker == ticker1 and account == account1:
+                if shares1:                    
+                    shares = shares + Format.StringToFloat(shares1)
+                else:
+                    sharesSet = False
+                if costBasis1:
+                    costBasis = costBasis + Format.StringToFloat(costBasis1)
+                else:
+                    costBasisSet = False
+
+        if sharesSet:
+            pf.ix[row, "Shares"] = Format.FloatToString(shares, 3)
+        else:
+            pf.ix[row, "Shares"] = ""
+            
+        if costBasisSet:
+            pf.ix[row, "Cost Basis"] = "$" + Format.FloatToString(costBasis, 2)
+        else:
+            pf.ix[row, "Cost Basis"] = ""
+            
         row = row+1
     
     # Promote 1st column as new index
