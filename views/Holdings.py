@@ -110,12 +110,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         if dataFrameCol is not None:
             value = str(Config.holdingsDf.iloc[row, dataFrameCol])
 
-        if col == _GetColumnIdx("Shares"):
-            # Prepend a dollar sign only if ticker is Cash or Other
-            if ticker.lower() == "cash" or ticker.lower() == "other":
-                if value != "":
-                    value = "$" + value
-        elif col == _GetColumnIdx("Cost Basis"):
+        if col == _GetColumnIdx("Cost Basis"):
             # Prepend a dollar sign
             if value != "":
                 value = "$" + value
