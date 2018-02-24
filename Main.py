@@ -1469,7 +1469,12 @@ class wxPortfolioFrame(wx.Frame):
 
         # Create a Notebook
         self.nb = wx.Notebook(pnl, -1, style=wx.CLIP_CHILDREN)
-        if 'wxMac' not in wx.PlatformInfo:
+
+        self.useNbImages = True
+        if 'wxMac' in wx.PlatformInfo:
+            self.useNbImages = False
+            
+        if self.useNbImages:
             imgList = wx.ImageList(16, 16)
             for png in ["overview", "code", "demo"]:
                 bmp = images.catalog[png].GetBitmap()
@@ -2098,7 +2103,7 @@ class wxPortfolioFrame(wx.Frame):
     #---------------------------------------------
     def UpdateNotebook(self, select = -1):
         nb = self.nb
-        debug = False
+        debug = True
         self.pnl.Freeze()
 
         def UpdatePage(page, pageText):
@@ -2201,7 +2206,8 @@ class wxPortfolioFrame(wx.Frame):
                 self.log.AppendText("\n".join(error))
                 self.sendDownloadError = False
 
-        self.nb.SetPageImage(0, 0)
+        if self.useNbImages:
+            self.nb.SetPageImage(0, 0)
 
         self.internetThread.keepRunning = False
         self.internetThread = None
@@ -2552,7 +2558,8 @@ class wxPortfolioFrame(wx.Frame):
         if self.downloadImage > 9:
             self.downloadImage = 3
 
-        self.nb.SetPageImage(0, self.downloadImage)
+        if self.useNbImages:
+            self.nb.SetPageImage(0, self.downloadImage)
 ##        wx.SafeYield()
 
     #---------------------------------------------
