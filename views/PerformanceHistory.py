@@ -37,7 +37,11 @@ def GetWindow(frame, nb, log):
         df = tickerscrape.morningstar.performance_history(ticker)
         if df is not None:
             pfh = pfh.append(df)
-            
+
+    # Revert the column order so the most recent performance is displayed
+    # on left
+    pfh = pfh.iloc[:, ::-1] 
+    
     win = DataFrameViewCtrl.Panel(nb, pfh, log)
     return win
 
