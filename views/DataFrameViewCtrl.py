@@ -68,10 +68,10 @@ class Model(dv.DataViewIndexListModel):
     # cell at (row, col)
     def GetAttrByRow(self, row, col, attr):
         ##self.log.write('GetAttrByRow: (%d, %d)' % (row, col))
-        if col == 4:
-            attr.SetColour('blue')
-            attr.SetBold(True)
-            return True
+#        if col == 4:
+#            attr.SetColour('blue')
+#            attr.SetBold(True)
+#            return True
         return False
 
 class Panel(wx.Panel):
