@@ -7,6 +7,7 @@ Globals for the main.py wxPython views.
 import wx
 import pandas as pd
 import Main
+import xml.etree.ElementTree as ET
 
 #---------------------------------------------------------------------------
 # Get the entire portfolio
@@ -15,6 +16,8 @@ def PortfolioRead():
     AccountsRead()
     AccountTypesRead()
     CategoriesRead()
+
+    PortfolioReadXml()
 
 #---------------------------------------------------------------------------
 # Save the entire portfolio
@@ -805,7 +808,46 @@ def PortfolioReadXml(fileName = None):
     fileName - where to read xml config from. If None, configuration will be
         read from <standard user path>/wxPortfolio.xml
     """
-    pass
+    if not fileName:
+        # Get the wxPython standard paths
+        sp = wx.StandardPaths.Get()
+        fileName = sp.GetUserDataDir() + "/wxPortfolio.xml"
+
+    tree = ET.parse(fileName)
+    root = tree.getroot()
+    
+    # Build the holdings list
+    holdingsList = []
+    for i in root.iter('holding'):
+        holdingsList.append(i.attrib)
+
+    global holdingsDf
+    holdingsDf = pd.DataFrame.from_dict(holdingsList)
+    holdingsDf.rename(index=str, columns={"account":"Account", "ticker":"Ticker", "shares":"Shares", "cost-basis":"Cost Basis", "purchase-date":"Purchase Date"}, inplace=True)
+
+    # Order the columns
+    holdingsDf = holdingsDf[["Account",
+                             "Ticker", 
+                             "Shares", 
+                             "Cost Basis", 
+                             "Purchase Date"]]
+    
+    # Build the accounts list
+    accountsList = []
+    for i in root.iter('account'):
+        accountsList.append(i.attrib)
+
+    global accountsDf
+    accountsDf = pd.DataFrame.from_dict(accountsList)
+    accountsDf.rename(index=str, columns={"name":"Account Name", "number":"Account Number", "type":"Type"}, inplace=True)
+
+    # Order the columns
+    accountsDf = accountsDf[["Account Name", 
+                             "Account Number", 
+                             "Type"]]
+
+    print(accountsDf)
+
 
 def PortfolioSaveXml(fileName = None):
     """
