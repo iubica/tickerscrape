@@ -24,6 +24,8 @@ def PortfolioSave():
     AccountTypesSave()
     CategoriesSave()
 
+    PortfolioSaveXml()
+
 #---------------------------------------------------------------------------
 # Called with changed = True or False when holdings are different (or unchanged)
 # from the holdings.csv, and called with changed = None to just return
@@ -598,7 +600,7 @@ def CategoriesRead():
                 "Money Market",
                 "Money Market",
             ],
-            "Benchmark ETF": [
+            "Benchmark": [
                 "", # U.S. Equity
                 "", 
                 "", 
@@ -727,7 +729,7 @@ def CategoriesRead():
         # Order the columns
         categoriesDf = categoriesDf[["Category Name", 
                                      "Category Group", 
-                                     "Benchmark ETF"]]
+                                     "Benchmark"]]
         
         # Accounts have been modified
         CategoriesChanged(True)
@@ -792,3 +794,48 @@ def CategoriesChange(categoryOld, categoryNew):
         CategoriesChanged(True)
 
     return True, None
+
+
+def PortfolioReadXml(fileName = None):
+    """
+    Description:
+    Read wxPortfolio xml format config from fileName
+
+    Parameters:
+    fileName - where to read xml config from. If None, configuration will be
+        read from <standard user path>/wxPortfolio.xml
+    """
+    pass
+
+def PortfolioSaveXml(fileName = None):
+    """
+    Description:
+    Save wxPortfolio config to fileName in xml format
+
+    Parameters:
+    fileName - where to store the xml file. If None, configuration will be
+        stored in <standard user path>/wxPortfolio.xml
+    """
+
+    if not fileName:
+        # Get the wxPython standard paths
+        sp = wx.StandardPaths.Get()
+        fileName = sp.GetUserDataDir() + "/wxPortfolio.xml"
+
+    with open(fileName, "w") as f:
+        f.write("<wx-portfolio>\n")
+
+        for i in range(holdingsDf.shape[0]):
+            f.write(" <holding account=\"%s\" ticker=\"%s\" shares=\"%s\" cost-basis=\"%s\" purchase-date=\"%s\"/>\n" % (holdingsDf.ix[i, "Account"], holdingsDf.ix[i, "Ticker"], holdingsDf.ix[i, "Shares"], holdingsDf.ix[i, "Cost Basis"], holdingsDf.ix[i, "Purchase Date"]))
+
+        for i in range(accountsDf.shape[0]):
+            f.write(" <account name=\"%s\" number=\"%s\" type=\"%s\"/>\n" % (accountsDf.ix[i, "Account Name"], accountsDf.ix[i, "Account Number"], accountsDf.ix[i, "Type"]))
+
+        for i in range(accountTypesDf.shape[0]):
+            f.write(" <account-type type=\"%s\" long-term-capital-gains-tax=\"%s\" short-term-capital-gains-tax=\"%s\" liquidation-tax=\"%s\"/>\n" % (accountTypesDf.ix[i, "Account Type"], accountTypesDf.ix[i, "Long Term Capital Gains Tax"], accountTypesDf.ix[i, "Short Term Capital Gains Tax"], accountTypesDf.ix[i, "Liquidation Tax"]))
+
+        for i in range(categoriesDf.shape[0]):
+            f.write(" <category name=\"%s\" group=\"%s\" benchmark=\"%s\"/>\n" % (categoriesDf.ix[i, "Category Name"], categoriesDf.ix[i, "Category Group"], categoriesDf.ix[i, "Benchmark ETF"]))
+
+        f.write("</wx-portfolio>\n")
+
