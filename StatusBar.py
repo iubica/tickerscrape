@@ -23,6 +23,10 @@ def DeInit():
     Description:
     Deinitialize the status bar
     """
+    
+    global _statusBarTimer
+    global _statusBar
+
     # Reset the timer
     if _statusBarTimer:
         _statusBarTimer.cancel()

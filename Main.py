@@ -1614,7 +1614,6 @@ class wxPortfolioFrame(wx.Frame):
 
         self.mgr.SetAGWFlags(self.mgr.GetAGWFlags() ^ aui.AUI_MGR_TRANSPARENT_DRAG)
 
-
     def ReadConfigurationFile(self):
 
         self.auiConfigurations = {}
@@ -2268,6 +2267,7 @@ class wxPortfolioFrame(wx.Frame):
         StatusBar.Set("Portfolio saved")
 
     def OnFileExit(self, *event):
+        StatusBar.DeInit()
         self.Close()
 
     def OnToggleRedirect(self, event):
@@ -2540,6 +2540,7 @@ class wxPortfolioFrame(wx.Frame):
                              wx.ICON_QUESTION | wx.YES_NO) == wx.YES:
                 Config.PortfolioSave()
 
+        StatusBar.DeInit()
         self.Destroy()
 
 
