@@ -77,6 +77,7 @@ from six.moves import urllib
 import version
 import ViewTree
 import Config
+import StatusBar
 
 # We won't import the images module yet, but we'll assign it to this
 # global when we do.
@@ -1445,9 +1446,6 @@ class wxPortfolioFrame(wx.Frame):
         self.statusBar = self.CreateStatusBar(2)#, wx.ST_SIZEGRIP
         self.statusBar.SetStatusWidths([-2, -1])
 
-        statusText = "Welcome to wxPortfolio %s" % version.VERSION_STRING
-        self.statusBar.SetStatusText(statusText, 0)
-
         self.downloadGauge = wx.Gauge(self.statusBar, wx.ID_ANY, 50)
         self.downloadGauge.SetToolTip("Downloading Docs...")
         self.downloadGauge.Hide()
@@ -1457,6 +1455,11 @@ class wxPortfolioFrame(wx.Frame):
 
         self.statusBar.Bind(wx.EVT_SIZE, self.OnStatusBarSize)
         self.statusBar.Bind(wx.EVT_IDLE, self.OnStatusBarIdle)
+
+        StatusBar.Init(self.statusBar)
+
+        statusText = "Welcome to wxPortfolio %s" % version.VERSION_STRING
+        StatusBar.Set(statusText)
 
         self.dying = False
         self.skipLoad = False
@@ -2262,7 +2265,7 @@ class wxPortfolioFrame(wx.Frame):
     # Menu methods
     def OnFileSave(self, *event):
         Config.PortfolioSave()
-        self.statusBar.SetStatusText("Portfolio saved", 0)
+        StatusBar.Set("Portfolio saved")
 
     def OnFileExit(self, *event):
         self.Close()
