@@ -12,21 +12,11 @@ import xml.etree.ElementTree as ET
 #---------------------------------------------------------------------------
 # Get the entire portfolio
 def PortfolioRead():
-    HoldingsRead()
-    AccountsRead()
-    AccountTypesRead()
-    CategoriesRead()
-
     PortfolioReadXml()
 
 #---------------------------------------------------------------------------
 # Save the entire portfolio
 def PortfolioSave():
-    HoldingsSave()
-    AccountsSave()
-    AccountTypesSave()
-    CategoriesSave()
-
     PortfolioSaveXml()
 
 #---------------------------------------------------------------------------
@@ -811,44 +801,513 @@ def PortfolioReadXml(fileName = None):
     if not fileName:
         # Get the wxPython standard paths
         sp = wx.StandardPaths.Get()
-        fileName = sp.GetUserDataDir() + "/wxPortfolio.xml"
-
-    tree = ET.parse(fileName)
-    root = tree.getroot()
-    
-    # Build the holdings list
-    holdingsList = []
-    for i in root.iter('holding'):
-        holdingsList.append(i.attrib)
+        fName = sp.GetUserDataDir() + "/wxPortfolio.xml"
+    else:
+        fName = fileName    
 
     global holdingsDf
-    holdingsDf = pd.DataFrame.from_dict(holdingsList)
-    holdingsDf.rename(index=str, columns={"account":"Account", "ticker":"Ticker", "shares":"Shares", "cost-basis":"Cost Basis", "purchase-date":"Purchase Date"}, inplace=True)
-
-    # Order the columns
-    holdingsDf = holdingsDf[["Account",
-                             "Ticker", 
-                             "Shares", 
-                             "Cost Basis", 
-                             "Purchase Date"]]
-    
-    # Build the accounts list
-    accountsList = []
-    for i in root.iter('account'):
-        accountsList.append(i.attrib)
-
     global accountsDf
-    accountsDf = pd.DataFrame.from_dict(accountsList)
-    accountsDf.rename(index=str, columns={"name":"Account Name", "number":"Account Number", "type":"Type"}, inplace=True)
+    global accountTypesDf
+    global categoriesDf
 
-    # Order the columns
-    accountsDf = accountsDf[["Account Name", 
-                             "Account Number", 
-                             "Type"]]
+    try:
+        tree = ET.parse(fName)
+        root = tree.getroot()
+    
+        # Build the holdings list
+        holdingsList = []
+        for i in root.iter('holding'):
+            holdingsList.append(i.attrib)
 
-    print(accountsDf)
+        holdingsDf = pd.DataFrame.from_dict(holdingsList)
+        holdingsDf.rename(index=str, columns={"account":"Account", "ticker":"Ticker", "shares":"Shares", "cost-basis":"Cost Basis", "purchase-date":"Purchase Date"}, inplace=True)
 
+        # Order the columns
+        holdingsDf = holdingsDf[["Account",
+                                 "Ticker", 
+                                 "Shares", 
+                                 "Cost Basis", 
+                                 "Purchase Date"]]
+    
+        # Build the accounts list
+        accountsList = []
+        for i in root.iter('account'):
+            accountsList.append(i.attrib)
+            
+        accountsDf = pd.DataFrame.from_dict(accountsList)
+        accountsDf.rename(index=str, columns={"name":"Account Name", "number":"Account Number", "type":"Type"}, inplace=True)
 
+        # Order the columns
+        accountsDf = accountsDf[["Account Name", 
+                                 "Account Number", 
+                                 "Type"]]
+
+        # Build the account types list
+        accountTypesList = []
+        for i in root.iter('account-type'):
+            accountTypesList.append(i.attrib)
+
+        accountTypesDf = pd.DataFrame.from_dict(accountTypesList)
+        accountTypesDf.rename(index=str, columns={"type":"Account Type", "long-term-capital-gains-tax":"Long Term Capital Gains Tax", "short-term-capital-gains-tax":"Short Term Capital Gains Tax", "liquidation-tax":"Liquidation Tax"}, inplace=True)
+    
+        # Order the columns
+        accountTypesDf = accountTypesDf[["Account Type", 
+                                         "Long Term Capital Gains Tax", 
+                                         "Short Term Capital Gains Tax", 
+                                         "Liquidation Tax"]]
+    
+        # Build the categories list
+        categoriesList = []
+        for i in root.iter('category'):
+            categoriesList.append(i.attrib)
+
+        categoriesDf = pd.DataFrame.from_dict(categoriesList)
+        categoriesDf.rename(index=str, columns={"name":"Category Name", "group":"Category Group", "benchmark":"Benchmark"}, inplace=True)
+    
+        # Order the columns
+        categoriesDf = categoriesDf[["Category Name", 
+                                     "Category Group", 
+                                     "Benchmark"]]
+    except OSError as e:
+        if fileName:
+            # Don't set anything
+            return
+
+        # Create an empty DataFrame with unordered columns
+        holdingsDf = pd.DataFrame.from_dict({
+            "Account": ["", ""],
+            "Ticker": ["SPY", "FUSEX"],
+            "Shares": ["100", "150"],
+            "Cost Basis": ["150000.00", "100.00"],
+            "Purchase Date": ["2/3/2011", "2/4/2011"]
+        })
+        
+        # Order the columns
+        holdingsDf = holdingsDf[["Account",
+                                 "Ticker", 
+                                 "Shares", 
+                                 "Cost Basis", 
+                                 "Purchase Date"]]
+
+        # Create an empty DataFrame with unordered columns
+        accountsDf = pd.DataFrame.from_dict({
+            "Account Name": ["Account One", "Account Two"],
+            "Account Number": ["100", "101"],
+            "Type": ["Brokerage", "401K"],
+        })
+        
+        # Order the columns
+        accountsDf = accountsDf[["Account Name", 
+                                 "Account Number", 
+                                 "Type"]]
+
+        # Create an empty DataFrame with unordered columns
+        accountTypesDf = pd.DataFrame.from_dict({
+            "Account Type": ["Brokerage", "401K", "Roth 401K", "IRA", "Roth IRA", "529"],
+            "Long Term Capital Gains Tax": ["15%", "", "", "", "", ""],
+            "Short Term Capital Gains Tax": ["35%", "", "", "", "", ""],
+            "Liquidation Tax": ["", "35%", "", "35%", "", ""],
+        })
+        
+        # Order the columns
+        accountTypesDf = accountTypesDf[["Account Type", 
+                                         "Long Term Capital Gains Tax", 
+                                         "Short Term Capital Gains Tax", 
+                                         "Liquidation Tax"]]
+        
+        # Create an empty DataFrame with unordered columns
+        categoriesDf = pd.DataFrame.from_dict({
+            "Category Name": [
+                "Large Value", # U.S. Equity
+                "Large Blend",
+                "Large Growth",
+                "Mid-Cap Value",
+                "Mid-Cap Blend",
+                "Mid-Cap Growth",
+                "Small Value",
+                "Small Blend",
+                "Small Growth",
+                "Leveraged Net Long",
+
+                "Communications", # Sector Equity
+                "Consumer Cyclical", 
+                "Consumer Defensive", 
+                "Energy Limited Partnership", 
+                "Equity Energy", 
+                "Equity Precious Metals", 
+                "Financial", 
+                "Global Real Estate", 
+                "Health", 
+                "Industrials", 
+                "Natural Resources", 
+                "Real Estate", 
+                "Technology", 
+                "Utilities", 
+                "Miscellaneous Sector", 
+
+                "Convertibles", # Allocation
+                "Conservative Allocation",
+                "Moderate Allocation",
+                "Aggressive Allocation",
+                "World Allocation",
+                "Tactical Allocation",
+                "Target Date 2000-2010",
+                "Target Date 2011-2015",
+                "Target Date 2016-2020",
+                "Target Date 2021-2025",
+                "Target Date 2026-2030",
+                "Target Date 2031-2035",
+                "Target Date 2036-2040", 
+                "Target Date 2041-2045", 
+                "Target Date 2046-2050", 
+                "Target Date 2051+", 
+                "Retirement Income", 
+
+                "Foreign Large Value", # International Equity
+                "Foreign Large Blend",
+                "Foreign Large Growth",
+                "Foreign Small/Mid Value",
+                "Foreign Small/Mid Blend",
+                "Foreign Small/Mid Growth",
+                "World Stock",
+                "Diversified Emerging Markets",
+                "Diversified Pacific/Asia",
+                "Miscellaneous Region",
+                "Europe Stock",
+                "Latin America Stock",
+                "Pacific/Asia ex-Japan Stock",
+                "China Region",
+                "India Equity",
+                "Japan Stock",
+
+                "Bear Market", # Alternative
+                "Multicurrency",
+                "Single Currency",
+                "Long/Short Equity",
+                "Market Neutral",
+                "Multialternative",
+                "Managed Futures",
+                "Volatility",
+                "Trading--Leveraged Commodities",
+                "Trading--Inverse Commodities",
+                "Trading--Leveraged Debt",
+                "Trading--Inverse Debt",
+                "Trading--Leveraged Equity",
+                "Trading--Inverse Equity",
+                "Trading--Miscellaneous",
+
+                "Commodities Agriculture", # Commodities
+                "Commodities Broad Basket",
+                "Commodities Energy",
+                "Commodities Industrial Metals",
+                "Commodities Miscellaneous",
+                "Commodities Precious Metals",
+
+                "Long Government", # Taxable Bond
+                "Intermediate Government",
+                "Short Government",
+                "Inflation-Protected Bond",
+                "Long-Term Bond",
+                "Intermediate-Term Bond",
+                "Short-Term Bond",
+                "Ultrashort Bond",
+                "Bank Loan",
+                "Stable Value",
+                "Corporate Bond",
+                "Preferred Stock",
+                "High-Yield Bond",
+                "Multisector Bond",
+                "World Bond",
+                "Emerging-Markets Bond",
+                "Nontraditional Bond",
+                
+                "Muni National Long", # Municipal Bond
+                "Muni National Intermediate",
+                "Muni National Short",
+                "High-Yield Muni",
+                "Muni Single State Long",
+                "Muni Single State Intermediate",
+                "Muni Single State Short",
+                "Muni California Long",
+                "Muni California Intermediate",
+                "Muni Massachusetts",
+                "Muni Minnesota",
+                "Muni New Jersey",
+                "Muni New York Long",
+                "Muni New York Intermediate",
+                "Muni Ohio",
+                "Muni Pennsylvania",
+
+                "Taxable Money Market", # Money Market
+                "Tax-Free Money Market",
+            ],
+            "Category Group": [
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+                "U.S. Equity",
+
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+                "Sector Equity", 
+
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+                "Allocation", 
+
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity", 
+                "International Equity",
+
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+                "Alternative",
+
+                "Commodities",
+                "Commodities",
+                "Commodities",
+                "Commodities",
+                "Commodities",
+                "Commodities",
+
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+                "Taxable Bond",
+
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+                "Municipal Bond",
+
+                "Money Market",
+                "Money Market",
+            ],
+            "Benchmark": [
+                "", # U.S. Equity
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+
+                "", # Sector Equity
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+
+                "SPY", # Allocation
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+                "", 
+
+                "", # International Equity
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+
+                "", # Alternative
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+
+                "", # Commodities
+                "",
+                "",
+                "",
+                "",
+                "",
+
+                "", # Taxable Bond
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                
+                "", # Municipal Bond
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+
+                "", # Money Market
+                "",
+            ],
+        })
+        
+        # Order the columns
+        categoriesDf = categoriesDf[["Category Name", 
+                                     "Category Group", 
+                                     "Benchmark"]]
+        
+    if not fileName:
+        HoldingsChanged(False)
+        AccountsChanged(False)
+        AccountTypesChanged(False)
+        CategoriesChanged(False)        
+    else:
+        HoldingsChanged(True)
+        AccountsChanged(True)
+        AccountTypesChanged(True)
+        CategoriesChanged(True)        
+   
+    
 def PortfolioSaveXml(fileName = None):
     """
     Description:
@@ -862,10 +1321,12 @@ def PortfolioSaveXml(fileName = None):
     if not fileName:
         # Get the wxPython standard paths
         sp = wx.StandardPaths.Get()
-        fileName = sp.GetUserDataDir() + "/wxPortfolio.xml"
+        fName = sp.GetUserDataDir() + "/wxPortfolio.xml"
+    else:
+        fName = fileName    
 
-    with open(fileName, "w") as f:
-        f.write("<wx-portfolio>\n")
+    with open(fName, "w") as f:
+        f.write("<wx-portfolio version=\"1.0\">\n")
 
         for i in range(holdingsDf.shape[0]):
             f.write(" <holding account=\"%s\" ticker=\"%s\" shares=\"%s\" cost-basis=\"%s\" purchase-date=\"%s\"/>\n" % (holdingsDf.ix[i, "Account"], holdingsDf.ix[i, "Ticker"], holdingsDf.ix[i, "Shares"], holdingsDf.ix[i, "Cost Basis"], holdingsDf.ix[i, "Purchase Date"]))
@@ -877,7 +1338,13 @@ def PortfolioSaveXml(fileName = None):
             f.write(" <account-type type=\"%s\" long-term-capital-gains-tax=\"%s\" short-term-capital-gains-tax=\"%s\" liquidation-tax=\"%s\"/>\n" % (accountTypesDf.ix[i, "Account Type"], accountTypesDf.ix[i, "Long Term Capital Gains Tax"], accountTypesDf.ix[i, "Short Term Capital Gains Tax"], accountTypesDf.ix[i, "Liquidation Tax"]))
 
         for i in range(categoriesDf.shape[0]):
-            f.write(" <category name=\"%s\" group=\"%s\" benchmark=\"%s\"/>\n" % (categoriesDf.ix[i, "Category Name"], categoriesDf.ix[i, "Category Group"], categoriesDf.ix[i, "Benchmark ETF"]))
+            f.write(" <category name=\"%s\" group=\"%s\" benchmark=\"%s\"/>\n" % (categoriesDf.ix[i, "Category Name"], categoriesDf.ix[i, "Category Group"], categoriesDf.ix[i, "Benchmark"]))
 
         f.write("</wx-portfolio>\n")
 
+    if not fileName:
+        HoldingsChanged(False)
+        AccountsChanged(False)
+        AccountTypesChanged(False)
+        CategoriesChanged(False)        
+    
