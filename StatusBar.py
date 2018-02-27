@@ -55,5 +55,7 @@ def Set(msg, time = 3):
     if _statusBarTimer:
         _statusBarTimer.cancel()
     
-    _statusBarTimer = threading.Timer(time, _TimerCallback)
-    _statusBarTimer.start()
+    # Should we set a timer?
+    if time:
+        _statusBarTimer = threading.Timer(time, _TimerCallback)
+        _statusBarTimer.start()

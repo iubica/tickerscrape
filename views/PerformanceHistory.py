@@ -5,6 +5,7 @@ import wx
 import pandas as pd
 import DataFrameViewCtrl
 import Config
+import StatusBar
 import tickerscrape.morningstar
 
 #---------------------------------------------------------------------------
@@ -16,6 +17,8 @@ def GetWindow(frame, nb, log):
     # Create the dataframe. First get the tickers.
     if Config.holdingsDf is None:
         Config.GetHoldings()
+
+    StatusBar.Set("Downloading data...", 0)
 
     # Get the SPY performance history
     pfh1 = tickerscrape.morningstar.performance_history("SPY")
@@ -37,6 +40,8 @@ def GetWindow(frame, nb, log):
         df = tickerscrape.morningstar.performance_history(ticker)
         if df is not None:
             pfh = pfh.append(df)
+
+    StatusBar.Set("Downloading data... done.")
 
     # Revert the column order so the most recent performance is displayed
     # on left
