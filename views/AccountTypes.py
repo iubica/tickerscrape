@@ -74,7 +74,7 @@ class AccountTypesModel(dv.DataViewIndexListModel):
             else:
                 # Simple change of values
                 Config.accountTypesDf.iloc[row, dataFrameCol] = value
-                Config.AccountTypesChanged(True)
+                Config.PortfolioChanged(True)
 
             return True
 
@@ -134,7 +134,7 @@ class AccountTypesModel(dv.DataViewIndexListModel):
                 b = Config.accountTypesDf.iloc[row].copy()
                 Config.accountTypesDf.iloc[row-1] = b
                 Config.accountTypesDf.iloc[row] = a
-                Config.AccountTypesChanged(True)
+                Config.PortfolioChanged(True)
 
             # notify the view(s) using this model that it has been removed
             self.Reset(Config.accountTypesDf.shape[0])        
@@ -148,7 +148,7 @@ class AccountTypesModel(dv.DataViewIndexListModel):
                 b = Config.accountTypesDf.iloc[row].copy()
                 Config.accountTypesDf.iloc[row+1] = b
                 Config.accountTypesDf.iloc[row] = a
-                Config.AccountTypesChanged(True)
+                Config.PortfolioChanged(True)
 
             # notify the view(s) using this model that it has been removed
             self.Reset(Config.accountTypesDf.shape[0])        

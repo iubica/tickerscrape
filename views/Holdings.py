@@ -131,7 +131,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
 
         if dataFrameCol is not None:
             Config.holdingsDf.iloc[row, dataFrameCol] = parsedValue
-            Config.HoldingsChanged(True)
+            Config.PortfolioChanged(True)
             return True
 
         return False
@@ -222,7 +222,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
                 b = Config.holdingsDf.iloc[row].copy()
                 Config.holdingsDf.iloc[row-1] = b
                 Config.holdingsDf.iloc[row] = a
-                Config.HoldingsChanged(True)
+                Config.PortfolioChanged(True)
 
             # notify the view(s) using this model that it has been removed
             self.Reset(Config.holdingsDf.shape[0])        
@@ -236,7 +236,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
                 b = Config.holdingsDf.iloc[row].copy()
                 Config.holdingsDf.iloc[row+1] = b
                 Config.holdingsDf.iloc[row] = a
-                Config.HoldingsChanged(True)
+                Config.PortfolioChanged(True)
 
             # notify the view(s) using this model that it has been removed
             self.Reset(Config.holdingsDf.shape[0])        

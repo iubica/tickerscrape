@@ -19,57 +19,31 @@ def PortfolioRead():
 def PortfolioSave():
     PortfolioSaveXml()
 
-#---------------------------------------------------------------------------
-# Called with changed = True or False when holdings are different (or unchanged)
-# from the holdings.csv, and called with changed = None to just return
-# the status of the holdings (whether they have changed or not)
+# The config changed flag
+_configChanged = False
 
-def PortfolioChanged():
-    return _holdingsChanged or _accountsChanged or _accountTypesChanged or _categoriesChanged
+#---------------------------------------------------------------------------
+# Called with changed = True or False when config has changed (or is unchanged)
+# from the wxPortfolio.xml, and called with changed = None to just return
+# the status of the config (whether it has changed or not)
+
+def PortfolioChanged(changed = None):
+    global _configChanged
+
+    if changed is not None:
+        if Main.portfolioFrame:
+            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
+        _configChanged = changed
+
+    return _configChanged
 
 #---------------------------------------------------------------------------
 
 # The holdings dataframe
 holdingsDf = None
-_holdingsChanged = False
-
-#---------------------------------------------------------------------------
-# Called with changed = True or False when holdings are different (or unchanged)
-# from the holdings.csv, and called with changed = None to just return
-# the status of the holdings (whether they have changed or not)
-
-def HoldingsChanged(changed):
-    global _holdingsChanged
-
-    if changed is not None:
-        if Main.portfolioFrame:
-            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
-        _holdingsChanged = changed
-
-    return _holdingsChanged
-
-
-#---------------------------------------------------------------------------
 
 # The accounts dataframe
 accountsDf = None
-_accountsChanged = False
-
-#---------------------------------------------------------------------------
-# Called with changed = True or False when accounts are different (or unchanged)
-# from the accounts.csv, and called with changed = None to just return
-# the status of the accounts (whether they have changed or not)
-
-def AccountsChanged(changed):
-    global _accountsChanged
-
-    if changed is not None:
-        if Main.portfolioFrame:
-            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
-        _accountsChanged = changed
-
-    return _accountsChanged
-
 
 #---------------------------------------------------------------------------
 def AccountList():
@@ -83,8 +57,7 @@ def AccountFind(acct):
 
 #---------------------------------------------------------------------------
 def AccountChange(acctOld, acctNew):
-    acctChanged = False
-    holdingsChanged = False
+    configChanged = False
 
     if acctOld == acctNew:
         return True, None
@@ -95,42 +68,27 @@ def AccountChange(acctOld, acctNew):
     for i in range(accountsDf.shape[0]):
         if accountsDf.ix[i,"Account Name"] == acctOld:
             accountsDf.ix[i,"Account Name"] = acctNew
-            acctChanged = True
+            configChanged = True
 
-    if not acctChanged:
+    if not configChanged:
         return False, "Account '%s' does not exist" % acctOld
 
     # Also change the holdings
     for i in range(holdingsDf.shape[0]):
         if holdingsDf.ix[i,"Account"] == acctOld:
             holdingsDf.ix[i,"Account"] = acctNew
-            holdingsChanged = True
+            configChanged = True
 
-    if acctChanged:
-        AccountsChanged(True)
-
-    if holdingsChanged:
-        HoldingsChanged(True)
+    if configChanged:
+        PortfolioChanged(True)
 
     return True, None
 
 
 #---------------------------------------------------------------------------
 
-# The accounts dataframe
+# The account types dataframe
 accountTypesDf = None
-_accountTypesChanged = False
-
-#---------------------------------------------------------------------------
-def AccountTypesChanged(changed):
-    global _accountTypesChanged
-
-    if changed is not None:
-        if Main.portfolioFrame:
-            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
-        _accountTypesChanged = changed
-
-    return _accountTypesChanged
 
 #---------------------------------------------------------------------------
 def AccountTypesList():
@@ -144,8 +102,7 @@ def AccountTypesFind(acct):
 
 #---------------------------------------------------------------------------
 def AccountTypesChange(acctTypeOld, acctTypeNew):
-    acctTypesChanged = False
-    acctChanged = False
+    configChanged = False
 
     if acctTypeOld == acctTypeNew:
         return True, None
@@ -156,42 +113,27 @@ def AccountTypesChange(acctTypeOld, acctTypeNew):
     for i in range(accountTypesDf.shape[0]):
         if accountTypesDf.ix[i,"Account Type"] == acctTypeOld:
             accountTypesDf.ix[i,"Account Type"] = acctTypeNew
-            acctTypesChanged = True
+            configChanged = True
 
-    if not acctTypesChanged:
+    if not configChanged:
         return False, "Account type '%s' does not exist" % acctTypeOld
 
     # Also change the accounts
     for i in range(accountsDf.shape[0]):
         if accountsDf.ix[i,"Type"] == acctTypeOld:
             accountsDf.ix[i,"Type"] = acctTypeNew
-            acctChanged = True
+            configChanged = True
 
-    if acctTypesChanged:
-        AccountTypesChanged(True)
-
-    if acctChanged:
-        AccountsChanged(True)
+    if configChanged:
+        PortfolioChanged(True)
 
     return True, None
 
 
 #---------------------------------------------------------------------------
 
-# The accounts dataframe
+# The categories dataframe
 categoriesDf = None
-_categoriesChanged = False
-
-#---------------------------------------------------------------------------
-def CategoriesChanged(changed):
-    global _categoriesChanged
-
-    if changed is not None:
-        if Main.portfolioFrame:
-            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
-        _categoriesChanged = changed
-
-    return _categoriesChanged
 
 #---------------------------------------------------------------------------
 def CategoriesList():
@@ -205,7 +147,7 @@ def CategoriesFind(acct):
 
 #---------------------------------------------------------------------------
 def CategoriesChange(categoryOld, categoryNew):
-    categoriesChanged = False
+    configChanged = False
 
     if categoryOld == categoryNew:
         return True, None
@@ -216,13 +158,13 @@ def CategoriesChange(categoryOld, categoryNew):
     for i in range(categoriesDf.shape[0]):
         if categoriesDf.ix[i,"Category Name"] == categoryOld:
             categoriesDf.ix[i,"Category Name"] = categoryNew
-            categoriesChanged = True
+            configChanged = True
 
-    if not categoriesChanged:
+    if not configChanged:
         return False, "Category '%s' does not exist" % categoryOld
 
-    if categoriesChanged:
-        CategoriesChanged(True)
+    if configChanged:
+        PortfolioChanged(True)
 
     return True, None
 
@@ -735,15 +677,9 @@ def PortfolioReadXml(fileName = None):
                                      "Benchmark"]]
         
     if not fileName:
-        HoldingsChanged(False)
-        AccountsChanged(False)
-        AccountTypesChanged(False)
-        CategoriesChanged(False)        
+        PortfolioChanged(False)
     else:
-        HoldingsChanged(True)
-        AccountsChanged(True)
-        AccountTypesChanged(True)
-        CategoriesChanged(True)        
+        PortfolioChanged(True)
    
     
 def PortfolioSaveXml(fileName = None):
@@ -781,8 +717,5 @@ def PortfolioSaveXml(fileName = None):
         f.write("</wx-portfolio>\n")
 
     if not fileName:
-        HoldingsChanged(False)
-        AccountsChanged(False)
-        AccountTypesChanged(False)
-        CategoriesChanged(False)        
+        PortfolioChanged(False)
     

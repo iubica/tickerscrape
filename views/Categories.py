@@ -73,7 +73,7 @@ class CategoriesModel(dv.DataViewIndexListModel):
             else:
                 # Simple change of values
                 Config.categoriesDf.iloc[row, dataFrameCol] = value
-                Config.CategoriesChanged(True)
+                Config.PortfolioChanged(True)
 
             return True
 
@@ -133,7 +133,7 @@ class CategoriesModel(dv.DataViewIndexListModel):
                 b = Config.categoriesDf.iloc[row].copy()
                 Config.categoriesDf.iloc[row-1] = b
                 Config.categoriesDf.iloc[row] = a
-                Config.CategoriesChanged(True)
+                Config.PortfolioChanged(True)
 
             # notify the view(s) using this model that it has been removed
             self.Reset(Config.categoriesDf.shape[0])        
@@ -147,7 +147,7 @@ class CategoriesModel(dv.DataViewIndexListModel):
                 b = Config.categoriesDf.iloc[row].copy()
                 Config.categoriesDf.iloc[row+1] = b
                 Config.categoriesDf.iloc[row] = a
-                Config.CategoriesChanged(True)
+                Config.PortfolioChanged(True)
 
             # notify the view(s) using this model that it has been removed
             self.Reset(Config.categoriesDf.shape[0])        
