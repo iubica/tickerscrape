@@ -10,7 +10,7 @@ def StringToFloat(s):
         return None
     
     # Remove commas
-    s = s.replace(",", "")
+    s = str(s).replace(",", "")
 
     # Strip leading dollar sign, if any
     if s[0] == "$":
