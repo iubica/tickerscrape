@@ -2,8 +2,10 @@
 Status bar functionality
 """
 import wx
+import time, threading
 
 _statusBar = None
+_statusBarTimer = None
 
 def Init(sb):
     """ 
@@ -21,15 +23,37 @@ def DeInit():
     Description:
     Deinitialize the status bar
     """
+    # Reset the timer
+    if _statusBarTimer:
+        _statusBarTimer.cancel()
+
+    # Release memory
+    _statusBarTimer = None
     _statusBar = None
 
-def Set(msg, field = 0, time = 3):
+def _TimerCallback():
+    """ 
+    Description:
+    Called upon timer expiration to clear the status text
+    """
+    
+    _statusBar.SetStatusText("", 0)
+
+def Set(msg, time = 3):
     """ 
     Set the status text.
 
     Arguments:
     msg - the text message
-    field - the field to set
-    time - how long to keep the message
+    time - how long to keep the message, in seconds
     """
-    _statusBar.SetStatusText(msg, field)
+    _statusBar.SetStatusText(msg, 0)
+    
+    global _statusBarTimer
+
+    # Reset the timer
+    if _statusBarTimer:
+        _statusBarTimer.cancel()
+    
+    _statusBarTimer = threading.Timer(time, _TimerCallback)
+    _statusBarTimer.start()
