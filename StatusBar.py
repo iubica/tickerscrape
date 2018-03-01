@@ -2,7 +2,8 @@
 Status bar functionality
 """
 import wx
-import time, threading
+if not "wxGTK" in wx.PlatformInfo:
+    import time, threading
 
 _statusBar = None
 _statusBarTimer = None
@@ -27,9 +28,10 @@ def DeInit():
     global _statusBarTimer
     global _statusBar
 
-    # Reset the timer
-    if _statusBarTimer:
-        _statusBarTimer.cancel()
+    if not "wxGTK" in wx.PlatformInfo:
+        # Reset the timer
+        if _statusBarTimer:
+            _statusBarTimer.cancel()
 
     # Release memory
     _statusBarTimer = None
@@ -55,11 +57,12 @@ def Set(msg, time = 3):
     
     global _statusBarTimer
 
-    # Reset the timer
-    if _statusBarTimer:
-        _statusBarTimer.cancel()
+    if not "wxGTK" in wx.PlatformInfo:
+        # Reset the timer
+        if _statusBarTimer:
+            _statusBarTimer.cancel()
     
-    # Should we set a timer?
-    if time:
-        _statusBarTimer = threading.Timer(time, _TimerCallback)
-        _statusBarTimer.start()
+        # Should we set a timer?
+        if time:
+            _statusBarTimer = threading.Timer(time, _TimerCallback)
+            _statusBarTimer.start()
