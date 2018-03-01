@@ -6,7 +6,7 @@ import pandas as pd
 import DataFrameViewCtrl
 import Config
 import StatusBar
-import tickerscrape.morningstar
+import morningstar
 
 #---------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ def GetWindow(frame, nb, log):
     StatusBar.Set("Downloading data...", 0)
 
     # Get the SPY performance history
-    pfh1 = tickerscrape.morningstar.trailing_total_returns("SPY")
+    pfh1 = morningstar.trailing_total_returns("SPY")
 
     # Remove last row
     pfh = pfh1.drop(pfh1.index[[0]])
@@ -37,7 +37,7 @@ def GetWindow(frame, nb, log):
 
         tickerList.append(ticker)
 
-        df = tickerscrape.morningstar.trailing_total_returns(ticker)
+        df = morningstar.trailing_total_returns(ticker)
         if df is not None:
             pfh = pfh.append(df)
             

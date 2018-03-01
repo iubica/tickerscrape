@@ -7,7 +7,7 @@ import pandas as pd
 import DataFrameViewCtrl
 import Config
 import Format
-import tickerscrape.morningstar
+import morningstar
 
 #---------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ def GetWindow(frame, nb, log):
     row = 0
     for (ticker, account) in tickerList:
         pf.ix[row, "Ticker"] = ticker
-        pf.ix[row, "Name"] = tickerscrape.morningstar.ticker_name(ticker.upper())
+        pf.ix[row, "Name"] = morningstar.ticker_name(ticker.upper())
         pf.ix[row, "Account"] = account
 
         # Compute the shares

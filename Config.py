@@ -1,7 +1,5 @@
-# viewdata.py
-
 """
-Globals for the main.py wxPython views.
+The configuration module.
 """
 
 import wx

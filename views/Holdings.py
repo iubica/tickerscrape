@@ -7,7 +7,7 @@ import os, sys
 import pandas as pd
 import Config
 import Format
-import tickerscrape.morningstar
+import morningstar
 
 #---------------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
         ticker = Config.holdingsDf.ix[row, "Ticker"]
 
         if _GetColumnName(col) == "Name":
-            value = tickerscrape.morningstar.ticker_name(ticker.upper())
+            value = morningstar.ticker_name(ticker.upper())
             return value if value else ""
             
         dataFrameCol = self._GetDataFrameCol(col)
