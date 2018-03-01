@@ -77,7 +77,6 @@ from six.moves import urllib
 import version
 import ViewTree
 import Config
-import StatusBar
 
 # We won't import the images module yet, but we'll assign it to this
 # global when we do.
@@ -96,6 +95,7 @@ portfolioFrame = None
 
 USE_CUSTOMTREECTRL = False
 DEFAULT_PERSPECTIVE = "Default Perspective"
+TIMER_STATUS_BAR=2000
 
 #---------------------------------------------------------------------------
 
@@ -1456,10 +1456,11 @@ class wxPortfolioFrame(wx.Frame):
         self.statusBar.Bind(wx.EVT_SIZE, self.OnStatusBarSize)
         self.statusBar.Bind(wx.EVT_IDLE, self.OnStatusBarIdle)
 
-        StatusBar.Init(self.statusBar)
+        self.statusBarTimer = wx.Timer(self, id=TIMER_STATUS_BAR)
+        self.Bind(wx.EVT_TIMER, self.OnStatusBarTimer, self.statusBarTimer)
 
         statusText = "Welcome to wxPortfolio %s" % version.VERSION_STRING
-        StatusBar.Set(statusText)
+        self.SetStatusBarText(statusText)
 
         self.dying = False
         self.skipLoad = False
@@ -1886,6 +1887,20 @@ class wxPortfolioFrame(wx.Frame):
         self.tree.Thaw()
         self.searchItems = {}
 
+    def SetStatusBarText(self, msg, time = 3):
+        # Set the status
+        self.statusBar.SetStatusText(msg, 0)
+
+        # Cancel the timer
+        self.statusBarTimer.Stop()
+
+        # Should we set a timer?
+        if time:
+            self.statusBarTimer.Start(time * 1000)
+
+    def OnStatusBarTimer(self, evt):
+        # Expiration callback for the status bar timer: clear the text
+        self.statusBar.SetStatusText("", 0)
 
     def OnStatusBarSize(self, evt):
         self.Reposition()  # for normal size events
@@ -2264,10 +2279,10 @@ class wxPortfolioFrame(wx.Frame):
     # Menu methods
     def OnFileSave(self, *event):
         Config.PortfolioSave()
-        StatusBar.Set("Portfolio saved")
+        self.SetStatusBarText("Portfolio saved")
 
     def OnFileExit(self, *event):
-        StatusBar.DeInit()
+        self.statusBarTimer.Stop()
         self.Close()
 
     def OnToggleRedirect(self, event):
@@ -2540,7 +2555,7 @@ class wxPortfolioFrame(wx.Frame):
                              wx.ICON_QUESTION | wx.YES_NO) == wx.YES:
                 Config.PortfolioSave()
 
-        StatusBar.DeInit()
+        self.statusBarTimer.Stop()
         self.Destroy()
 
 
