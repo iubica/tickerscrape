@@ -13,9 +13,19 @@ executables = [
 
 # Dependencies are automatically detected, but might need fine tuning.
 build_exe_options = {
-    'packages': ['pandas', 'numpy'],
-    'includes': ['pandas', 'numpy'],
-    'include_files': ['bitmaps/', 'bmp_source/', 'cursors/', 'data/', 'scrape/', 'views/', 'widgets/']
+    'packages': ['idna'],
+    'includes': ['pandas', 'numpy', 
+                 'wx', 'wx.adv', 'wx.lib.agw.aui', 'wx.html',
+                 'wx.lib.msgpanel', 'wx.lib.mixins.inspection',
+                 'wx.dataview',
+                 'requests',
+                 'bs4',
+                 'six',
+                 'tabulate',
+                 'unidecode',
+                 'xml.etree.ElementTree'],
+    'include_files': ['bitmaps/', 'bmp_source/', 'cursors/', 'data/', 
+                      'scrape/', 'views/', 'widgets/']
     }
 
 # To do: need to vastly expand the list of include_files, else wxPython does not find the bits and pieces it needs.
