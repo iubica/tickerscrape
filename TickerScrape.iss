@@ -12,7 +12,7 @@ SolidCompression=yes
 OutputDir=build\installer
 
 [Files]
-Source: "wxPortfolio.exe"; DestName: "TickerScrape.exe"; DestDir: "{app}"
+Source: "TickerScrape.exe"; DestDir: "{app}"
 Source: "README.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme
 
 [Icons]

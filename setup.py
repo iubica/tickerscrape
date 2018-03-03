@@ -8,7 +8,7 @@ if sys.platform == 'win32':
     os.environ['TK_LIBRARY'] = "C:\\Users\\andrei\\AppData\\Local\\Programs\\Python\\Python36\\DLLs"
 
 executables = [
-    Executable('wxPortfolio.py', base=base)
+    Executable('TickerScrape.py', base=base)
 ]
 
 # Dependencies are automatically detected, but might need fine tuning.
