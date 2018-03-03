@@ -26,9 +26,10 @@ build_exe_options = {
                  'xml.etree.ElementTree'],
     'include_files': ['bitmaps/', 'bmp_source/', 'cursors/', 'data/', 
                       'scrape/', 'views/', 'widgets/',
-                      'Main.py', 'Format.py']
+                      'Main.py', 'Format.py', 'install.iss', 'README.md'],
     # Modules referenced by dynamic modules under 'views/' but not included
     # in Main.py must be include_files. For example: Format.py.
+    'include_msvcr': True, # Some users of cx_freeze swear this is needed
     }
 
 setup(name='wxPortfolio',

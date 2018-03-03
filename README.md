@@ -13,4 +13,4 @@ of tickerscrape should end up being wxPortfolio/tickerscrape.
 - Execute 'python setup.py build' to build an executable package, which can be
 found under the 'build/<cpu-target>' folder.
 
-
+- Execute 'python setup.py bdist_msi' to build msi installer
