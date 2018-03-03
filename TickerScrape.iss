@@ -4,9 +4,10 @@
 [Setup]
 AppName=TickerScrape
 AppVersion=1.0
+ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={pf}\TickerScrape
 DefaultGroupName=TickerScrape
-UninstallDisplayIcon={app}\wxPortfolio.exe
+UninstallDisplayIcon={app}\TickerScrape.exe
 Compression=lzma2
 SolidCompression=yes
 OutputDir=build\installer
@@ -29,7 +30,11 @@ Source: "lib/*"; DestDir: "{app}/lib"; Flags: recursesubdirs
 Source: "mpl-data/*"; DestDir: "{app}/mpl-data"; Flags: recursesubdirs
 Source: "tcl/*"; DestDir: "{app}/tcl"; Flags: recursesubdirs
 Source: "tk/*"; DestDir: "{app}/tk"; Flags: recursesubdirs
-
-
+ 
 [Icons]
 Name: "{group}\TickerScrape"; Filename: "{app}\TickerScrape.exe"
+
+[Support]
+AppPublisher=TickerScrape
+AppPublisherURL=http://tickerscrape.com/
+
