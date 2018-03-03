@@ -15,7 +15,7 @@ executables = [
 build_exe_options = {
     'packages': ['pandas', 'numpy'],
     'includes': ['pandas', 'numpy'],
-    'include_files': ['bitmaps/']
+    'include_files': ['bitmaps/', 'bmp_source/', 'cursors/', 'data/', 'scrape/', 'views/', 'widgets/']
     }
 
 # To do: need to vastly expand the list of include_files, else wxPython does not find the bits and pieces it needs.
