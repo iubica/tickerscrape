@@ -13,8 +13,8 @@ executables = [
 
 # Dependencies are automatically detected, but might need fine tuning.
 build_exe_options = {
-    'packages': ['idna'],
-    'includes': ['pandas', 'numpy', 
+    'packages': ['numpy', 'pandas', 'idna'],
+    'includes': ['numpy', 'pandas',  
                  'wx', 'wx.adv', 'wx.lib.agw.aui', 'wx.html',
                  'wx.lib.msgpanel', 'wx.lib.mixins.inspection',
                  'wx.dataview',
@@ -27,8 +27,6 @@ build_exe_options = {
     'include_files': ['bitmaps/', 'bmp_source/', 'cursors/', 'data/', 
                       'scrape/', 'views/', 'widgets/']
     }
-
-# To do: need to vastly expand the list of include_files, else wxPython does not find the bits and pieces it needs.
 
 setup(name='wxPortfolio',
       version='0.1',
