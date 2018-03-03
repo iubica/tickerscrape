@@ -25,7 +25,10 @@ build_exe_options = {
                  'unidecode',
                  'xml.etree.ElementTree'],
     'include_files': ['bitmaps/', 'bmp_source/', 'cursors/', 'data/', 
-                      'scrape/', 'views/', 'widgets/']
+                      'scrape/', 'views/', 'widgets/',
+                      'Main.py', 'Format.py']
+    # Modules referenced by dynamic modules under 'views/' but not included
+    # in Main.py must be include_files. For example: Format.py.
     }
 
 setup(name='wxPortfolio',
