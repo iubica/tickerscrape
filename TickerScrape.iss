@@ -22,8 +22,14 @@ Source: "data/*"; DestDir: "{app}/data"
 Source: "scrape/*"; DestDir: "{app}/scrape"
 Source: "views/*"; DestDir: "{app}/views"
 Source: "widgets/*"; DestDir: "{app}/widgets"
-
 Source: "README.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme
+
+; Comment these out if you want InnoInstaller to generate the setup program quickly
+Source: "lib/*"; DestDir: "{app}/lib"; Flags: recursesubdirs
+Source: "mpl-data/*"; DestDir: "{app}/mpl-data"; Flags: recursesubdirs
+Source: "tcl/*"; DestDir: "{app}/tcl"; Flags: recursesubdirs
+Source: "tk/*"; DestDir: "{app}/tk"; Flags: recursesubdirs
+
 
 [Icons]
 Name: "{group}\TickerScrape"; Filename: "{app}\TickerScrape.exe"
