@@ -32,7 +32,7 @@
 # In order to let a package (like AGW) be included into the wxPortfolio tree,
 # create a sub-directory of the wxPortfolio install folder
 # in which all the package's views should live. In addition, the sub-folder
-# should contain a Python file called __init__wxPortfolio__.py which, 
+# should contain a Python file called __init__tickerscrape__.py which, 
 # when imported, should contain the following methods:
 #
 # * GetViewBitmap: returns the bitmap to be used in the wxPython view tree
@@ -50,7 +50,7 @@
 # * GetOverview: returns a wx.html-ready representation of the 
 #   package's documentation.
 #
-# Please see the __init__wxPortfolio__.py file in the wxPortfolio/agw/ folder 
+# Please see the __init__tickerscrape__.py file in the wxPortfolio/agw/ folder 
 # for an example.
 
 import sys, os, time, traceback
@@ -950,7 +950,7 @@ def HuntExternalViews():
     """
     Searches for external demos (i.e. packages like AGW) in the wxPython
     demo sub-directories. In order to be found, these external packages
-    must have a __init__wxPortfolio__.py file in their directory.
+    must have a __init__tickerscrape__.py file in their directory.
     """
 
     externalViews = {}
@@ -962,11 +962,11 @@ def HuntExternalViews():
             # Not a directory, continue
             continue
         dirFile = os.listdir(item)
-        # See if a __init__wxPortfolio__.py file is there
-        if "__init__wxPortfolio__.py" in dirFile:
+        # See if a __init__tickerscrape__.py file is there
+        if "__init__tickerscrape__.py" in dirFile:
             # Extend sys.path and import the external demos
             sys.path.append(item)
-            externalViews[item] = __import__("__init__wxPortfolio__")
+            externalViews[item] = __import__("__init__tickerscrape__")
 
     if not externalViews:
         # Nothing to import...
