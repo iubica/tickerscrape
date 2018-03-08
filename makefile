@@ -14,7 +14,7 @@ endif
 all: installer
 
 upload: installer 
-	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(PLATFORM)-$(CPU)-setup.exe
+	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(TARGET)-$(CPU)-setup.exe
 
 installer: build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe
 
