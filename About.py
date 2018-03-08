@@ -6,6 +6,8 @@ import wx
 import wx.html
 import wx.lib.wxpTag
 
+import version
+
 #---------------------------------------------------------------------------
 
 class MyAboutBox(wx.Dialog):
@@ -16,18 +18,18 @@ class MyAboutBox(wx.Dialog):
 cellpadding="0" border="1">
 <tr>
     <td align="center">
-    <h1>wxPortfolio %s</h1>
+    <h1>TickerScrape %s</h1>
     (%s)<br>
-    Running on Python %s<br>
+    Running on Python %s and wxPython %s.<br>
     </td>
 </tr>
 </table>
 
-<p><b>wxPortfolio</b> is a Python GUI toolkit for investment portfolio management. It is implemented on top of wxPython.</p>
+<p><b>TickerScrape</b> is a toolkit for investment portfolio management.</p> 
 
-<p><b>wxPortfolio</b> is written by <b>Andrei Radulescu-Banu</b>, Copyright (c) 2018 and is released under an MIT license.</p>
+<p>It is written by <b>Andrei Radulescu-Banu</b>, Copyright (c) 2018 and is released under an MIT license.</p>
 
-<p><b>wxPython</b> is brought to you by <b>Robin Dunn</b> and<br>
+<p><b>wxPython</b> is produced by <b>Robin Dunn</b> and<br>
 <b>Total Control Software,</b> Copyright (c) 1997-2017.</p>
 
 <p>
@@ -48,9 +50,10 @@ cellpadding="0" border="1">
         if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
             html.SetStandardFonts()
         py_version = sys.version.split()[0]
-        txt = self.text % (wx.VERSION_STRING,
+        txt = self.text % (version.VERSION_STRING,
                            ", ".join(wx.PlatformInfo[1:]),
-                           py_version
+                           py_version, 
+                           wx.VERSION_STRING
                            )
         html.SetPage(txt)
         btn = html.FindWindowById(wx.ID_OK)

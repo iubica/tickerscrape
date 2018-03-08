@@ -1769,8 +1769,8 @@ class wxPortfolioFrame(wx.Frame):
         if 'wxMac' not in wx.PlatformInfo:
             menu.AppendSeparator()
         helpAbout = menu.Append(wx.ID_ABOUT, 
-                                '&About wxPortfolio', 
-                                'About wxPortfolio')
+                                '&About TickerScrape', 
+                                'About TickerScrape')
 
         self.Bind(wx.EVT_MENU, self.OnOpenShellWindow, shellItem)
         self.Bind(wx.EVT_MENU, self.OnOpenWidgetInspector, inspToolItem)
