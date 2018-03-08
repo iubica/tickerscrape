@@ -2,6 +2,7 @@
 HOSTNAME=$(shell hostname)
 PYTHON=python
 ISCC=iscc
+VERSION=$(shell python version.py)
 
 # Host-specific settings
 ifeq ($(HOSTNAME),andrei-HP)
@@ -14,7 +15,7 @@ endif
 all: installer
 
 upload: installer 
-	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(TARGET)-$(CPU)-setup.exe
+	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(VERSION)-$(TARGET)-$(CPU)-setup.exe
 
 installer: build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe
 
@@ -29,3 +30,4 @@ debug-dump:
 	@echo HOSTNAME=$(HOSTNAME)
 	@echo PYTHON=$(PYTHON)
 	@echo CPU_BUILD_DIR=$(CPU_BUILD_DIR)
+	@echo VERSION=$(VERSION)
