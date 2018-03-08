@@ -13,7 +13,7 @@ ifeq ($(HOSTNAME),andrei-HP)
 endif
 
 ifeq ($(HOSTNAME),LAPTOP-2SD4UBV0)
-  PYTHON=/cygdrive/c/Users/andrei/AppData/Local/Programs/Python/Python36/python.exe
+  PYTHON=/cygdrive/c/Users/daria/AppData/Local/Programs/Python/Python36-32/python.exe
   TARGET=windows
   CPU=x86
   CPU_BUILD_DIR=exe.win-amd64-3.6
