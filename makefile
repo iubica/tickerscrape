@@ -12,6 +12,13 @@ ifeq ($(HOSTNAME),andrei-HP)
   CPU_BUILD_DIR=exe.win-amd64-3.6
 endif
 
+ifeq ($(HOSTNAME),LAPTOP-2SD4UBV0)
+  PYTHON=/cygdrive/c/Users/andrei/AppData/Local/Programs/Python/Python36/python.exe
+  TARGET=windows
+  CPU=x86
+  CPU_BUILD_DIR=exe.win-amd64-3.6
+endif
+
 all: installer
 
 upload: installer 
