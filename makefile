@@ -1,6 +1,5 @@
 # Makefile for the tickerscrape project
 HOSTNAME=$(shell hostname)
-
 PYTHON=python
 ISCC=iscc
 
@@ -12,12 +11,14 @@ ifeq ($(HOSTNAME),andrei-HP)
   CPU_BUILD_DIR=exe.win-amd64-3.6
 endif
 
-all: upload
+all: installer
 
-upload: installer
-	scp build/$(CPU_BUILD_DIR)/build/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(PLATFORM)-$(CPU)-setup.exe
+upload: installer 
+	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(PLATFORM)-$(CPU)-setup.exe
 
-installer:
+installer: build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe
+
+build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe: TickerScrape.py TickerScrape.iss
 	$(PYTHON) setup.py build
 	$(ISCC) build/$(CPU_BUILD_DIR)/TickerScrape.iss
 
