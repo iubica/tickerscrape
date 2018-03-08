@@ -29,10 +29,10 @@
 # =====================
 # = EXTERNAL Packages =
 # =====================
-# In order to let a package (like AGW) be included into the wxPortfolio tree,
-# create a sub-directory of the wxPortfolio install folder
+# In order to let a package (like AGW) be included into the TickerScrape tree,
+# create a sub-directory of the TickerScrape install folder
 # in which all the package's views should live. In addition, the sub-folder
-# should contain a Python file called __init__wxPortfolio__.py which, 
+# should contain a Python file called __init__tickerscrape__.py which, 
 # when imported, should contain the following methods:
 #
 # * GetViewBitmap: returns the bitmap to be used in the wxPython view tree
@@ -43,14 +43,14 @@
 #   (or the full set) of the package's views;
 #
 # * GetViews: returns a tuple. The first item of the tuple is the package's name
-#   as will be displayed in the wxPortfolio view tree, right after 
+#   as will be displayed in the TickerScrape view tree, right after 
 #   the "Custom Controls" item. The second element of the tuple is the list of
 #   views for the external package.
 #
 # * GetOverview: returns a wx.html-ready representation of the 
 #   package's documentation.
 #
-# Please see the __init__wxPortfolio__.py file in the wxPortfolio/agw/ folder 
+# Please see the __init__tickerscrape__.py file in the TickerScrape/agw/ folder 
 # for an example.
 
 import sys, os, time, traceback
@@ -950,7 +950,7 @@ def HuntExternalViews():
     """
     Searches for external demos (i.e. packages like AGW) in the wxPython
     demo sub-directories. In order to be found, these external packages
-    must have a __init__wxPortfolio__.py file in their directory.
+    must have a __init__tickerscrape__.py file in their directory.
     """
 
     externalViews = {}
@@ -962,11 +962,11 @@ def HuntExternalViews():
             # Not a directory, continue
             continue
         dirFile = os.listdir(item)
-        # See if a __init__wxPortfolio__.py file is there
-        if "__init__wxPortfolio__.py" in dirFile:
+        # See if a __init__tickerscrape__.py file is there
+        if "__init__tickerscrape__.py" in dirFile:
             # Extend sys.path and import the external demos
             sys.path.append(item)
-            externalViews[item] = __import__("__init__wxPortfolio__")
+            externalViews[item] = __import__("__init__tickerscrape__")
 
     if not externalViews:
         # Nothing to import...
@@ -1394,7 +1394,7 @@ class DemoTaskBarIcon(TaskBarIcon):
 
 
 #---------------------------------------------------------------------------
-class wxPortfolioFrame(wx.Frame):
+class TickerScrapeFrame(wx.Frame):
 
     overviewText = "Views Help"
 
@@ -1459,7 +1459,7 @@ class wxPortfolioFrame(wx.Frame):
         self.statusBarTimer = wx.Timer(self, id=TIMER_STATUS_BAR)
         self.Bind(wx.EVT_TIMER, self.OnStatusBarTimer, self.statusBarTimer)
 
-        statusText = "Welcome to wxPortfolio %s" % version.VERSION_STRING
+        statusText = "Welcome to TickerScrape %s" % version.VERSION_STRING
         self.SetStatusBarText(statusText)
 
         self.dying = False
@@ -1498,7 +1498,7 @@ class wxPortfolioFrame(wx.Frame):
         self.treeMap = {}
         self.searchItems = {}
 
-        self.tree = wxPortfolioTree(leftPanel)
+        self.tree = TickerScrapeTree(leftPanel)
 
         self.filter = wx.SearchCtrl(leftPanel, style=wx.TE_PROCESS_ENTER)
         self.filter.ShowCancelButton(True)
@@ -1606,7 +1606,7 @@ class wxPortfolioFrame(wx.Frame):
                          Bottom().BestSize((-1, 150)).
                          MinSize((-1, 140)).
                          Floatable(self.allowAuiFloating).FloatingSize((500, 160)).
-                         Caption("wxPortfolio Log Messages").
+                         Caption("TickerScrape Log Messages").
                          CloseButton(False).
                          Name("LogWindow"))
 
@@ -2657,7 +2657,7 @@ class MySplashScreen(SplashScreen):
 
     def ShowMain(self):
         global portfolioFrame
-        portfolioFrame = wxPortfolioFrame(None, "wxPortfolio")
+        portfolioFrame = TickerScrapeFrame(None, "TickerScrape")
         portfolioFrame.Show()
         if self.fc.IsRunning():
             self.Raise()
@@ -2676,7 +2676,7 @@ else:
     TreeBaseClass = wx.TreeCtrl
 
 
-class wxPortfolioTree(ExpansionState, TreeBaseClass):
+class TickerScrapeTree(ExpansionState, TreeBaseClass):
     def __init__(self, parent):
         TreeBaseClass.__init__(self, parent, style=wx.TR_DEFAULT_STYLE|
                                wx.TR_HAS_VARIABLE_ROW_HEIGHT)
@@ -2742,7 +2742,7 @@ class MyApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
         #self.SetAssertMode(wx.PYAPP_ASSERT_DIALOG|wx.PYAPP_ASSERT_EXCEPTION)
 
         wx.SystemOptions.SetOption("mac.window-plain-transition", 1)
-        self.SetAppName("wxPortfolio")
+        self.SetAppName("TickerScrape")
 
         # Create and show the splash screen.  It will then create and
         # show the main frame when it is time to do so.  Normally when
@@ -2784,18 +2784,18 @@ def main():
 
 
 mainOverview = """<html><body>
-<h2>wxPortfolio Help</h2>
+<h2>TickerScrape Help</h2>
 
-<p> wxPortfolio is a <b>GUI toolkit</b> for investment portfolio management,
-implemented using <b>wxPython</b>, and using <b>web scraping</b> of investment data. Users can employ the existing web scrapers, or implement extension scrapers right within the wxPortfolio toolkit. Users can also create extension widgets, which can be added to the wxPortfolio views, allowing full customization of the wxPortfolio app.
+<p> TickerScrape is a <b>GUI toolkit</b> for investment portfolio management,
+implemented using <b>wxPython</b>, and using <b>web scraping</b> of investment data. Users can employ the existing web scrapers, or implement extension scrapers right within the TickerScrape toolkit. Users can also create extension widgets, which can be added to the TickerScrape views, allowing full customization of the TickerScrape app.
 
-<p> Like Python and wxPython, wxPortfolio is <b>Open Source</b>, which means 
+<p> Like Python and wxPython, TickerScrape is <b>Open Source</b>, which means 
 that it is free for anyone to use and the source code is available for anyone
 to look at and modify.  Or anyone can contribute fixes or enhancements to the project.
 
-<p> wxPortfolio is availabled for <b>Windows x32</b> and <b>x64</b>, Linux <b>x32</b> and <b>x64</b> and <b>MAC OS X</b>. 
+<p> TickerScrape is availabled for <b>Windows x32</b> and <b>x64</b>, Linux <b>x32</b> and <b>x64</b> and <b>MAC OS X</b>. 
 
-<p> <b>This toolkit</b> will display each wxPortfolio view's code in the
+<p> <b>This toolkit</b> will display each TickerScrape view's code in the
 View Code pane. Views can be <b>added</b>, <b>edited</b>, <b>cloned</b>, or <b>removed</b> from the tree control on the left pane. Views are versioned so past versions of views can be recovered.
 """
 
