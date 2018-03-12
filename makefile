@@ -22,6 +22,7 @@ endif
 all: installer
 
 upload: installer 
+	chmod 755 build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe
 	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(VERSION)-$(TARGET)-$(CPU)-setup.exe
 
 installer: build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe

@@ -2634,7 +2634,7 @@ class TickerScrapeFrame(wx.Frame):
 
 class MySplashScreen(SplashScreen):
     def __init__(self):
-        bmp = wx.Image(opj("bitmaps/running-man.png")).ConvertToBitmap()
+        bmp = wx.Image(opj("bitmaps/logo.png")).ConvertToBitmap()
         SplashScreen.__init__(self, bmp,
                                  wx.adv.SPLASH_CENTRE_ON_SCREEN | wx.adv.SPLASH_TIMEOUT,
                                  1000, None, -1)
