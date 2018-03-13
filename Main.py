@@ -1322,8 +1322,8 @@ class DemoTaskBarIcon(TaskBarIcon):
         self.frame = frame
 
         # Set the image
-        icon = self.MakeIcon(images.WXPdemo.GetImage())
-        self.SetIcon(icon, "wxPython Demo")
+        icon = self.MakeIcon(images.tickerScrapeLogo.GetImage())
+        self.SetIcon(icon, "tickerScrapeLogo")
         self.imgidx = 1
 
         # bind some events
@@ -1418,7 +1418,7 @@ class TickerScrapeFrame(wx.Frame):
         self.firstTime = True
         self.finddlg = None
 
-        icon = images.WXPdemo.GetIcon()
+        icon = images.tickerScrapeLogo.GetIcon()
         self.SetIcon(icon)
 
         try:
