@@ -26,6 +26,13 @@ ifeq ($(HOSTNAME),Darias-Air)
   CPU_BUILD_DIR=exe.macosx-10.13-x86_64-3.6
 endif
 
+ifeq ($(HOSTNAME),thinkcentre)
+  PYTHON=python
+  TARGET=linux
+  CPU=x86_64
+  CPU_BUILD_DIR=exe.linux-x86_64-3.6
+endif
+
 EXE_SUFFIX=
 ifeq ($(TARGET),windows)
   EXE_SUFFIX=.exe
