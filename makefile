@@ -42,12 +42,10 @@ all: installer
 
 installer: exe
 
-installer:
-
 ifeq ($(TARGET),windows)
   installer: build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX)
 
-  build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX): exe TickerScrape.iss
+  build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX): build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX) TickerScrape.iss
 	$(ISCC) build/$(CPU_BUILD_DIR)/TickerScrape.iss
 
   upload: installer 
@@ -58,7 +56,7 @@ endif
 ifeq ($(TARGET),linux)
   installer: build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz
 
-  build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz:
+  build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz: build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX)
 	if [ ! -d build/$(CPU_BUILD_DIR)/build/installer ]; then mkdir -p build/$(CPU_BUILD_DIR)/build/installer; fi
 	cd build/$(CPU_BUILD_DIR); tar cvfz tickerscrape.tgz bitmaps data libpython* README.md views bmp_source Format.py Main.py scrape widgets cursors lib TickerScrape; mv tickerscrape.tgz build/installer
 
@@ -79,3 +77,5 @@ debug-dump:
 	@echo PYTHON=$(PYTHON)
 	@echo CPU_BUILD_DIR=$(CPU_BUILD_DIR)
 	@echo VERSION=$(VERSION)
+
+.SUFFIXES:
