@@ -42,23 +42,34 @@ all: installer
 
 installer: exe
 
-upload: installer 
-	chmod 755 build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe
-	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(VERSION)-$(TARGET)-$(CPU)-setup.exe
+installer:
 
 ifeq ($(TARGET),windows)
-installer: build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX)
-else
-installer:
+  installer: build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX)
+
+  build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX): exe TickerScrape.iss
+	$(ISCC) build/$(CPU_BUILD_DIR)/TickerScrape.iss
+
+  upload: installer 
+	chmod 755 build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe
+	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(VERSION)-$(TARGET)-$(CPU)-setup.exe
+endif
+
+ifeq ($(TARGET),linux)
+  installer: build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz
+
+  build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz:
+	if [ ! -d build/$(CPU_BUILD_DIR)/build/installer ]; then mkdir -p build/$(CPU_BUILD_DIR)/build/installer; fi
+	cd build/$(CPU_BUILD_DIR); tar cvfz tickerscrape.tgz bitmaps data libpython* README.md views bmp_source Format.py Main.py scrape widgets cursors lib TickerScrape; mv tickerscrape.tgz build/installer
+
+  upload: installer 
+	scp build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(VERSION)-$(TARGET)-$(CPU).tgz
 endif
 
 exe: build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX)
 
 build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX):
 	$(PYTHON) setup.py build
-
-build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX): exe TickerScrape.iss
-	$(ISCC) build/$(CPU_BUILD_DIR)/TickerScrape.iss
 
 clean:
 	rm -rf build/$(CPU_BUILD_DIR)
