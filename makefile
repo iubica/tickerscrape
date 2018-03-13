@@ -19,16 +19,38 @@ ifeq ($(HOSTNAME),LAPTOP-2SD4UBV0)
   CPU_BUILD_DIR=exe.win32-3.6
 endif
 
+ifeq ($(HOSTNAME),Darias-Air)
+  PYTHON=python3
+  TARGET=mac-osx
+  CPU=x86_64
+  CPU_BUILD_DIR=exe.macosx-10.13-x86_64-3.6
+endif
+
+EXE_SUFFIX=
+ifeq ($(TARGET),windows)
+  EXE_SUFFIX=.exe
+endif
+
 all: installer
+
+installer: exe
 
 upload: installer 
 	chmod 755 build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe
 	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-$(VERSION)-$(TARGET)-$(CPU)-setup.exe
 
-installer: build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe
+ifeq ($(TARGET),windows)
+installer: build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX)
+else
+installer:
+endif
 
-build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe: TickerScrape.py TickerScrape.iss
+exe: build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX)
+
+build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX):
 	$(PYTHON) setup.py build
+
+build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX): exe TickerScrape.iss
 	$(ISCC) build/$(CPU_BUILD_DIR)/TickerScrape.iss
 
 clean:
