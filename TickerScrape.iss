@@ -7,6 +7,7 @@ AppVersion=1.0
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={pf}\TickerScrape
 DefaultGroupName=TickerScrape
+SetupIconFile=bitmaps\ticker-scrape-logo.ico
 UninstallDisplayIcon={app}\TickerScrape.exe
 Compression=lzma2
 SolidCompression=yes
@@ -32,7 +33,7 @@ Source: "mpl-data/*"; DestDir: "{app}/mpl-data"; Flags: recursesubdirs
 ;Source: "tk/*"; DestDir: "{app}/tk"; Flags: recursesubdirs
  
 [Icons]
-Name: "{group}\TickerScrape"; Filename: "{app}\TickerScrape.exe"
+Name: "{group}\TickerScrape"; Filename: "{app}\TickerScrape.exe"; IconFilename: "{app}\bitmaps\ticker-scrape-logo.ico"; Comment: "Launches the TickerScrape app"
 
 [Support]
 AppPublisher=TickerScrape
