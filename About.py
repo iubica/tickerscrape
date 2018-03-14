@@ -13,8 +13,8 @@ import version
 class MyAboutBox(wx.Dialog):
     text = '''
 <html>
-<body bgcolor="#AC76DE">
-<center><table bgcolor="#458154" width="100%%" cellspacing="0"
+<body bgcolor="#4169e1">
+<center><table bgcolor="#e18b5c" width="100%%" cellspacing="0"
 cellpadding="0" border="1">
 <tr>
     <td align="center">
