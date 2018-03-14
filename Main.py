@@ -1658,10 +1658,6 @@ class TickerScrapeFrame(wx.Frame):
         # Make a File menu
         self.mainmenu = wx.MenuBar()
         self.fileMenu = wx.Menu()
-        item = self.fileMenu.Append(-1, '&Redirect Output',
-                                    'Redirect print statements to a window',
-                                    wx.ITEM_CHECK)
-        self.Bind(wx.EVT_MENU, self.OnToggleRedirect, item)
 
         loadItem = wx.MenuItem(self.fileMenu, -1, '&Load...', 'Load the portfolio from file')
         self.menuLoadItemId = loadItem.GetId()
@@ -1678,6 +1674,8 @@ class TickerScrapeFrame(wx.Frame):
         self.menuSaveAsItemId = saveAsItem.GetId()
         self.fileMenu.Append(saveAsItem)
         self.Bind(wx.EVT_MENU, self.OnFileSaveAs, saveAsItem)
+
+        self.fileMenu.AppendSeparator()
 
         wx.App.SetMacExitMenuItemId(9123)
         exitItem = wx.MenuItem(self.fileMenu, 9123, 
@@ -2355,16 +2353,6 @@ class TickerScrapeFrame(wx.Frame):
     def OnFileExit(self, *event):
         self.statusBarTimer.Stop()
         self.Close()
-
-    def OnToggleRedirect(self, event):
-        app = wx.GetApp()
-        if event.Checked():
-            app.RedirectStdio()
-            print("Print statements and other standard output will now be directed to this window.")
-        else:
-            app.RestoreStdio()
-            print("Print statements and other standard output will now be sent to the usual location.")
-
 
     def OnAllowDownload(self, event):
 
