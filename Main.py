@@ -1669,6 +1669,11 @@ class TickerScrapeFrame(wx.Frame):
         self.fileMenu.Enable(self.menuSaveItemId, Config.PortfolioChanged())
         self.Bind(wx.EVT_MENU, self.OnFileSave, saveItem)
 
+        saveAsItem = wx.MenuItem(self.fileMenu, -1, '&Save As...', 'Save the portfolio as file')
+        self.menuSaveAsItemId = saveAsItem.GetId()
+        self.fileMenu.Append(saveAsItem)
+        self.Bind(wx.EVT_MENU, self.OnFileSaveAs, saveAsItem)
+
         wx.App.SetMacExitMenuItemId(9123)
         exitItem = wx.MenuItem(self.fileMenu, 9123, 
                                'E&xit\tCtrl-Q', 'Terminate the application')
@@ -2280,6 +2285,33 @@ class TickerScrapeFrame(wx.Frame):
     def OnFileSave(self, *event):
         Config.PortfolioSave()
         self.SetStatusBarText("Portfolio saved")
+
+    def OnFileSaveAs(self, *event):
+        wildcard = "XML files (*.xml)|*.xml|" \
+                   "All files (*.*)|*.*"
+
+        # Create the dialog.
+        dlg = wx.FileDialog(
+            self, 
+            message="Save file as ...", 
+            defaultDir=os.getcwd(),
+            defaultFile="", 
+            wildcard=wildcard, 
+            style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT
+        )
+
+        # This sets the default filter that the user will initially see. 
+        # Otherwise, the first filter in the list will be used by default.
+        dlg.SetFilterIndex(0)
+        
+        # Show the dialog and retrieve the user response. If it is 
+        # the OK response, process the data.
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            
+            Config.PortfolioSaveXml(path)
+
+            self.SetStatusBarText("Portfolio saved to %s" % path)
 
     def OnFileExit(self, *event):
         self.statusBarTimer.Stop()
