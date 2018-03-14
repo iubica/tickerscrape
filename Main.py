@@ -1663,13 +1663,18 @@ class TickerScrapeFrame(wx.Frame):
                                     wx.ITEM_CHECK)
         self.Bind(wx.EVT_MENU, self.OnToggleRedirect, item)
 
+        loadItem = wx.MenuItem(self.fileMenu, -1, '&Load...', 'Load the portfolio from file')
+        self.menuLoadItemId = loadItem.GetId()
+        self.fileMenu.Append(loadItem)
+        self.Bind(wx.EVT_MENU, self.OnFileLoad, loadItem)
+
         saveItem = wx.MenuItem(self.fileMenu, -1, '&Save\tCtrl-S', 'Save the portfolio')
         self.menuSaveItemId = saveItem.GetId()
         self.fileMenu.Append(saveItem)
         self.fileMenu.Enable(self.menuSaveItemId, Config.PortfolioChanged())
         self.Bind(wx.EVT_MENU, self.OnFileSave, saveItem)
 
-        saveAsItem = wx.MenuItem(self.fileMenu, -1, '&Save As...', 'Save the portfolio as file')
+        saveAsItem = wx.MenuItem(self.fileMenu, -1, 'Save &As...', 'Save the portfolio as file')
         self.menuSaveAsItemId = saveAsItem.GetId()
         self.fileMenu.Append(saveAsItem)
         self.Bind(wx.EVT_MENU, self.OnFileSaveAs, saveAsItem)
@@ -2282,6 +2287,36 @@ class TickerScrapeFrame(wx.Frame):
         #print("load time: ", time.time() - start)
 
     # Menu methods
+    def OnFileLoad(self, *event):
+        wildcard = "XML files (*.xml)|*.xml|" \
+                   "All files (*.*)|*.*"
+        
+        # Create the dialog
+        dlg = wx.FileDialog(
+            self, 
+            message="Load portfolio from file",
+            defaultDir=wx.StandardPaths.Get().GetUserDataDir(),
+            defaultFile="wxPortfolio.xml",
+            wildcard=wildcard,
+            style=wx.FD_OPEN|
+                  wx.FD_CHANGE_DIR|wx.FD_FILE_MUST_EXIST|
+                  wx.FD_PREVIEW
+            )
+
+        # Show the dialog and retrieve the user response. 
+        # If it is the OK response, process the data.
+        if dlg.ShowModal() == wx.ID_OK:
+            # This returns a Python list of files that were selected.
+            paths = dlg.GetPaths()
+
+            Config.PortfolioReadXml(paths[0])
+
+        self.SetStatusBarText("Portfolio loaded from '%s'" % paths[0])
+
+        # Destroy the dialog. Don't do this until you are done with it!
+        # BAD things can happen otherwise!
+        dlg.Destroy()
+
     def OnFileSave(self, *event):
         Config.PortfolioSave()
         self.SetStatusBarText("Portfolio saved")
@@ -2294,7 +2329,7 @@ class TickerScrapeFrame(wx.Frame):
         dlg = wx.FileDialog(
             self, 
             message="Save file as ...", 
-            defaultDir=os.getcwd(),
+            defaultDir=wx.StandardPaths.Get().GetUserDataDir(),
             defaultFile="", 
             wildcard=wildcard, 
             style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT
@@ -2312,6 +2347,10 @@ class TickerScrapeFrame(wx.Frame):
             Config.PortfolioSaveXml(path)
 
             self.SetStatusBarText("Portfolio saved to %s" % path)
+
+        # Destroy the dialog. Don't do this until you are done with it!
+        # BAD things can happen otherwise!
+        dlg.Destroy()
 
     def OnFileExit(self, *event):
         self.statusBarTimer.Stop()
