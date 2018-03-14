@@ -27,14 +27,10 @@ cellpadding="0" border="1">
 
 <p><b>TickerScrape</b> is a toolkit for investment portfolio management.</p> 
 
-<p>It is written by <b>Andrei Radulescu-Banu</b>, Copyright (c) 2018 and is released under an MIT license.</p>
+<p>It is written by <b>Andrei Radulescu-Banu</b>, Copyright (c) 2018, and it is released under an MIT license.</p>
 
 <p><b>wxPython</b> is produced by <b>Robin Dunn</b> and<br>
 <b>Total Control Software,</b> Copyright (c) 1997-2017.</p>
-
-<p>
-<font size="-1">Please see <i>LICENSE</i> for licensing information.</font>
-</p>
 
 <p><wxp module="wx" class="Button">
     <param name="label" value="Okay">
