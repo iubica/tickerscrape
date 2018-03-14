@@ -2308,10 +2308,10 @@ class TickerScrapeFrame(wx.Frame):
         if dlg.ShowModal() == wx.ID_OK:
             # This returns a Python list of files that were selected.
             paths = dlg.GetPaths()
-
+            
             Config.PortfolioReadXml(paths[0])
 
-        self.SetStatusBarText("Portfolio loaded from '%s'" % paths[0])
+            self.SetStatusBarText("Portfolio loaded from '%s'" % paths[0])
 
         # Destroy the dialog. Don't do this until you are done with it!
         # BAD things can happen otherwise!
