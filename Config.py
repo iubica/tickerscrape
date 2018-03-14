@@ -2,6 +2,8 @@
 The configuration module.
 """
 
+import os
+import stat
 import wx
 import pandas as pd
 import Main
@@ -713,6 +715,8 @@ def PortfolioSaveXml(fileName = None):
             f.write(" <category name=\"%s\" group=\"%s\" benchmark=\"%s\"/>\n" % (categoriesDf.ix[i, "Category Name"], categoriesDf.ix[i, "Category Group"], categoriesDf.ix[i, "Benchmark"]))
 
         f.write("</wx-portfolio>\n")
+
+        os.chmod(fName, stat.S_IRUSR|stat.S_IWUSR|stat.S_IRGRP|stat.S_IROTH)
 
     if not fileName:
         PortfolioChanged(False)
