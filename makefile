@@ -19,7 +19,7 @@ ifeq ($(HOSTNAME),LAPTOP-2SD4UBV0)
   CPU_BUILD_DIR=exe.win32-3.6
 endif
 
-ifeq ($(HOSTNAME),Darias-Air)
+ifeq ($(HOSTNAME),Darias-MacBook-Air.local)
   PYTHON=python3
   TARGET=mac-osx
   CPU=x86_64
