@@ -105,6 +105,13 @@ def GetWindow(frame, nb, log):
             
             row = row+2
     
+        pf.ix[row, "Ticker"] = ""
+        pf.ix[row, "Last Price"] = ""
+        pf.ix[row, "Shares"] = ""
+        pf.ix[row, "Current Value"] = ""
+        pf.ix[row, "Cost Basis"] = ""
+        row = row+1
+
     # Promote 1st column as new index
     pf2 = pf.set_index("Ticker")
     pf = pf2
