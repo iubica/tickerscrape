@@ -34,13 +34,14 @@ def GetWindow(frame, nb, log):
 
     # Create a performance dataframe
     pf = pd.DataFrame(index = np.arange(0, len(tickerList)),
-                      columns = ['Ticker', 'Name', 'Account', 'Shares', 'Value'])
+                      columns = ['Ticker', 'Account', 'Last Price', 'Shares', 'Current Value', 'Cost Basis'])
 
     row = 0
     for (ticker, account) in tickerList:
         pf.ix[row, "Ticker"] = ticker
-        pf.ix[row, "Name"] = morningstar.ticker_name(ticker.upper())
+        pf.ix[row+1, "Ticker"] = " " + morningstar.ticker_name(ticker.upper())
         pf.ix[row, "Account"] = account
+        pf.ix[row+1, "Account"] = ""
 
         # Compute the shares
         shares = 0
@@ -66,13 +67,21 @@ def GetWindow(frame, nb, log):
             pf.ix[row, "Shares"] = Format.FloatToString(shares, 3)
         else:
             pf.ix[row, "Shares"] = ""
+        pf.ix[row+1, "Shares"] = ""
             
-        if costBasisSet:
-            pf.ix[row, "Cost Basis"] = "$" + Format.FloatToString(costBasis, 2)
+        pf.ix[row, "Last Price"] = ""
+        pf.ix[row+1, "Last Price"] = ""
+
+        pf.ix[row, "Current Value"] = ""
+        pf.ix[row+1, "Current Value"] = ""
+
+        if sharesSet and costBasisSet:
+            pf.ix[row, "Cost Basis"] = "$" + Format.FloatToString(costBasis/shares, 2) + "/Share"
+            pf.ix[row+1, "Cost Basis"] = " $" + Format.FloatToString(costBasis, 2)
         else:
             pf.ix[row, "Cost Basis"] = ""
             
-        row = row+1
+        row = row+2
     
     # Promote 1st column as new index
     pf2 = pf.set_index("Ticker")
