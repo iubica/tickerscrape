@@ -167,7 +167,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
             try:
                 dt = wx.DateTime()
                 dt.ParseDate(value)
-                date = "%s/%s/%s" % (dt.GetMonth()+1, dt.GetDay(), dt.GetYear())
+                date = "{:02d}/{:02d}/{:04d}".format(dt.GetMonth()+1, dt.GetDay(), dt.GetYear())
                 value = date
             except:
                 self.log.write("Invalid date format '%s', enter date as mm/dd/yyyy.\n" % (value))
