@@ -190,10 +190,13 @@ class AccountTypesPanel(wx.Panel):
         self.dvc.AppendTextColumn("Account Type", 0, width=110,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Long Term Capital Gains Tax", 1, width=225,
+                                  align=wx.ALIGN_RIGHT,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Short Term Capital Gains Tax", 2, width=225,
+                                  align=wx.ALIGN_RIGHT,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
-        self.dvc.AppendTextColumn("Liquidation Tax", 3, width=200,
+        self.dvc.AppendTextColumn("Liquidation Tax", 3, width=100,
+                                  align=wx.ALIGN_RIGHT,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
 
         for c in self.dvc.Columns:

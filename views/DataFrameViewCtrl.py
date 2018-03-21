@@ -117,9 +117,12 @@ class Panel(wx.Panel):
         self.dvc.AppendTextColumn(table_name, 0, width=100)
 
         for column in df:
-            self.dvc.AppendTextColumn(header_list[idx], idx+1, width=100)
+            self.dvc.AppendTextColumn(header_list[idx], 
+                                      idx+1, 
+                                      width=100,
+                                      align=wx.ALIGN_RIGHT)
             #print(df[column])
-            idx += 1
+            idx = idx + 1
 
         # Through the magic of Python we can also access the columns
         # as a list via the Columns property.  Here we'll mark them
