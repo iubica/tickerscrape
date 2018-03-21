@@ -288,15 +288,18 @@ class HoldingsPanel(wx.Panel):
                                   width=150)
         self.dvc.AppendTextColumn("Units",
                                   _GetColumnIdx("Units"),
-                                  width=80, 
+                                  width=100, 
+                                  align=wx.ALIGN_RIGHT,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Cost Basis",
                                   _GetColumnIdx("Cost Basis"),
                                   width=100, 
+                                  align=wx.ALIGN_RIGHT,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Purchase Date",
                                   _GetColumnIdx("Purchase Date"),
-                                  width=100, 
+                                  width=80, 
+                                  align=wx.ALIGN_RIGHT,
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
 
         for c in self.dvc.Columns:
