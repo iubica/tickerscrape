@@ -337,6 +337,29 @@ class HoldingsPanel(wx.Panel):
         self.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.OnValueChanged, self.dvc)
         self.Bind(dv.EVT_DATAVIEW_SELECTION_CHANGED, self.OnSelectionChanged, self.dvc)
 
+#        self.unitsStatusBar = wx.StaticText(self, -1, "Units:        ")
+#        self.costBasisStatusBar = wx.StaticText(self, -1, "Cost Basis:        ")
+#        self.currentValueStatusBar = wx.StaticText(self, -1, "Current Value:        ")
+#        self.totalGainStatusBar = wx.StaticText(self, -1, "Total Gain/Loss:        ")
+
+#        statusBarBox = wx.BoxSizer(wx.HORIZONTAL)
+#        statusBarBox.Add(self.unitsStatusBar, 1, wx.LEFT|wx.RIGHT, 5)
+#        statusBarBox.Add(self.costBasisStatusBar, 1, wx.LEFT|wx.RIGHT, 5)
+#        statusBarBox.Add(self.currentValueStatusBar, 1, wx.LEFT|wx.RIGHT, 5)
+#        statusBarBox.Add(self.totalGainStatusBar, 1, wx.LEFT|wx.RIGHT, 5)
+#        self.Sizer.Add(statusBarBox, 0, wx.TOP|wx.BOTTOM, 5)
+
+#        self.UpdateStatusBar()
+
+    def UpdateStatusBar(self):
+        rows = []
+        items = self.dvc.GetSelections()
+        if items:
+            rows = [self.model.GetRow(item) for item in items]
+        
+        self.log.write("UpdateStatusBar(), rows %s\n" % rows)
+
+
     def OnDeleteRows(self, evt):
         # Remove the selected row(s) from the model. The model will take care
         # of notifying the view (and any other observers) that the change has
@@ -418,6 +441,8 @@ class HoldingsPanel(wx.Panel):
         else:
             self.buttonMoveDown.Enable()
             
+        # Update the status bar
+#        self.UpdateStatusBar()
 
 #----------------------------------------------------------------------
 
