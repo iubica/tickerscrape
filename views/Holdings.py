@@ -14,7 +14,7 @@ import morningstar
 _columnName = { 0 : "Account",
                 1 : "Ticker",
                 2 : "Name",
-                3 : "Shares",
+                3 : "Units",
                 4 : "Cost Basis",
                 5 : "Purchase Date",
 }
@@ -147,10 +147,10 @@ class HoldingsModel(dv.DataViewIndexListModel):
             if value != "Cash" and value != "Other" and value != "New ticker":
                 # Convert tickers to upper case
                 value = value_upper
-        elif col == _GetColumnIdx("Shares"):
+        elif col == _GetColumnIdx("Units"):
             f = Format.StringToFloat(value)
             if not f:
-                self.log.write("Invalid number of shares '%s'\n" % (value))
+                self.log.write("Invalid number of units '%s'\n" % (value))
                 return None
                 
             value = Format.FloatToString(f, 3)
@@ -286,8 +286,8 @@ class HoldingsPanel(wx.Panel):
         self.dvc.AppendTextColumn("Name",
                                   _GetColumnIdx("Name"),
                                   width=150)
-        self.dvc.AppendTextColumn("Shares",
-                                  _GetColumnIdx("Shares"),
+        self.dvc.AppendTextColumn("Units",
+                                  _GetColumnIdx("Units"),
                                   width=80, 
                                   mode=dv.DATAVIEW_CELL_EDITABLE)
         self.dvc.AppendTextColumn("Cost Basis",

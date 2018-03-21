@@ -24,7 +24,7 @@ _configChanged = False
 
 #---------------------------------------------------------------------------
 # Called with changed = True or False when config has changed (or is unchanged)
-# from the wxPortfolio.xml, and called with changed = None to just return
+# from the tickerScrape.xml, and called with changed = None to just return
 # the status of the config (whether it has changed or not)
 
 def PortfolioChanged(changed = None):
@@ -172,16 +172,16 @@ def CategoriesChange(categoryOld, categoryNew):
 def PortfolioReadXml(fileName = None):
     """
     Description:
-    Read wxPortfolio xml format config from fileName
+    Read tickerScrape xml format config from fileName
 
     Parameters:
     fileName - where to read xml config from. If None, configuration will be
-        read from <standard user path>/wxPortfolio.xml
+        read from <standard user path>/tickerScrape.xml
     """
     if not fileName:
         # Get the wxPython standard paths
         sp = wx.StandardPaths.Get()
-        fName = sp.GetUserDataDir() + "/wxPortfolio.xml"
+        fName = sp.GetUserDataDir() + "/tickerScrape.xml"
     else:
         fName = fileName    
 
@@ -200,12 +200,12 @@ def PortfolioReadXml(fileName = None):
             holdingsList.append(i.attrib)
 
         holdingsDf = pd.DataFrame.from_dict(holdingsList)
-        holdingsDf.rename(index=str, columns={"account":"Account", "ticker":"Ticker", "shares":"Shares", "cost-basis":"Cost Basis", "purchase-date":"Purchase Date"}, inplace=True)
+        holdingsDf.rename(index=str, columns={"account":"Account", "ticker":"Ticker", "units":"Units", "cost-basis":"Cost Basis", "purchase-date":"Purchase Date"}, inplace=True)
 
         # Order the columns
         holdingsDf = holdingsDf[["Account",
                                  "Ticker", 
-                                 "Shares", 
+                                 "Units", 
                                  "Cost Basis", 
                                  "Purchase Date"]]
     
@@ -257,7 +257,7 @@ def PortfolioReadXml(fileName = None):
         holdingsDf = pd.DataFrame.from_dict({
             "Account": ["", ""],
             "Ticker": ["SPY", "FUSEX"],
-            "Shares": ["100", "150"],
+            "Units": ["100", "150"],
             "Cost Basis": ["150000.00", "100.00"],
             "Purchase Date": ["2/3/2011", "2/4/2011"]
         })
@@ -265,7 +265,7 @@ def PortfolioReadXml(fileName = None):
         # Order the columns
         holdingsDf = holdingsDf[["Account",
                                  "Ticker", 
-                                 "Shares", 
+                                 "Units", 
                                  "Cost Basis", 
                                  "Purchase Date"]]
 
@@ -685,17 +685,17 @@ def PortfolioReadXml(fileName = None):
 def PortfolioSaveXml(fileName = None):
     """
     Description:
-    Save wxPortfolio config to fileName in xml format
+    Save tickerScrape config to fileName in xml format
 
     Parameters:
     fileName - where to store the xml file. If None, configuration will be
-        stored in <standard user path>/wxPortfolio.xml
+        stored in <standard user path>/tickerScrape.xml
     """
 
     if not fileName:
         # Get the wxPython standard paths
         sp = wx.StandardPaths.Get()
-        fName = sp.GetUserDataDir() + "/wxPortfolio.xml"
+        fName = sp.GetUserDataDir() + "/tickerScrape.xml"
     else:
         fName = fileName    
 
@@ -703,7 +703,7 @@ def PortfolioSaveXml(fileName = None):
         f.write("<wx-portfolio version=\"1.0\">\n")
 
         for i in range(holdingsDf.shape[0]):
-            f.write(" <holding account=\"%s\" ticker=\"%s\" shares=\"%s\" cost-basis=\"%s\" purchase-date=\"%s\"/>\n" % (holdingsDf.ix[i, "Account"], holdingsDf.ix[i, "Ticker"], holdingsDf.ix[i, "Shares"], holdingsDf.ix[i, "Cost Basis"], holdingsDf.ix[i, "Purchase Date"]))
+            f.write(" <holding account=\"%s\" ticker=\"%s\" units=\"%s\" cost-basis=\"%s\" purchase-date=\"%s\"/>\n" % (holdingsDf.ix[i, "Account"], holdingsDf.ix[i, "Ticker"], holdingsDf.ix[i, "Units"], holdingsDf.ix[i, "Cost Basis"], holdingsDf.ix[i, "Purchase Date"]))
 
         for i in range(accountsDf.shape[0]):
             f.write(" <account name=\"%s\" number=\"%s\" type=\"%s\"/>\n" % (accountsDf.ix[i, "Account Name"], accountsDf.ix[i, "Account Number"], accountsDf.ix[i, "Type"]))

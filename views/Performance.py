@@ -44,13 +44,13 @@ def GetWindow(frame, nb, log):
 
     # Create a performance dataframe
     pf = pd.DataFrame(index = np.arange(0, len(accountList) + len(tickerList)),
-                      columns = ["Ticker", "Last Price", "Shares", "Current Value", "Cost Basis"])
+                      columns = ["Ticker", "Last Price", "Units", "Current Value", "Cost Basis"])
 
     row = 0
     for account in accountList:
         pf.ix[row, "Ticker"] = account
         pf.ix[row, "Last Price"] = ""
-        pf.ix[row, "Shares"] = ""
+        pf.ix[row, "Units"] = ""
         pf.ix[row, "Current Value"] = ""
         pf.ix[row, "Cost Basis"] = ""
         row = row+1
@@ -61,9 +61,9 @@ def GetWindow(frame, nb, log):
             pf.ix[row, "Ticker"] = ticker
             pf.ix[row+1, "Ticker"] = " " + morningstar.ticker_name(ticker.upper())
 
-            # Compute the shares
-            shares = 0
-            sharesSet = True
+            # Compute the units
+            units = 0
+            unitsSet = True
             costBasis = 0
             costBasisSet = True
             
@@ -73,23 +73,23 @@ def GetWindow(frame, nb, log):
                 if Config.holdingsDf.ix[j, "Account"] != account:
                     continue
 
-                shares1 = Config.holdingsDf.ix[j, "Shares"]
+                units1 = Config.holdingsDf.ix[j, "Units"]
                 costBasis1 = Config.holdingsDf.ix[j, "Cost Basis"]
 
-                if shares1:
-                    shares = shares + Format.StringToFloat(shares1)
+                if units1:
+                    units = units + Format.StringToFloat(units1)
                 else:
-                    sharesSet = False
+                    unitsSet = False
                 if costBasis1:
                     costBasis = costBasis + Format.StringToFloat(costBasis1)
                 else:
                     costBasisSet = False
 
-            if sharesSet:
-                pf.ix[row, "Shares"] = Format.FloatToString(shares, 3)
+            if unitsSet:
+                pf.ix[row, "Units"] = Format.FloatToString(units, 3)
             else:
-                pf.ix[row, "Shares"] = ""
-            pf.ix[row+1, "Shares"] = ""
+                pf.ix[row, "Units"] = ""
+            pf.ix[row+1, "Units"] = ""
             
             pf.ix[row, "Last Price"] = ""
             pf.ix[row+1, "Last Price"] = ""
@@ -97,8 +97,8 @@ def GetWindow(frame, nb, log):
             pf.ix[row, "Current Value"] = ""
             pf.ix[row+1, "Current Value"] = ""
 
-            if sharesSet and costBasisSet:
-                pf.ix[row, "Cost Basis"] = "$" + Format.FloatToString(costBasis/shares, 2) + "/Share"
+            if unitsSet and units and costBasisSet:
+                pf.ix[row, "Cost Basis"] = "$" + Format.FloatToString(costBasis/units, 2) + "/Share"
                 pf.ix[row+1, "Cost Basis"] = " $" + Format.FloatToString(costBasis, 2)
             else:
                 pf.ix[row, "Cost Basis"] = ""
@@ -107,7 +107,7 @@ def GetWindow(frame, nb, log):
     
         pf.ix[row, "Ticker"] = ""
         pf.ix[row, "Last Price"] = ""
-        pf.ix[row, "Shares"] = ""
+        pf.ix[row, "Units"] = ""
         pf.ix[row, "Current Value"] = ""
         pf.ix[row, "Cost Basis"] = ""
         row = row+1
