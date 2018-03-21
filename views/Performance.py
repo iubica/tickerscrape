@@ -86,7 +86,7 @@ def GetWindow(frame, nb, log):
                     costBasisSet = False
 
             if unitsSet:
-                pf.ix[row, "Units"] = Format.FloatToString(units, 3)
+                pf.ix[row, "Units"] = "{:,.3f}".format(units)
             else:
                 pf.ix[row, "Units"] = ""
             pf.ix[row+1, "Units"] = ""
@@ -98,8 +98,8 @@ def GetWindow(frame, nb, log):
             pf.ix[row+1, "Current Value"] = ""
 
             if unitsSet and units and costBasisSet:
-                pf.ix[row, "Cost Basis"] = "$" + Format.FloatToString(costBasis/units, 2) + "/Share"
-                pf.ix[row+1, "Cost Basis"] = " $" + Format.FloatToString(costBasis, 2)
+                pf.ix[row, "Cost Basis"] = "$" + "{:,.2f}".format(costBasis/units) + "/Share"
+                pf.ix[row+1, "Cost Basis"] = " $" + "{:,.2f}".format(costBasis, 2)
             else:
                 pf.ix[row, "Cost Basis"] = ""
             

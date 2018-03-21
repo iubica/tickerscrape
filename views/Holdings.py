@@ -153,7 +153,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
                 self.log.write("Invalid number of units '%s'\n" % (value))
                 return None
                 
-            value = Format.FloatToString(f, 3)
+            value = "{:,.3f}".format(f)
 
         elif col == _GetColumnIdx("Cost Basis"):
             f = Format.StringToFloat(value)
@@ -161,7 +161,7 @@ class HoldingsModel(dv.DataViewIndexListModel):
                 self.log.write("Invalid cost basis '%s', enter a dollar amount\n" % (value))
                 return None
                 
-            value = Format.FloatToString(f, 2)
+            value = "{:,.2f}".format(f)
 
         elif col == _GetColumnIdx("Purchase Date"):
             try:
