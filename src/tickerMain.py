@@ -2821,17 +2821,6 @@ class MyApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
 #---------------------------------------------------------------------------
 
 def main():
-    try:
-        demoPath = os.path.dirname(__file__)
-        os.chdir(demoPath)
-    except:
-        pass
-
-    # Add these folders to the module search path
-    sys.path.append("views")
-    sys.path.append("widgets")
-    sys.path.append("scrape")
-    
     app = MyApp(False)
 
     # Read the initial portfolio holdings

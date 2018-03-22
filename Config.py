@@ -6,7 +6,7 @@ import os
 import stat
 import wx
 import pandas as pd
-import Main
+import tickerMain
 import xml.etree.ElementTree as ET
 
 #---------------------------------------------------------------------------
@@ -31,8 +31,8 @@ def PortfolioChanged(changed = None):
     global _configChanged
 
     if changed is not None:
-        if Main.portfolioFrame:
-            Main.portfolioFrame.EnableFileMenuSaveItem(changed)
+        if tickerMain.portfolioFrame:
+            tickerMain.portfolioFrame.EnableFileMenuSaveItem(changed)
         _configChanged = changed
 
     return _configChanged
