@@ -13,20 +13,15 @@ executables = [
 
 # Dependencies are automatically detected, but might need fine tuning.
 build_exe_options = {
-    'packages': ['numpy', 'pandas', 'idna'],
-    'includes': ['numpy', 'pandas',  
-                 'wx', 'wx.adv', 'wx.lib.agw.aui', 'wx.html',
-                 'wx.lib.msgpanel', 'wx.lib.mixins.inspection',
-                 'wx.dataview',
-                 'requests',
-                 'bs4',
-                 'six',
-                 'tabulate',
-                 'unidecode',
-                 'xml.etree.ElementTree'],
+    # Full packages
+    'packages': ['numpy', 'pandas', 'idna', 'wx', 'requests', 'bs4', 'six',
+                 'tabulate', 'unidecode', 'xml'],
+    # Additional modules inside other packages
+    'includes': [],
+    # Local files and folders
     'include_files': ['bitmaps/', 'bmp_source/', 'cursors/', 'data/', 
-                      'scrape/', 'views/', 'widgets/',
-                      'Main.py', 'Format.py', 'README.md'],
+                      'scrape/', 'src/', 'views/', 'widgets/',
+                      'README.md'],
     # Modules referenced by dynamic modules under 'views/' but not included
     # in Main.py must be include_files. For example: Format.py.
     'include_msvcr': True, # Some users of cx_freeze swear this is needed

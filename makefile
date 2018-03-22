@@ -2,7 +2,7 @@
 HOSTNAME=$(shell hostname)
 PYTHON=python
 ISCC=iscc
-VERSION=$(shell python version.py)
+VERSION=$(shell python src/version.py)
 
 # Host-specific settings
 ifeq ($(HOSTNAME),andrei-HP)
