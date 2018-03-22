@@ -67,7 +67,7 @@ endif
 exe: build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX)
 
 build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX):
-	$(PYTHON) setup.py build
+	$(PYTHON) setup-cx-freeze.py build
 
 clean:
 	rm -rf build/$(CPU_BUILD_DIR)
