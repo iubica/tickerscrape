@@ -15,5 +15,5 @@ sys.path.append("views")
 sys.path.append("widgets")
 sys.path.append("scrape")
 
-import tickerMain
-tickerMain.main()
+import TickerMain
+TickerMain.main()
