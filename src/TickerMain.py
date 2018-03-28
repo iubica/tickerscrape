@@ -2480,7 +2480,7 @@ class TickerScrapeFrame(wx.Frame):
 
     def OnReload(self, event):
         # Restart the whole app
-        RestartApp()
+        RestartApp("--no-splash")
 
     def OnUpdate(self, event):
         from About import MyAboutBox
@@ -2710,8 +2710,8 @@ class MySplashScreen(SplashScreen):
     def __init__(self):
         bmp = wx.Image(opj("bitmaps/ticker-scrape-logo.png")).ConvertToBitmap()
         SplashScreen.__init__(self, bmp,
-                                 wx.adv.SPLASH_CENTRE_ON_SCREEN | wx.adv.SPLASH_TIMEOUT,
-                                 1000, None, -1)
+                              wx.adv.SPLASH_CENTRE_ON_SCREEN | wx.adv.SPLASH_TIMEOUT,
+                              1000, None, -1)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.fc = wx.CallLater(2000, self.ShowMain)
 
@@ -2818,6 +2818,7 @@ class MyApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
         wx.SystemOptions.SetOption("mac.window-plain-transition", 1)
         self.SetAppName("tickerScrape")
 
+        if "--no-splash" not in sys.argv:
         # Create and show the splash screen.  It will then create and
         # show the main frame when it is time to do so.  Normally when
         # using a SplashScreen you would create it, show it and then
@@ -2826,13 +2827,17 @@ class MyApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
         # this case we have nothing else to do so we'll delay showing
         # the main frame until later (see ShowMain above) so the users
         # can see the SplashScreen effect.
-        splash = MySplashScreen()
-        splash.Show()
+            splash = MySplashScreen()
+            splash.Show()
+        else:
+            global portfolioFrame
+            portfolioFrame = TickerScrapeFrame(None, "TickerScrape")
+            portfolioFrame.Show()
 
         return True
 
 #---------------------------------------------------------------------------
-def RestartApp():
+def RestartApp(a):
     """Restarts the current program, with file objects and descriptors
        cleanup
     """
@@ -2845,7 +2850,10 @@ def RestartApp():
         logging.error(e)
 
     python = sys.executable
-    os.execl(python, python, *sys.argv)
+    argv = list(sys.argv)
+    argv.append(a)
+
+    os.execl(python, python, *argv)
 
 #---------------------------------------------------------------------------
 
