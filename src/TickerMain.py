@@ -58,7 +58,6 @@ import re
 import shutil
 from threading import Thread
 import psutil
-import logging
 
 from distutils.version import LooseVersion
 
@@ -2949,12 +2948,10 @@ def RestartApp(a):
        cleanup
     """
 
-    try:
-        p = psutil.Process(os.getpid())
-        for handler in p.open_files() + p.connections():
+    p = psutil.Process(os.getpid())
+    for handler in p.open_files() + p.connections():
+        if handler.fd != -1:
             os.close(handler.fd)
-    except e:
-        logging.error(e)
 
     python = sys.executable
     argv = list(sys.argv)
