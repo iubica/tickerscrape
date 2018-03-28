@@ -419,6 +419,59 @@ class InternetThread(Thread):
 
 
 #---------------------------------------------------------------------------
+# Set up a thread that will download the update
+
+class UpdateThread(Thread):
+    """ Worker thread class to attempt connection to the internet. """
+
+    def __init__(self, notifyWindow, log, url):
+
+        Thread.__init__(self)
+
+        self.notifyWindow = notifyWindow
+        self.log = log
+        self.url = url
+        self.keepRunning = True
+        self.setDaemon(True)
+
+        self.start()
+
+
+    def run(self):
+        """ Run the worker thread. """
+
+        # This is the code executing in the new thread. Simulation of
+        # a long process as a simple urllib call
+
+        try:
+            fid = urllib.request.urlopen(self.url)
+
+            if six.PY2:
+                originalText = fid.read()
+            else:
+                originalText = fid.read().decode("utf-8")
+
+            self.log.AppendText("%s\n" % (originalText))
+
+            self.updating = False
+            
+            if not self.keepRunning:
+                return
+
+#            wx.CallAfter(self.notifyWindow.LoadDocumentation, originalText)
+        except (IOError, urllib.error.HTTPError):
+            # Unable to get to the internet
+            t, v = sys.exc_info()[:2]
+            message = traceback.format_exception_only(t, v)
+            wx.CallAfter(self.notifyWindow.StopUpdate, message)
+        except:
+            # Some other strange error...
+            t, v = sys.exc_info()[:2]
+            message = traceback.format_exception_only(t, v)
+            wx.CallAfter(self.notifyWindow.StopUpdate, message)
+
+
+#---------------------------------------------------------------------------
 # Show how to derive a custom wxLog class
 
 class MyLog(wx.Log):
@@ -1432,6 +1485,8 @@ class TickerScrapeFrame(wx.Frame):
         self.allowDocs = False
         self.downloading = False
         self.internetThread = None
+        self.updating = False
+        self.updateThread = None
         self.downloadImage = 2
         self.sendDownloadError = True
         self.downloadTimer = wx.Timer(self, wx.ID_ANY)
@@ -2289,6 +2344,60 @@ class TickerScrapeFrame(wx.Frame):
         self.ovr.SetPage(text)
         #print("load time: ", time.time() - start)
 
+    #---------------------------------------------
+
+    # Update methods
+    def StartUpdate(self):
+
+        self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
+
+        if self.updating:
+            return
+
+        self.downloadTimer.Start(100)
+        self.downloadGauge.Show()
+        self.Reposition()
+        self.updating = True
+        self.updateThread = UpdateThread(self, 
+                                         self.log,
+                                         "http://tickerscrape.com/downloads/")
+
+    #---------------------------------------------
+
+    def StopUpdate(self, error=None):
+
+        self.downloadTimer.Stop()
+
+        if not self.updating:
+            return
+
+        if error:
+            if self.sendDownloadError:
+                self.log.AppendText("Warning: problems in downloading update.\n")
+                self.log.AppendText("Error message from the update downloader was:\n")
+                self.log.AppendText("\n".join(error))
+                self.sendDownloadError = False
+
+        if self.useNbImages:
+            self.nb.SetPageImage(0, 0)
+
+        self.updateThread.keepRunning = False
+        self.updateThread = None
+
+        self.updating = False
+        self.downloadGauge.Hide()
+        self.Reposition()
+
+        text = self.curOverview
+
+        lead = text[:6]
+        if lead != '<html>' and lead != '<HTML>':
+            text = '<br>'.join(text.split('\n'))
+
+        self.ovr.SetPage(text)
+
+    #---------------------------------------------
+
     # Menu methods
     def OnFileLoad(self, *event):
         wildcard = "XML files (*.xml)|*.xml|" \
@@ -2483,10 +2592,7 @@ class TickerScrapeFrame(wx.Frame):
         RestartApp("--no-splash")
 
     def OnUpdate(self, event):
-        from About import MyAboutBox
-        about = MyAboutBox(self)
-        about.ShowModal()
-        about.Destroy()
+        self.StartUpdate()
 
     def OnHelpAbout(self, event):
         from About import MyAboutBox
@@ -2604,6 +2710,7 @@ class TickerScrapeFrame(wx.Frame):
         self.codePage = None
         self.mainmenu = None
         self.StopDownload()
+        self.StopUpdate()
 
         # if self.tbicon is not None:
             # self.tbicon.Destroy()
