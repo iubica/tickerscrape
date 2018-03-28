@@ -57,6 +57,8 @@ import sys, os, time, traceback
 import re
 import shutil
 from threading import Thread
+import psutil
+import logging
 
 from distutils.version import LooseVersion
 
@@ -709,7 +711,6 @@ class CodePanel(wx.Panel):
             viewModule.SetActive(modOriginal)
         self.radioButtons[viewModule.GetActiveID()].Enable(True)
         self.ActiveModuleChanged()
-
 
     def ActiveModuleChanged(self):
         self.LoadViewSource(self.viewModule.GetSource())
@@ -1774,14 +1775,18 @@ class TickerScrapeFrame(wx.Frame):
                                    'A tool that lets you browse the live widgets and sizers in an application')
         inspToolItem.SetBitmap(images.catalog['inspect'].GetBitmap())
         menu.Append(inspToolItem)
-        if 'wxMac' not in wx.PlatformInfo:
-            menu.AppendSeparator()
+        menu.AppendSeparator()
+        reloadApp = menu.Append(-1, '&Reload', 'Reload application')
+        updateApp = menu.Append(-1, '&Check for updates', 'Check for updates')
+        menu.AppendSeparator()
         helpAbout = menu.Append(wx.ID_ABOUT, 
                                 '&About TickerScrape', 
                                 'About TickerScrape')
 
         self.Bind(wx.EVT_MENU, self.OnOpenShellWindow, shellItem)
         self.Bind(wx.EVT_MENU, self.OnOpenWidgetInspector, inspToolItem)
+        self.Bind(wx.EVT_MENU, self.OnReload, reloadApp)
+        self.Bind(wx.EVT_MENU, self.OnUpdate, updateApp)
         self.Bind(wx.EVT_MENU, self.OnHelpAbout, helpAbout)
         self.Bind(wx.EVT_MENU, self.OnHelpFind,  findItem)
         self.Bind(wx.EVT_MENU, self.OnFindNext,  findNextItem)
@@ -2473,6 +2478,16 @@ class TickerScrapeFrame(wx.Frame):
         self.tree.SetExpansionState(self.expansionState)
 
 
+    def OnReload(self, event):
+        # Restart the whole app
+        RestartApp()
+
+    def OnUpdate(self, event):
+        from About import MyAboutBox
+        about = MyAboutBox(self)
+        about.ShowModal()
+        about.Destroy()
+
     def OnHelpAbout(self, event):
         from About import MyAboutBox
         about = MyAboutBox(self)
@@ -2816,7 +2831,21 @@ class MyApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
 
         return True
 
+#---------------------------------------------------------------------------
+def RestartApp():
+    """Restarts the current program, with file objects and descriptors
+       cleanup
+    """
 
+    try:
+        p = psutil.Process(os.getpid())
+        for handler in p.open_files() + p.connections():
+            os.close(handler.fd)
+    except e:
+        logging.error(e)
+
+    python = sys.executable
+    os.execl(python, python, *sys.argv)
 
 #---------------------------------------------------------------------------
 
