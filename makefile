@@ -57,7 +57,7 @@ ifeq ($(TARGET),linux)
   installer: build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz
 
   build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz: build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX)
-	if [ ! -d build/$(CPU_BUILD_DIR)/build/installer ]; then mkdir -p build/$(CPU_BUILD_DIR)/build/installer; fi
+	@if [ ! -d build/$(CPU_BUILD_DIR)/build/installer ]; then mkdir -p build/$(CPU_BUILD_DIR)/build/installer; fi
 	cd build/$(CPU_BUILD_DIR); tar cvfz tickerscrape.tgz bitmaps data libpython* README.md views bmp_source Format.py Main.py scrape widgets cursors lib TickerScrape; mv tickerscrape.tgz build/installer
 
   upload: installer 
@@ -73,9 +73,9 @@ update: build/update/tickerscrape-update-$(VERSION)-$(TARGET)-$(CPU).tgz
 
 build/update/tickerscrape-update-$(VERSION)-$(TARGET)-$(CPU).tgz: *.py */*.py
 	rm -rf build/update/*
-	if [ ! -d build/update/tmp ]; then mkdir -p build/update/tmp; fi
+	@if [ ! -d build/update/tmp ]; then mkdir -p build/update/tmp; fi
 	cp -a agw bitmaps bmp_source cursors data LICENSE README.md scrape snippets src TickerScrape.py views widgets build/update/tmp
-	find build/update/tmp -name __pycache__ -exec rm -rf {} \; 2>/dev/null || exit 0
+	@find build/update/tmp -name __pycache__ -exec rm -rf {} \; 2>/dev/null || exit 0
 	cd build/update/tmp; tar cvfz ../tickerscrape-update-$(VERSION)-$(TARGET)-$(CPU).tgz .
 
 clean:
