@@ -38,6 +38,8 @@ ifeq ($(TARGET),windows)
   EXE_SUFFIX=.exe
 endif
 
+UPDATE_TGT=tickerscrape-update-$(VERSION)-$(TARGET)-$(CPU).tgz
+
 all: installer update
 
 installer: exe
@@ -48,9 +50,10 @@ ifeq ($(TARGET),windows)
   build/$(CPU_BUILD_DIR)/build/installer/mysetup$(EXE_SUFFIX): build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX) TickerScrape.iss
 	$(ISCC) build/$(CPU_BUILD_DIR)/TickerScrape.iss
 
-  upload: installer 
+  upload: installer update
 	chmod 755 build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe
 	scp build/$(CPU_BUILD_DIR)/build/installer/mysetup.exe bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-install-$(VERSION)-$(TARGET)-$(CPU)-setup.exe
+	scp build/update/$(UPDATE_TGT) bitdrib1@bitdribble.com:www/tickerscrape/downloads/
 endif
 
 ifeq ($(TARGET),linux)
@@ -60,14 +63,16 @@ ifeq ($(TARGET),linux)
 	@if [ ! -d build/$(CPU_BUILD_DIR)/build/installer ]; then mkdir -p build/$(CPU_BUILD_DIR)/build/installer; fi
 	cd build/$(CPU_BUILD_DIR); tar cvfz tickerscrape.tgz bitmaps data libpython* README.md views bmp_source Format.py Main.py scrape widgets cursors lib TickerScrape; mv tickerscrape.tgz build/installer
 
-  upload: installer 
+  upload: installer update
 	scp build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-install-$(VERSION)-$(TARGET)-$(CPU).tgz
+	scp build/update/$(UPDATE_TGT) bitdrib1@bitdribble.com:www/tickerscrape/downloads/
 endif
 
 exe: build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX)
 
 build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX): *.py */*.py
 	$(PYTHON) setup-cx-freeze.py build
+	touch $@
 
 update: build/update/tickerscrape-update-$(VERSION)-$(TARGET)-$(CPU).tgz
 
