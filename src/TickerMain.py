@@ -58,6 +58,7 @@ import re
 import shutil
 from threading import Thread
 import psutil
+import platform
 
 from distutils.version import LooseVersion
 
@@ -2392,6 +2393,11 @@ class TickerScrapeFrame(wx.Frame):
 
         #self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
 
+        ver_major, ver_minor = version.VERSION_STRING.split('.')
+
+        #self.log.AppendText("Version: %s %s\n" % (ver_major, ver_minor))
+        self.log.AppendText("Platform: %s, machine: %s\n" % (platform.system(), platform.machine()))
+
         # Parse the contents
         soup = BeautifulSoup(data, 'lxml')
 
@@ -2401,6 +2407,13 @@ class TickerScrapeFrame(wx.Frame):
             if i['href'] == '/':
                 continue
             self.log.AppendText("%s\n" % i['href'])
+
+            fname = i['href']
+            
+
+        # Is there a new major version available?
+
+        # Is there a new minor version available?
 
         self.StopUpdate()
 
