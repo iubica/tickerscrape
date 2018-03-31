@@ -2815,7 +2815,7 @@ class TickerScrapeFrame(wx.Frame):
 
     #---------------------------------------------
     def OnAppActivate(self, evt):
-        wx.LogMessage("OnAppActivate: %s" % evt.GetActive())
+        #wx.LogMessage("OnAppActivate: %s" % evt.GetActive())
         evt.Skip()
 
 #---------------------------------------------------------------------------
