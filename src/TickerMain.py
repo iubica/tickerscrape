@@ -75,6 +75,8 @@ from six import exec_, BytesIO
 from six.moves import cPickle
 from six.moves import urllib
 
+from bs4 import BeautifulSoup
+
 import version
 import ViewTree
 import Config
@@ -450,14 +452,14 @@ class UpdateThread(Thread):
             else:
                 originalText = fid.read().decode("utf-8")
 
-            self.log.AppendText("%s\n" % (originalText))
+            #self.log.AppendText("%s\n" % (originalText))
 
             self.updating = False
             
             if not self.keepRunning:
                 return
 
-#            wx.CallAfter(self.notifyWindow.LoadDocumentation, originalText)
+            wx.CallAfter(self.notifyWindow.LoadUpdate, originalText)
         except (IOError, urllib.error.HTTPError):
             # Unable to get to the internet
             t, v = sys.exc_info()[:2]
@@ -2377,9 +2379,6 @@ class TickerScrapeFrame(wx.Frame):
                 self.log.AppendText("\n".join(error))
                 self.sendDownloadError = False
 
-        if self.useNbImages:
-            self.nb.SetPageImage(0, 0)
-
         self.updateThread.keepRunning = False
         self.updateThread = None
 
@@ -2387,13 +2386,23 @@ class TickerScrapeFrame(wx.Frame):
         self.downloadGauge.Hide()
         self.Reposition()
 
-        text = self.curOverview
+    #---------------------------------------------
 
-        lead = text[:6]
-        if lead != '<html>' and lead != '<HTML>':
-            text = '<br>'.join(text.split('\n'))
+    def LoadUpdate(self, data):
 
-        self.ovr.SetPage(text)
+        self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
+
+        # Parse the contents
+        soup = BeautifulSoup(data, 'lxml')
+
+       # Get the list of install & update packages
+        a = soup.find_all('a')
+        for i in a:
+            if i['href'] == '/':
+                continue
+            self.log.AppendText("%s\n" % i['href'])
+
+        self.StopUpdate()
 
     #---------------------------------------------
 
