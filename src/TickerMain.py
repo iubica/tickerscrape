@@ -2397,6 +2397,24 @@ class TickerScrapeFrame(wx.Frame):
 
         #self.log.AppendText("Version: %s %s\n" % (ver_major, ver_minor))
         self.log.AppendText("Platform: %s, machine: %s\n" % (platform.system(), platform.machine()))
+        
+        p = ""
+        cpu = ""
+
+        if platform.system() == 'Windows':
+            p = "windows"
+            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
+                cpu = "x86_64"
+            else:
+                cpu = "x86"
+        if platform.system() == 'Linux':
+            p = "linux"
+            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
+                cpu = "x86_64"
+            else:
+                cpu = "x86"
+
+        self.log.AppendText("Expected platform: %s-%s\n" % (p, cpu))
 
         # Parse the contents
         soup = BeautifulSoup(data, 'lxml')
