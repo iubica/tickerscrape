@@ -14,8 +14,8 @@ executables = [
 # Dependencies are automatically detected, but might need fine tuning.
 build_exe_options = {
     # Full packages
-    'packages': ['numpy', 'pandas', 'idna', 'wx', 'requests', 'bs4', 'six',
-                 'tabulate', 'unidecode', 'xml'],
+    'packages': ['bs4', 'idna', 'numpy', 'pandas', 'psutil', 
+                 'requests', 'six', 'tabulate', 'unidecode', 'wx', 'xml'],
     # Additional modules inside other packages
     'includes': [],
     # Local files and folders
