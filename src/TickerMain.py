@@ -2350,7 +2350,7 @@ class TickerScrapeFrame(wx.Frame):
     # Update methods
     def StartUpdate(self):
 
-        self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
+        #self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
 
         if self.updating:
             return
@@ -2390,12 +2390,12 @@ class TickerScrapeFrame(wx.Frame):
 
     def LoadUpdate(self, data):
 
-        self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
+        #self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
 
         # Parse the contents
         soup = BeautifulSoup(data, 'lxml')
 
-       # Get the list of install & update packages
+        # Get the list of install & update packages
         a = soup.find_all('a')
         for i in a:
             if i['href'] == '/':
