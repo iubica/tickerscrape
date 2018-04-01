@@ -601,23 +601,12 @@ class UpdateThread(Thread):
 
                 # The installer has been downloaded. 
                 # Install it and restart the app
-                if not os.path.isdir(".git"):
-                    self.log.AppendText("Detected Git sandbox. Skipping installation of %s.\n" % (install_fname))
+                if os.path.isdir(".git"):
+                    wx.CallAfter(self.notifyWindow.StopUpdate, "Detected Git sandbox. Skipping installation of %s.\n" % (install_fname))
                     return
 
-                dlg = wx.MessageDialog(self, "TickerScrape Installer",
-                                       "Install %s?" % unstall_fname,
-                                       wx.OK|wx.ICON_INFORMATION|wx.YES_NO)
-                val = dlg.ShowModal()
-                dlg.Destroy()
-
-                # Install the package
-                if val.ID_OK:
-                    tar = tarfile.open("downloads/" + install_fname)
-                    tar.extractall()
-                    tar.close()
-
-                    RestartApp("--no-splash")
+                wx.CallAfter(self.notifyWindow.UpdateComplete, install_fname)
+                return
 
             except (IOError, urllib.error.HTTPError):
                 # Unable to get to the internet
@@ -2544,6 +2533,33 @@ class TickerScrapeFrame(wx.Frame):
                 self.log.AppendText("Error message from the update downloader was:\n")
                 self.log.AppendText("\n".join(error))
                 self.sendDownloadError = False
+
+        self.updateThread.keepRunning = False
+        self.updateThread = None
+
+        self.updating = False
+        self.downloadGauge.Hide()
+        self.Reposition()
+
+
+    def UpdateComplete(self, fname=None):
+
+        self.downloadTimer.Stop()
+
+        dlg = wx.MessageDialog(self, "Install %s?" % fname,
+                               "TickerScrape Installer",
+                               wx.YES_NO|wx.ICON_INFORMATION)
+        val = dlg.ShowModal()
+        dlg.Destroy()
+        
+        # Install the package
+        if val == wx.ID_OK:
+            tar = tarfile.open("downloads/" + fname)
+            tar.extractall()
+            tar.close()
+            
+            RestartApp("--no-splash")
+        
 
         self.updateThread.keepRunning = False
         self.updateThread = None
