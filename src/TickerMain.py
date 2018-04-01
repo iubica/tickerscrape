@@ -597,9 +597,9 @@ class UpdateThread(Thread):
 
                 originalText = fid.read()
 
-                self.log.AppendText("Got file %s\n" % (install_fname))
+                self.log.AppendText("Got file %s, len %d\n" % (install_fname, fid))
 
-                with open("downloads/" + install_fname, 'a') as f:
+                with open("downloads/" + install_fname, "wb") as f:
                     f.write(originalText)
 
             except (IOError, urllib.error.HTTPError):
