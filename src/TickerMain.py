@@ -2548,7 +2548,7 @@ class TickerScrapeFrame(wx.Frame):
 
         dlg = wx.MessageDialog(self, "Install %s?" % fname,
                                "TickerScrape Installer",
-                               wx.YES_NO|wx.ICON_INFORMATION)
+                               wx.OK|wx.CANCEL|wx.ICON_INFORMATION)
         val = dlg.ShowModal()
         dlg.Destroy()
         
@@ -2558,8 +2558,11 @@ class TickerScrapeFrame(wx.Frame):
             tar.extractall()
             tar.close()
             
+            self.log.AppendText("Restarting app\n")
+
             RestartApp("--no-splash")
         
+        self.log.AppendText("Not restarting app\n")
 
         self.updateThread.keepRunning = False
         self.updateThread = None
