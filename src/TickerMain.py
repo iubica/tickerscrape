@@ -592,16 +592,16 @@ class UpdateThread(Thread):
                 else:
                     raise
 
+            self.log.AppendText("Downloading %s\n" % (self.url + '/' + install_fname))
+
             try:
-                fid = urllib.request.urlopen(self.url + '/' + install_fname)
+                urllib.request.urlretrieve(self.url + '/' + install_fname, "downloads/" + install_fname)
 
-                originalText = fid.read()
+                self.log.AppendText("Got file %s\n" % (install_fname))
 
-                self.log.AppendText("Got file %s, len %d\n" % (install_fname, fid))
-
-                with open("downloads/" + install_fname, "wb") as f:
-                    f.write(originalText)
-
+                # The installer has been downloaded. 
+                # Install it and restart the app
+                
             except (IOError, urllib.error.HTTPError):
                 # Unable to get to the internet
                 t, v = sys.exc_info()[:2]
