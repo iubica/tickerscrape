@@ -53,7 +53,7 @@
 # Please see the __init__tickerscrape__.py file in the TickerScrape/agw/ folder 
 # for an example.
 
-import sys, os, time, traceback
+import sys, os, errno, time, traceback
 import re
 import shutil
 from threading import Thread
@@ -509,8 +509,10 @@ class UpdateThread(Thread):
         # (which may end up being None...)
         install_ver_major = None
         install_ver_minor = None
+        install_fname = None
         update_ver_major = None
         update_ver_minor = None
+        update_fname = None
 
         # Parse the contents
         soup = BeautifulSoup(originalText, 'lxml')
@@ -576,6 +578,45 @@ class UpdateThread(Thread):
 
                 self.log.AppendText("Updater: %s, version: %s %s\n" % (fname, s.group(1), s.group(2)))
             
+        # Did we find an installer?
+        if install_fname:
+            # Cancel up any updater
+            update_fname = None
+
+            # Make the downloads directory
+            try:
+                os.mkdir("downloads")
+            except OSError as exc:
+                if exc.errno == errno.EEXIST and os.path.isdir("downloads"):
+                    pass
+                else:
+                    raise
+
+            try:
+                fid = urllib.request.urlopen(self.url + '/' + install_fname)
+
+                originalText = fid.read()
+
+                self.log.AppendText("Got file %s\n" % (install_fname))
+
+                with open("downloads/" + install_fname, 'a') as f:
+                    f.write(originalText)
+
+            except (IOError, urllib.error.HTTPError):
+                # Unable to get to the internet
+                t, v = sys.exc_info()[:2]
+                message = traceback.format_exception_only(t, v)
+                wx.CallAfter(self.notifyWindow.StopUpdate, message)
+            except:
+                # Some other strange error...
+                t, v = sys.exc_info()[:2]
+                message = traceback.format_exception_only(t, v)
+                wx.CallAfter(self.notifyWindow.StopUpdate, message)
+
+        # Did we find an updater?
+        if update_fname:
+            pass
+
         wx.CallAfter(self.notifyWindow.LoadUpdate, originalText)
 
 #---------------------------------------------------------------------------
