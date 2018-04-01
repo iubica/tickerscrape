@@ -53,7 +53,7 @@
 # Please see the __init__tickerscrape__.py file in the TickerScrape/agw/ folder 
 # for an example.
 
-import sys, os, errno, time, traceback
+import sys, os, errno, tarfile, time, traceback
 import re
 import shutil
 from threading import Thread
@@ -592,26 +592,45 @@ class UpdateThread(Thread):
                 else:
                     raise
 
-            self.log.AppendText("Downloading %s\n" % (self.url + '/' + install_fname))
+            self.log.AppendText("Downloading %s...\n" % (self.url + '/' + install_fname))
 
             try:
                 urllib.request.urlretrieve(self.url + '/' + install_fname, "downloads/" + install_fname)
 
-                self.log.AppendText("Got file %s\n" % (install_fname))
+                self.log.AppendText("Download %s complete\n" % (install_fname))
 
                 # The installer has been downloaded. 
                 # Install it and restart the app
-                
+                if not os.path.isdir(".git"):
+                    self.log.AppendText("Detected Git sandbox. Skipping installation of %s.\n" % (install_fname))
+                    return
+
+                dlg = wx.MessageDialog(self, "TickerScrape Installer",
+                                       "Install %s?" % unstall_fname,
+                                       wx.OK|wx.ICON_INFORMATION|wx.YES_NO)
+                val = dlg.ShowModal()
+                dlg.Destroy()
+
+                # Install the package
+                if val.ID_OK:
+                    tar = tarfile.open("downloads/" + install_fname)
+                    tar.extractall()
+                    tar.close()
+
+                    RestartApp("--no-splash")
+
             except (IOError, urllib.error.HTTPError):
                 # Unable to get to the internet
                 t, v = sys.exc_info()[:2]
                 message = traceback.format_exception_only(t, v)
                 wx.CallAfter(self.notifyWindow.StopUpdate, message)
+                return
             except:
                 # Some other strange error...
                 t, v = sys.exc_info()[:2]
                 message = traceback.format_exception_only(t, v)
                 wx.CallAfter(self.notifyWindow.StopUpdate, message)
+                return
 
         # Did we find an updater?
         if update_fname:
