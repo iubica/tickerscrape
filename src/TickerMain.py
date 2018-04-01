@@ -457,10 +457,6 @@ class UpdateThread(Thread):
 
             self.updating = False
             
-            if not self.keepRunning:
-                return
-
-            wx.CallAfter(self.notifyWindow.LoadUpdate, originalText)
         except (IOError, urllib.error.HTTPError):
             # Unable to get to the internet
             t, v = sys.exc_info()[:2]
@@ -472,6 +468,115 @@ class UpdateThread(Thread):
             message = traceback.format_exception_only(t, v)
             wx.CallAfter(self.notifyWindow.StopUpdate, message)
 
+
+        if not self.keepRunning:
+            return
+            
+        ver_major, ver_minor = version.VERSION_STRING.split('.')
+
+        #self.log.AppendText("Version: %s %s\n" % (ver_major, ver_minor))
+        #self.log.AppendText("Platform: %s, machine: %s\n" % (platform.system(), platform.machine()))
+        
+        p = ""
+        cpu = ""
+        install_suffix = ""
+        update_suffix = ".tgz"
+
+        if platform.system() == 'Windows':
+            p = "windows"
+            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
+                cpu = "x86_64"
+            else:
+                cpu = "x86"
+
+            install_suffix = "-setup.exe"
+        if platform.system() == 'Linux':
+            p = "linux"
+            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
+                cpu = "x86_64"
+            else:
+                cpu = "x86"
+
+            install_suffix = ".tgz"
+
+        install_regex = "tickerscrape-install-([0-9]*).([0-9]*)-%s-%s%s" % (p, cpu, install_suffix)
+        update_regex = "tickerscrape-update-([0-9]*).([0-9]*)-%s-%s%s" % (p, cpu, update_suffix)
+        #self.log.AppendText("Expected platform: %s-%s\n" % (p, cpu))
+        #self.log.AppendText("Installer: %s\n" % (install_regex))
+        #self.log.AppendText("Updater: %s\n" % (update_regex))
+
+        # Initialize the install & update versions 
+        # (which may end up being None...)
+        install_ver_major = None
+        install_ver_minor = None
+        update_ver_major = None
+        update_ver_minor = None
+
+        # Parse the contents
+        soup = BeautifulSoup(originalText, 'lxml')
+
+        # Get the list of install & update packages
+        a = soup.find_all('a')
+        for i in a:
+            fname = i['href']
+            
+            if fname == '/':
+                continue
+            self.log.AppendText("File download available: %s\n" % fname)
+
+            s = re.search(install_regex, fname)
+            if s: 
+                # Get the major, minor version of the file
+                major, minor = s.group(1), s.group(2)
+                
+                # Continue if not newer than current version
+                if (major < ver_major):
+                    continue
+                if (major == ver_major and minor <= ver_minor):
+                    continue
+
+                # Continue if not newer than previsuly-found version
+                if install_ver_major != None:
+                    if install_ver_major > major:
+                        continue
+                if install_ver_minor != None:
+                    if install_ver_minor > minor:
+                        continue
+
+                install_ver_major, install_ver_minor = major, minor
+                install_fname = fname
+
+                self.log.AppendText("Installer: %s, version: %s %s\n" % (fname, major, minor))
+
+            # Don't look for update program if we already found an installer
+            if install_fname:
+                continue
+
+            s = re.search(update_regex, fname)
+            if s: 
+                # Get the major, minor version of the file
+                major, minor = s.group(1), s.group(2)
+                
+                # Continue if not newer than current version
+                if (major != ver_major):
+                    continue
+                if (minor <= ver_minor):
+                    continue
+
+                # Continue if not newer than previsuly-found version
+                if update_ver_major != None:
+                    if update_ver_major > major:
+                        continue
+                if update_ver_minor != None:
+                    if update_ver_minor > minor:
+                        continue
+
+                update_ver_major, update_ver_minor = major, minor
+                update_fname = fname
+
+                self.log.AppendText("Updater: %s, version: %s %s\n" % (fname, s.group(1), s.group(2)))
+            
+        wx.CallAfter(self.notifyWindow.LoadUpdate, originalText)
 
 #---------------------------------------------------------------------------
 # Show how to derive a custom wxLog class
@@ -2392,46 +2497,6 @@ class TickerScrapeFrame(wx.Frame):
     def LoadUpdate(self, data):
 
         #self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
-
-        ver_major, ver_minor = version.VERSION_STRING.split('.')
-
-        #self.log.AppendText("Version: %s %s\n" % (ver_major, ver_minor))
-        self.log.AppendText("Platform: %s, machine: %s\n" % (platform.system(), platform.machine()))
-        
-        p = ""
-        cpu = ""
-
-        if platform.system() == 'Windows':
-            p = "windows"
-            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
-                cpu = "x86_64"
-            else:
-                cpu = "x86"
-        if platform.system() == 'Linux':
-            p = "linux"
-            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
-                cpu = "x86_64"
-            else:
-                cpu = "x86"
-
-        self.log.AppendText("Expected platform: %s-%s\n" % (p, cpu))
-
-        # Parse the contents
-        soup = BeautifulSoup(data, 'lxml')
-
-        # Get the list of install & update packages
-        a = soup.find_all('a')
-        for i in a:
-            if i['href'] == '/':
-                continue
-            self.log.AppendText("%s\n" % i['href'])
-
-            fname = i['href']
-            
-
-        # Is there a new major version available?
-
-        # Is there a new minor version available?
 
         self.StopUpdate()
 

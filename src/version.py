@@ -1,5 +1,5 @@
 # Version of tickerscrape app
-VERSION_STRING = '1.0'
+VERSION_STRING = '0.9'
 
 # Range of wxPython vesions supported
 WX_PYTHON_VERSION_MIN = '4.0.0b2'
