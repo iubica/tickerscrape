@@ -576,7 +576,7 @@ class UpdateThread(Thread):
                 update_ver_major, update_ver_minor = major, minor
                 update_fname = fname
 
-                self.log.AppendText("Updater: %s, version: %s %s\n" % (fname, s.group(1), s.group(2)))
+                self.log.AppendText("Updater: %s\n" % (fname))
             
         # Did we find an installer?
         if install_fname:
@@ -587,6 +587,7 @@ class UpdateThread(Thread):
             try:
                 os.mkdir("downloads")
             except OSError as exc:
+                self.log.AppendText("Mkdir downloads errno %d\n" % (exc.errno))
                 if exc.errno == errno.EEXIST and os.path.isdir("downloads"):
                     pass
                 else:
