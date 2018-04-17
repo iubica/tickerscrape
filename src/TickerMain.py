@@ -548,7 +548,7 @@ class UpdateThread(Thread):
                 install_ver_major, install_ver_minor = major, minor
                 install_fname = fname
 
-                self.log.AppendText("Installer: %s, version: %s %s\n" % (fname, major, minor))
+                self.log.AppendText("Installer: %s\n" % (fname))
 
             # Don't look for update program if we already found an installer
             if install_fname:

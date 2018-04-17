@@ -18,6 +18,9 @@ build_exe_options = {
                  'requests', 'six', 'tabulate', 'unidecode', 'wx', 'xml'],
     # Additional modules inside other packages
     'includes': [],
+    # List of excluded modules. Will exclude TickerMain, we include it
+    # as source file.
+    'excludes': ['TickerMain'],
     # Local files and folders
     'include_files': ['bitmaps/', 'bmp_source/', 'cursors/', 'data/', 
                       'scrape/', 'src/', 'views/', 'widgets/',
