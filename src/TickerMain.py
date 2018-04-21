@@ -587,10 +587,10 @@ class UpdateThread(Thread):
             try:
                 os.mkdir("downloads")
             except OSError as exc:
-                self.log.AppendText("Mkdir downloads errno %d\n" % (exc.errno))
                 if exc.errno == errno.EEXIST and os.path.isdir("downloads"):
                     pass
                 else:
+                    self.log.AppendText("Mkdir downloads errno %d\n" % (exc.errno))
                     raise
 
             self.log.AppendText("Downloading %s...\n" % (self.url + '/' + install_fname))
@@ -2547,15 +2547,19 @@ class TickerScrapeFrame(wx.Frame):
 
         self.downloadTimer.Stop()
 
+        self.log.AppendText("Asking user\n")
         dlg = wx.MessageDialog(self, "Install %s?" % fname,
                                "TickerScrape Installer",
                                wx.OK|wx.CANCEL|wx.ICON_INFORMATION)
         val = dlg.ShowModal()
         dlg.Destroy()
         
+        self.log.AppendText("User response %s\n" % val)
+
         # Install the package
         if val == wx.ID_OK:
             tar = tarfile.open("downloads/" + fname)
+            self.log.AppendText("Extracting downloads/%s\n" % fname)
             tar.extractall()
             tar.close()
             
@@ -2563,7 +2567,7 @@ class TickerScrapeFrame(wx.Frame):
 
             RestartApp("--no-splash")
         
-        self.log.AppendText("Not restarting app\n")
+        self.log.AppendText("Update cancelled\n")
 
         self.updateThread.keepRunning = False
         self.updateThread = None
