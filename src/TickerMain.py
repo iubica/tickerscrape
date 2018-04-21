@@ -550,10 +550,6 @@ class UpdateThread(Thread):
 
                 self.log.AppendText("Installer: %s\n" % (fname))
 
-            # Don't look for update program if we already found an installer
-            if install_fname:
-                continue
-
             s = re.search(update_regex, fname)
             if s: 
                 # Get the major, minor version of the file
@@ -577,12 +573,25 @@ class UpdateThread(Thread):
                 update_fname = fname
 
                 self.log.AppendText("Updater: %s\n" % (fname))
-            
-        # Did we find an installer?
-        if install_fname:
-            # Cancel up any updater
-            update_fname = None
 
+        # If both the install and the updater have the same major and minor
+        # version, use the updater
+        if install_fname and update_fname:
+            if install_ver_major > update_ver_major:
+                update_fname = None
+        if install_fname and update_fname:
+            if install_ver_major == update_ver_major and install_ver_minor > update_ver_minor:
+                update_fname = None
+        if install_fname and update_fname:
+            install_fname = None
+
+        if install_fname:
+            download_fname = install_fname
+        if update_fname:
+            download_fname = update_fname
+
+        # Did we find an install?
+        if download_fname:
             # Make the downloads directory
             try:
                 os.mkdir("downloads")
@@ -593,20 +602,20 @@ class UpdateThread(Thread):
                     self.log.AppendText("Mkdir downloads errno %d\n" % (exc.errno))
                     raise
 
-            self.log.AppendText("Downloading %s...\n" % (self.url + '/' + install_fname))
+            self.log.AppendText("Downloading %s...\n" % (self.url + download_fname))
 
             try:
-                urllib.request.urlretrieve(self.url + '/' + install_fname, "downloads/" + install_fname)
+                urllib.request.urlretrieve(self.url + download_fname, "downloads/" + download_fname)
 
-                self.log.AppendText("Download %s complete\n" % (install_fname))
+                self.log.AppendText("Download %s complete\n" % (download_fname))
 
-                # The installer has been downloaded. 
+                # The install has been downloaded. 
                 # Install it and restart the app
                 if os.path.isdir(".git"):
-                    wx.CallAfter(self.notifyWindow.StopUpdate, "Detected Git sandbox. Skipping installation of %s.\n" % (install_fname))
+                    wx.CallAfter(self.notifyWindow.StopUpdate, "Detected Git sandbox. Skipping installation of %s.\n" % (download_fname))
                     return
 
-                wx.CallAfter(self.notifyWindow.UpdateComplete, install_fname)
+                wx.CallAfter(self.notifyWindow.UpdateComplete, download_fname)
                 return
 
             except (IOError, urllib.error.HTTPError):
@@ -621,10 +630,6 @@ class UpdateThread(Thread):
                 message = traceback.format_exception_only(t, v)
                 wx.CallAfter(self.notifyWindow.StopUpdate, message)
                 return
-
-        # Did we find an updater?
-        if update_fname:
-            pass
 
         wx.CallAfter(self.notifyWindow.LoadUpdate, originalText)
 
@@ -2554,8 +2559,6 @@ class TickerScrapeFrame(wx.Frame):
         val = dlg.ShowModal()
         dlg.Destroy()
         
-        self.log.AppendText("User response %s\n" % val)
-
         # Install the package
         if val == wx.ID_OK:
             tar = tarfile.open("downloads/" + fname)
