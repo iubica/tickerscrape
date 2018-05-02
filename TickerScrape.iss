@@ -31,7 +31,18 @@ Source: "lib/*"; DestDir: "{app}/lib"; Flags: recursesubdirs
 Source: "mpl-data/*"; DestDir: "{app}/mpl-data"; Flags: recursesubdirs; Permissions: users-full
 
 [Dirs]
+; Set full user permissions for non-lib folders. 
+; This is needed by the upgrade operation.
+Name: "{app}/bitmaps"; Permissions: users-full
+Name: "{app}/bmp_source"; Permissions: users-full
+Name: "{app}/cursors"; Permissions: users-full
+Name: "{app}/data"; Permissions: users-full
 Name: "{app}/downloads"; Permissions: users-full
+Name: "{app}/mpl-data"; Permissions: users-full
+Name: "{app}/scraoe"; Permissions: users-full
+Name: "{app}/src"; Permissions: users-full
+Name: "{app}/views"; Permissions: users-full
+Name: "{app}/widgets"; Permissions: users-full
  
 [Icons]
 Name: "{group}\TickerScrape"; Filename: "{app}\TickerScrape.exe"; IconFilename: "{app}\bitmaps\ticker-scrape-logo.ico"; Comment: "Launches the TickerScrape app"
