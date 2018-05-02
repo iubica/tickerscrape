@@ -2563,7 +2563,7 @@ class TickerScrapeFrame(wx.Frame):
         
         # Install the package
         if val == wx.ID_OK:
-            tar = tarfile.open("downloads/" + fname)
+            tar = tarfile.open("downloads/" + fname, mode="r:gz")
             self.log.AppendText("Extracting downloads/%s\n" % fname)
             tar.extractall()
             tar.close()
