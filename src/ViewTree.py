@@ -66,7 +66,7 @@ viewTree = [
         'TrailingTotalReturns',
     ]),
 
-    ('Config', [
+    ('Configuration', [
         'AccountTypes',
         'Categories',
     ]),
