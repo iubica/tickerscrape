@@ -585,13 +585,15 @@ class UpdateThread(Thread):
         if install_fname and update_fname:
             install_fname = None
 
+        download_fname = None
+
         if install_fname:
             download_fname = install_fname
         if update_fname:
             download_fname = update_fname
 
         # Did we find an install?
-        if download_fname:
+        if download_fname is not None:
             # Make the downloads directory
             try:
                 os.mkdir("downloads")
