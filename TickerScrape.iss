@@ -39,11 +39,27 @@ Name: "{app}/cursors"; Permissions: users-full
 Name: "{app}/data"; Permissions: users-full
 Name: "{app}/downloads"; Permissions: users-full
 Name: "{app}/mpl-data"; Permissions: users-full
-Name: "{app}/scraoe"; Permissions: users-full
+Name: "{app}/scrape"; Permissions: users-full
 Name: "{app}/src"; Permissions: users-full
 Name: "{app}/views"; Permissions: users-full
 Name: "{app}/widgets"; Permissions: users-full
+Name: "{app}"; Permissions: users-full
  
+[UninstallDelete]
+; These folders may be changed after install - need to manually remove them
+; when uninstalling
+Type: filesandordirs; Name: "{app}/bitmaps"
+Type: filesandordirs; Name: "{app}/bmp_source"
+Type: filesandordirs; Name: "{app}/cursors"
+Type: filesandordirs; Name: "{app}/data"
+Type: filesandordirs; Name: "{app}/downloads"
+Type: filesandordirs; Name: "{app}/libs"
+Type: filesandordirs; Name: "{app}/mpl-data"
+Type: filesandordirs; Name: "{app}/scrape"
+Type: filesandordirs; Name: "{app}/src"
+Type: filesandordirs; Name: "{app}/views"
+Type: filesandordirs; Name: "{app}/widgets"
+
 [Icons]
 Name: "{group}\TickerScrape"; Filename: "{app}\TickerScrape.exe"; IconFilename: "{app}\bitmaps\ticker-scrape-logo.ico"; Comment: "Launches the TickerScrape app"
 
