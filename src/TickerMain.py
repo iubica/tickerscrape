@@ -501,7 +501,7 @@ class UpdateThread(Thread):
             install_suffix = ".tgz"
 
         install_regex = "tickerscrape-install-([0-9]*).([0-9]*)-%s-%s%s" % (p, cpu, install_suffix)
-        update_regex = "tickerscrape-update-([0-9]*).([0-9]*)-%s-%s%s" % (p, cpu, update_suffix)
+        update_regex = "tickerscrape-update-([0-9]*).([0-9]*)%s" % (update_suffix)
         #self.log.AppendText("Expected platform: %s-%s\n" % (p, cpu))
         #self.log.AppendText("Installer: %s\n" % (install_regex))
         #self.log.AppendText("Updater: %s\n" % (update_regex))
