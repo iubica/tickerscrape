@@ -614,7 +614,8 @@ class UpdateThread(Thread):
                 # The install has been downloaded. 
                 # Install it and restart the app
                 if os.path.isdir(".git"):
-                    wx.CallAfter(self.notifyWindow.StopUpdate, "Detected Git sandbox. Skipping installation of %s.\n" % (download_fname))
+                    self.log.AppendText("Detected Git sandbox. Skipping installation of %s.\n" % (download_fname))
+                    wx.CallAfter(self.notifyWindow.StopUpdate, "")
                     return
 
                 wx.CallAfter(self.notifyWindow.UpdateComplete, download_fname)
