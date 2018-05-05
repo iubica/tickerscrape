@@ -426,12 +426,13 @@ class InternetThread(Thread):
 class UpdateThread(Thread):
     """ Worker thread class to attempt connection to the internet. """
 
-    def __init__(self, notifyWindow, log, url):
+    def __init__(self, notifyWindow, log, updateGauge, url):
 
         Thread.__init__(self)
 
         self.notifyWindow = notifyWindow
         self.log = log
+        self.updateGauge = updateGauge
         self.url = url
         self.keepRunning = True
         self.setDaemon(True)
@@ -607,6 +608,23 @@ class UpdateThread(Thread):
             self.log.AppendText("Downloading %s...\n" % (self.url + download_fname))
 
             try:
+                d = urllib.request.urlopen(self.url + download_fname)
+                meta = d.info()
+                d_size = int(meta["Content-Length"])
+                self.log.AppendText("%s size %d\n" % (download_fname, d_size))
+
+                self.updateGauge.SetValue(0)
+                self.updateGauge.SetRange(d_size)
+
+#                resp = urllib.request.get(self.url + download_fname, stream=True)
+                f = open("downloads/" + download_fname, "wb")
+                while True:
+                    chunk = d.read(1024*1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+                    self.updateGauge.SetValue(f.tell())
+                f.close()
                 urllib.request.urlretrieve(self.url + download_fname, "downloads/" + download_fname)
 
                 self.log.AppendText("Download %s complete\n" % (download_fname))
@@ -1671,6 +1689,10 @@ class TickerScrapeFrame(wx.Frame):
         self.downloadGauge.SetToolTip("Downloading Docs...")
         self.downloadGauge.Hide()
 
+        self.updateGauge = wx.Gauge(self.statusBar, wx.ID_ANY, 50)
+        self.updateGauge.SetToolTip("Updating application...")
+        self.updateGauge.Hide()
+
         self.sizeChanged = False
         self.Reposition()
 
@@ -2519,19 +2541,18 @@ class TickerScrapeFrame(wx.Frame):
         if self.updating:
             return
 
-        self.downloadTimer.Start(100)
-        self.downloadGauge.Show()
+        self.updateGauge.SetValue(0)
+        self.updateGauge.Show()
         self.Reposition()
         self.updating = True
         self.updateThread = UpdateThread(self, 
                                          self.log,
+                                         self.updateGauge,
                                          "http://tickerscrape.com/downloads/")
 
     #---------------------------------------------
 
     def StopUpdate(self, error=None):
-
-        self.downloadTimer.Stop()
 
         if not self.updating:
             return
@@ -2547,13 +2568,11 @@ class TickerScrapeFrame(wx.Frame):
         self.updateThread = None
 
         self.updating = False
-        self.downloadGauge.Hide()
+        self.updateGauge.Hide()
         self.Reposition()
 
 
     def UpdateComplete(self, fname=None):
-
-        self.downloadTimer.Stop()
 
         self.log.AppendText("Asking user\n")
         dlg = wx.MessageDialog(self, "Install %s?" % fname,
@@ -2579,7 +2598,7 @@ class TickerScrapeFrame(wx.Frame):
         self.updateThread = None
 
         self.updating = False
-        self.downloadGauge.Hide()
+        self.updateGauge.Hide()
         self.Reposition()
 
     #---------------------------------------------
