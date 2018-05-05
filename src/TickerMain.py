@@ -615,8 +615,9 @@ class UpdateThread(Thread):
 
                 self.updateGauge.SetValue(0)
                 self.updateGauge.SetRange(d_size)
+                self.updateGauge.SetToolTip("Downloading %s ..." % download_fname)
+                self.updateGauge.Show()
 
-#                resp = urllib.request.get(self.url + download_fname, stream=True)
                 f = open("downloads/" + download_fname, "wb")
                 while True:
                     chunk = d.read(1024*1024)
@@ -625,9 +626,12 @@ class UpdateThread(Thread):
                     f.write(chunk)
                     self.updateGauge.SetValue(f.tell())
                 f.close()
-                urllib.request.urlretrieve(self.url + download_fname, "downloads/" + download_fname)
 
                 self.log.AppendText("Download %s complete\n" % (download_fname))
+
+                self.updateGauge.Hide()
+                self.updateGauge.SetValue(0)
+                self.updateGauge.SetToolTip("")
 
                 # The install has been downloaded. 
                 # Install it and restart the app
@@ -1690,7 +1694,6 @@ class TickerScrapeFrame(wx.Frame):
         self.downloadGauge.Hide()
 
         self.updateGauge = wx.Gauge(self.statusBar, wx.ID_ANY, 50)
-        self.updateGauge.SetToolTip("Updating application...")
         self.updateGauge.Hide()
 
         self.sizeChanged = False
@@ -2541,8 +2544,6 @@ class TickerScrapeFrame(wx.Frame):
         if self.updating:
             return
 
-        self.updateGauge.SetValue(0)
-        self.updateGauge.Show()
         self.Reposition()
         self.updating = True
         self.updateThread = UpdateThread(self, 
@@ -2568,7 +2569,6 @@ class TickerScrapeFrame(wx.Frame):
         self.updateThread = None
 
         self.updating = False
-        self.updateGauge.Hide()
         self.Reposition()
 
 
@@ -2598,7 +2598,6 @@ class TickerScrapeFrame(wx.Frame):
         self.updateThread = None
 
         self.updating = False
-        self.updateGauge.Hide()
         self.Reposition()
 
     #---------------------------------------------
