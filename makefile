@@ -63,7 +63,7 @@ ifeq ($(TARGET),linux)
 
   build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz: build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX)
 	@if [ ! -d build/$(CPU_BUILD_DIR)/build/installer ]; then mkdir -p build/$(CPU_BUILD_DIR)/build/installer; fi
-	cd build/$(CPU_BUILD_DIR); tar cvfz tickerscrape.tgz bitmaps data libpython* README.md views bmp_source Format.py Main.py scrape widgets cursors lib TickerScrape; mv tickerscrape.tgz build/installer
+	cd build/$(CPU_BUILD_DIR); tar cvfz tickerscrape.tgz bitmaps data libpython* README.md views bmp_source Format.py Main.py scrape widgets cursors lib src TickerScrape; mv tickerscrape.tgz build/installer
 
   upload-installer: installer
 	scp build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-install-$(VERSION)-$(TARGET)-$(CPU).tgz
