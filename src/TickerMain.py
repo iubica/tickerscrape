@@ -2583,14 +2583,21 @@ class TickerScrapeFrame(wx.Frame):
         
         # Install the package
         if val == wx.ID_OK:
-            tar = tarfile.open("downloads/" + fname, mode="r:gz")
-            self.log.AppendText("Extracting downloads/%s\n" % fname)
-            tar.extractall()
-            tar.close()
-            
-            self.log.AppendText("Restarting app\n")
+            if re.search("^tickerscrape-(.*).exe", fname):
+                self.log.AppendText("Executing downloads/%s\n" % fname)
+                ExecApp("downloads/%s" % fname)
+                
+            elif re.search("^tickerscrape-(.*).tgz", fname):
+                tar = tarfile.open("downloads/" + fname, mode="r:gz")
+                self.log.AppendText("Extracting downloads/%s\n" % fname)
+                tar.extractall()
+                tar.close()
+        
+                self.log.AppendText("Restarting app\n")
 
-            RestartApp("--no-splash")
+                RestartApp("--no-splash")
+            else:
+                self.log.AppendText("downloads/%s: unexpected suffix\n" % fname)
         
         self.log.AppendText("Update cancelled\n")
 
@@ -3156,7 +3163,7 @@ class MyApp(wx.App, wx.lib.mixins.inspection.InspectionMixin):
         return True
 
 #---------------------------------------------------------------------------
-def RestartApp(a):
+def RestartApp(argv_extra):
     """Restarts the current program, with file objects and descriptors
        cleanup
     """
@@ -3166,11 +3173,23 @@ def RestartApp(a):
         if handler.fd != -1:
             os.close(handler.fd)
 
-    python = sys.executable
+    exe = sys.executable
     argv = list(sys.argv)
-    argv.append(a)
+    argv.append(argv_extra)
 
-    os.execl(python, python, *argv)
+    os.execl(exe, exe, *argv)
+
+#---------------------------------------------------------------------------
+def ExecApp(fname):
+    """Execute the installer, after cleaning up file descriptors
+    """
+
+    p = psutil.Process(os.getpid())
+    for handler in p.open_files() + p.connections():
+        if handler.fd != -1:
+            os.close(handler.fd)
+
+    os.execl(fname, fname, *argv)
 
 #---------------------------------------------------------------------------
 
