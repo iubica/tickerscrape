@@ -8,8 +8,7 @@ if sys.platform == 'win32':
     os.environ['TK_LIBRARY'] = "C:\\Users\\andrei\\AppData\\Local\\Programs\\Python\\Python36\\DLLs"
 
 executables = [
-    Executable('TickerScrape.py', base=base)
-]
+    Executable('TickerScrape.py', base=base, icon="bitmaps/ticker-scrape-logo.ico")
 
 # Dependencies are automatically detected, but might need fine tuning.
 build_exe_options = {
