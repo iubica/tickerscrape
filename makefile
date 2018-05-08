@@ -63,7 +63,7 @@ ifeq ($(TARGET),linux)
 
   build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz: build/$(CPU_BUILD_DIR)/TickerScrape$(EXE_SUFFIX)
 	@if [ ! -d build/$(CPU_BUILD_DIR)/build/installer ]; then mkdir -p build/$(CPU_BUILD_DIR)/build/installer; fi
-	cd build/$(CPU_BUILD_DIR); mkdir build/tickerscrape; cp -a bitmaps data libpython* README.md views bmp_source Format.py Main.py scrape widgets cursors lib src build/tickerscrape; cp -a TickerScrape build/tickerscrape/TickerScrape.cx_freeze; cp ../../tickerscrape.sh build/tickerscrape/tickerscrape; cd build; tar cvfz installer/tickerscrape.tgz tickerscrape
+	cd build/$(CPU_BUILD_DIR); mkdir build/tickerscrape; cp -a bitmaps data libpython* views bmp_source Format.py Main.py scrape widgets cursors lib src build/tickerscrape; cp -a TickerScrape build/tickerscrape/TickerScrape.cx_freeze; cp ../../tickerscrape.sh build/tickerscrape/tickerscrape; cd build; tar cvfz installer/tickerscrape.tgz tickerscrape
 
   upload-installer: installer
 	scp build/$(CPU_BUILD_DIR)/build/installer/tickerscrape.tgz bitdrib1@bitdribble.com:www/tickerscrape/downloads/tickerscrape-install-$(VERSION)-$(TARGET)-$(CPU).tgz
@@ -80,7 +80,7 @@ update: build/update/$(UPDATE_TGT)
 build/update/$(UPDATE_TGT): *.py */*.py
 	rm -rf build/update/*
 	@if [ ! -d build/update/tmp ]; then mkdir -p build/update/tmp; fi
-	cp -a agw bitmaps bmp_source cursors data LICENSE README.md scrape snippets src TickerScrape.py views widgets build/update/tmp
+	cp -a agw bitmaps bmp_source cursors data LICENSE scrape snippets src TickerScrape.py views widgets build/update/tmp
 	@find build/update/tmp -name __pycache__ -exec rm -rf {} \; 2>/dev/null || exit 0
 	cd build/update/tmp; tar cvfz ../$(UPDATE_TGT) .
 

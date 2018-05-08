@@ -24,7 +24,7 @@ Source: "scrape/*"; DestDir: "{app}/scrape"; Permissions: users-full
 Source: "src/*"; DestDir: "{app}/src"; Permissions: users-full
 Source: "views/*"; DestDir: "{app}/views"; Permissions: users-full
 Source: "widgets/*"; DestDir: "{app}/widgets"; Permissions: users-full
-Source: "README.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme; Permissions: users-full
+;Source: "README.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme; Permissions: users-full
 
 ; Comment these out if you want InnoInstaller to generate the setup program quickly
 Source: "lib/*"; DestDir: "{app}/lib"; Flags: recursesubdirs
@@ -59,6 +59,12 @@ Type: filesandordirs; Name: "{app}/scrape"
 Type: filesandordirs; Name: "{app}/src"
 Type: filesandordirs; Name: "{app}/views"
 Type: filesandordirs; Name: "{app}/widgets"
+
+[Tasks]
+Name: StartAfterInstall; Description: Run TickerScrape app after install
+
+[Run]
+Filename: {app}\TickerScrape.exe; Flags: shellexec skipifsilent nowait; Tasks: StartAfterInstall
 
 [Icons]
 Name: "{group}\TickerScrape"; Filename: "{app}\TickerScrape.exe"; IconFilename: "{app}\bitmaps\ticker-scrape-logo.ico"; Comment: "Launches the TickerScrape app"
