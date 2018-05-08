@@ -3189,7 +3189,7 @@ def ExecApp(fname):
         if handler.fd != -1:
             os.close(handler.fd)
 
-    os.execl(fname, fname, *argv)
+    os.execl(fname, fname)
 
 #---------------------------------------------------------------------------
 
