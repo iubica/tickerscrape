@@ -24,7 +24,6 @@ Source: "scrape/*"; DestDir: "{app}/scrape"; Permissions: users-full
 Source: "src/*"; DestDir: "{app}/src"; Permissions: users-full
 Source: "views/*"; DestDir: "{app}/views"; Permissions: users-full
 Source: "widgets/*"; DestDir: "{app}/widgets"; Permissions: users-full
-;Source: "README.md"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: isreadme; Permissions: users-full
 
 ; Comment these out if you want InnoInstaller to generate the setup program quickly
 Source: "lib/*"; DestDir: "{app}/lib"; Flags: recursesubdirs
@@ -45,9 +44,21 @@ Name: "{app}/views"; Permissions: users-full
 Name: "{app}/widgets"; Permissions: users-full
 Name: "{app}"; Permissions: users-full
  
+[InstallDelete]
+Type: filesandordirs; Name: "{app}/bitmaps"
+Type: filesandordirs; Name: "{app}/bmp_source"
+Type: filesandordirs; Name: "{app}/cursors"
+Type: filesandordirs; Name: "{app}/data"
+Type: filesandordirs; Name: "{app}/libs"
+Type: filesandordirs; Name: "{app}/mpl-data"
+Type: filesandordirs; Name: "{app}/scrape"
+Type: filesandordirs; Name: "{app}/src"
+Type: filesandordirs; Name: "{app}/views"
+Type: filesandordirs; Name: "{app}/widgets"
+Type: filesandordirs; Name: "{app}/TickerScrape.exe"
+Type: filesandordirs; Name: "{app}/python36.dll"
+
 [UninstallDelete]
-; These folders may be changed after install - need to manually remove them
-; when uninstalling
 Type: filesandordirs; Name: "{app}/bitmaps"
 Type: filesandordirs; Name: "{app}/bmp_source"
 Type: filesandordirs; Name: "{app}/cursors"
@@ -59,6 +70,8 @@ Type: filesandordirs; Name: "{app}/scrape"
 Type: filesandordirs; Name: "{app}/src"
 Type: filesandordirs; Name: "{app}/views"
 Type: filesandordirs; Name: "{app}/widgets"
+Type: filesandordirs; Name: "{app}/TickerScrape.exe"
+Type: filesandordirs; Name: "{app}/python36.dll"
 
 [Tasks]
 Name: StartAfterInstall; Description: Run TickerScrape app after install
