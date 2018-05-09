@@ -16,6 +16,7 @@ OutputDir=build\installer
 [Files]
 Source: "TickerScrape.exe"; DestDir: "{app}"
 Source: "python36.dll"; DestDir: "{app}"
+Source: "LICENSE"; DestDir: "{app}"
 Source: "bitmaps/*"; DestDir: "{app}/bitmaps"; Permissions: users-full
 Source: "bmp_source/*"; DestDir: "{app}/bmp_source"; Permissions: users-full
 Source: "cursors/*"; DestDir: "{app}/cursors"; Permissions: users-full
@@ -57,21 +58,10 @@ Type: filesandordirs; Name: "{app}/views"
 Type: filesandordirs; Name: "{app}/widgets"
 Type: filesandordirs; Name: "{app}/TickerScrape.exe"
 Type: filesandordirs; Name: "{app}/python36.dll"
+Type: filesandordirs; Name: "{app}/LICENSE"
 
 [UninstallDelete]
-Type: filesandordirs; Name: "{app}/bitmaps"
-Type: filesandordirs; Name: "{app}/bmp_source"
-Type: filesandordirs; Name: "{app}/cursors"
-Type: filesandordirs; Name: "{app}/data"
-Type: filesandordirs; Name: "{app}/downloads"
-Type: filesandordirs; Name: "{app}/libs"
-Type: filesandordirs; Name: "{app}/mpl-data"
-Type: filesandordirs; Name: "{app}/scrape"
-Type: filesandordirs; Name: "{app}/src"
-Type: filesandordirs; Name: "{app}/views"
-Type: filesandordirs; Name: "{app}/widgets"
-Type: filesandordirs; Name: "{app}/TickerScrape.exe"
-Type: filesandordirs; Name: "{app}/python36.dll"
+Type: filesandordirs; Name: "{app}"
 
 [Run]
 Filename: {app}\TickerScrape.exe; Flags: skipifsilent nowait postinstall

@@ -24,7 +24,7 @@ build_exe_options = {
     # Local files and folders
     'include_files': ['bitmaps/', 'bmp_source/', 'cursors/', 'data/', 
                       'scrape/', 'src/', 'views/', 'widgets/',
-                      'README.md'],
+                      'README.md', 'LICENSE'],
     # Modules referenced by dynamic modules under 'views/' but not included
     # in Main.py must be include_files. For example: Format.py.
     'include_msvcr': True, # Some users of cx_freeze swear this is needed
