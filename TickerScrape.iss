@@ -66,6 +66,9 @@ Type: filesandordirs; Name: "{app}"
 [Run]
 Filename: {app}\TickerScrape.exe; Flags: skipifsilent nowait postinstall
 
+[UninstallRun]
+Filename: "{cmd}"; Parameters: "/C ""taskkill /im TickerScrape.exe /f /t"
+
 [Icons]
 Name: "{group}\TickerScrape"; Filename: "{app}\TickerScrape.exe"; IconFilename: "{app}\bitmaps\ticker-scrape-logo.ico"; Comment: "Launches the TickerScrape app"
 
