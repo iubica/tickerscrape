@@ -9,6 +9,7 @@ if sys.platform == 'win32':
 
 executables = [
     Executable('TickerScrape.py', base=base, icon="bitmaps/ticker-scrape-logo.ico")
+]
 
 # Dependencies are automatically detected, but might need fine tuning.
 build_exe_options = {
