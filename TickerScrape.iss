@@ -73,11 +73,8 @@ Type: filesandordirs; Name: "{app}/widgets"
 Type: filesandordirs; Name: "{app}/TickerScrape.exe"
 Type: filesandordirs; Name: "{app}/python36.dll"
 
-[Tasks]
-Name: StartAfterInstall; Description: Run TickerScrape app after install
-
 [Run]
-Filename: {app}\TickerScrape.exe; Flags: shellexec skipifsilent nowait; Tasks: StartAfterInstall
+Filename: {app}\TickerScrape.exe; Flags: skipifsilent nowait postinstall
 
 [Icons]
 Name: "{group}\TickerScrape"; Filename: "{app}\TickerScrape.exe"; IconFilename: "{app}\bitmaps\ticker-scrape-logo.ico"; Comment: "Launches the TickerScrape app"
