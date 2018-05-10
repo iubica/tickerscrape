@@ -2531,25 +2531,29 @@ class TickerScrapeFrame(wx.Frame):
             
         except (IOError, urllib.error.HTTPError):
             # Unable to get to the internet
+            dlg.Destroy()
             t, v = sys.exc_info()[:2]
             message = traceback.format_exception_only(t, v)
             self.MessageDialogOK("TickerScrape update error: %s" % message,
                                  "Update TickerScrape")
-            dlg.Destroy()
             return
         except:
             # Some other strange error...
+            dlg.Destroy()
             t, v = sys.exc_info()[:2]
             message = traceback.format_exception_only(t, v)
             self.MessageDialogOK("TickerScrape update error: %s" % message,
                                  "Update TickerScrape")
-            dlg.Destroy()
             return
 
         was_cancelled = dlg.WasCancelled()
+
+        # For some reason the dialog does not close until we return out
+        # TO DO: figure this out. Yield() makes no difference, Hide() also
+        # does not help.
+        dlg.Hide()
         dlg.Destroy()
         dlg = None
-
         wx.Yield()
 
         if was_cancelled:
