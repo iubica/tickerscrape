@@ -421,244 +421,6 @@ class InternetThread(Thread):
 
 
 #---------------------------------------------------------------------------
-# Set up a thread that will download the update
-
-class UpdateThread(Thread):
-    """ Worker thread class to attempt connection to the internet. """
-
-    def __init__(self, notifyWindow, log, updateGauge, url):
-
-        Thread.__init__(self)
-
-        self.notifyWindow = notifyWindow
-        self.log = log
-        self.updateGauge = updateGauge
-        self.url = url
-        self.keepRunning = True
-        self.setDaemon(True)
-
-        self.start()
-
-
-    def run(self):
-        """ Run the worker thread. """
-
-        # This is the code executing in the new thread. Simulation of
-        # a long process as a simple urllib call
-
-        try:
-            fid = urllib.request.urlopen(self.url)
-
-            if six.PY2:
-                originalText = fid.read()
-            else:
-                originalText = fid.read().decode("utf-8")
-
-            #self.log.AppendText("%s\n" % (originalText))
-
-            self.updating = False
-            
-        except (IOError, urllib.error.HTTPError):
-            # Unable to get to the internet
-            t, v = sys.exc_info()[:2]
-            message = traceback.format_exception_only(t, v)
-            wx.CallAfter(self.notifyWindow.StopUpdate, message)
-        except:
-            # Some other strange error...
-            t, v = sys.exc_info()[:2]
-            message = traceback.format_exception_only(t, v)
-            wx.CallAfter(self.notifyWindow.StopUpdate, message)
-
-
-        if not self.keepRunning:
-            return
-            
-        ver_major, ver_minor = version.VERSION_STRING.split('.')
-
-        #self.log.AppendText("Version: %s %s\n" % (ver_major, ver_minor))
-        #self.log.AppendText("Platform: %s, machine: %s\n" % (platform.system(), platform.machine()))
-        
-        p = ""
-        cpu = ""
-        install_suffix = ""
-        update_suffix = ".tgz"
-
-        if platform.system() == 'Windows':
-            p = "windows"
-            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
-                cpu = "x86_64"
-            else:
-                cpu = "x86"
-
-            install_suffix = "-setup.exe"
-        if platform.system() == 'Linux':
-            p = "linux"
-            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
-                cpu = "x86_64"
-            else:
-                cpu = "x86"
-
-            install_suffix = ".tgz"
-
-        install_regex = "tickerscrape-install-([0-9]*).([0-9]*)-%s-%s%s" % (p, cpu, install_suffix)
-        update_regex = "tickerscrape-update-([0-9]*).([0-9]*)%s" % (update_suffix)
-        #self.log.AppendText("Expected platform: %s-%s\n" % (p, cpu))
-        #self.log.AppendText("Installer: %s\n" % (install_regex))
-        #self.log.AppendText("Updater: %s\n" % (update_regex))
-
-        # Initialize the install & update versions 
-        # (which may end up being None...)
-        install_ver_major = None
-        install_ver_minor = None
-        install_fname = None
-        update_ver_major = None
-        update_ver_minor = None
-        update_fname = None
-
-        # Parse the contents
-        soup = BeautifulSoup(originalText, 'lxml')
-
-        # Get the list of install & update packages
-        a = soup.find_all('a')
-        for i in a:
-            fname = i['href']
-            
-            if fname == '/':
-                continue
-            self.log.AppendText("File download available: %s\n" % fname)
-
-            s = re.search(install_regex, fname)
-            if s: 
-                # Get the major, minor version of the file
-                major, minor = s.group(1), s.group(2)
-                
-                # Continue if not newer than current version
-                if (major < ver_major):
-                    continue
-                if (major == ver_major and minor <= ver_minor):
-                    continue
-
-                # Continue if not newer than previsuly-found version
-                if install_ver_major != None:
-                    if install_ver_major > major:
-                        continue
-                if install_ver_minor != None:
-                    if install_ver_minor > minor:
-                        continue
-
-                install_ver_major, install_ver_minor = major, minor
-                install_fname = fname
-
-                self.log.AppendText("Installer: %s\n" % (fname))
-
-            s = re.search(update_regex, fname)
-            if s: 
-                # Get the major, minor version of the file
-                major, minor = s.group(1), s.group(2)
-                
-                # Continue if not newer than current version
-                if (major != ver_major):
-                    continue
-                if (minor <= ver_minor):
-                    continue
-
-                # Continue if not newer than previsuly-found version
-                if update_ver_major != None:
-                    if update_ver_major > major:
-                        continue
-                if update_ver_minor != None:
-                    if update_ver_minor > minor:
-                        continue
-
-                update_ver_major, update_ver_minor = major, minor
-                update_fname = fname
-
-                self.log.AppendText("Updater: %s\n" % (fname))
-
-        # If both the install and the updater have the same major and minor
-        # version, use the updater
-        if install_fname and update_fname:
-            if install_ver_major > update_ver_major:
-                update_fname = None
-        if install_fname and update_fname:
-            if install_ver_major == update_ver_major and install_ver_minor > update_ver_minor:
-                update_fname = None
-        if install_fname and update_fname:
-            install_fname = None
-
-        download_fname = None
-
-        if install_fname:
-            download_fname = install_fname
-        if update_fname:
-            download_fname = update_fname
-
-        # Did we find an install?
-        if download_fname is not None:
-            # Make the downloads directory
-            try:
-                os.mkdir("downloads")
-            except OSError as exc:
-                if exc.errno == errno.EEXIST and os.path.isdir("downloads"):
-                    pass
-                else:
-                    self.log.AppendText("Mkdir downloads errno %d\n" % (exc.errno))
-                    raise
-
-            self.log.AppendText("Downloading %s...\n" % (self.url + download_fname))
-
-            try:
-                d = urllib.request.urlopen(self.url + download_fname)
-                meta = d.info()
-                d_size = int(meta["Content-Length"])
-                self.log.AppendText("%s size %d\n" % (download_fname, d_size))
-
-                self.updateGauge.SetValue(0)
-                self.updateGauge.SetRange(d_size)
-                self.updateGauge.SetToolTip("Downloading %s ..." % download_fname)
-                self.updateGauge.Show()
-
-                f = open("downloads/" + download_fname, "wb")
-                while True:
-                    chunk = d.read(1024*1024)
-                    if not chunk:
-                        break
-                    f.write(chunk)
-                    self.updateGauge.SetValue(f.tell())
-                f.close()
-
-                self.log.AppendText("Download %s complete\n" % (download_fname))
-
-                self.updateGauge.Hide()
-                self.updateGauge.SetValue(0)
-                self.updateGauge.SetToolTip("")
-
-                # The install has been downloaded. 
-                # Install it and restart the app
-                if os.path.isdir(".git"):
-                    self.log.AppendText("Detected Git sandbox. Skipping installation of %s.\n" % (download_fname))
-                    wx.CallAfter(self.notifyWindow.StopUpdate, "")
-                    return
-
-                wx.CallAfter(self.notifyWindow.UpdateComplete, download_fname)
-                return
-
-            except (IOError, urllib.error.HTTPError):
-                # Unable to get to the internet
-                t, v = sys.exc_info()[:2]
-                message = traceback.format_exception_only(t, v)
-                wx.CallAfter(self.notifyWindow.StopUpdate, message)
-                return
-            except:
-                # Some other strange error...
-                t, v = sys.exc_info()[:2]
-                message = traceback.format_exception_only(t, v)
-                wx.CallAfter(self.notifyWindow.StopUpdate, message)
-                return
-
-        wx.CallAfter(self.notifyWindow.LoadUpdate, originalText)
-
-#---------------------------------------------------------------------------
 # Show how to derive a custom wxLog class
 
 class MyLog(wx.Log):
@@ -2534,55 +2296,258 @@ class TickerScrapeFrame(wx.Frame):
         self.ovr.SetPage(text)
         #print("load time: ", time.time() - start)
 
+
+    #---------------------------------------------
+    def GetUpdateName(self, url):
+        try:
+            fid = urllib.request.urlopen(url)
+            originalText = fid.read().decode("utf-8")
+        except (IOError, urllib.error.HTTPError):
+            # Unable to get to the internet
+            t, v = sys.exc_info()[:2]
+            message = traceback.format_exception_only(t, v)
+            return None, message
+        except:
+            # Some other strange error...
+            t, v = sys.exc_info()[:2]
+            message = traceback.format_exception_only(t, v)
+            return None, message
+
+        ver_major, ver_minor = version.VERSION_STRING.split('.')
+
+        #self.log.AppendText("Version: %s %s\n" % (ver_major, ver_minor))
+        #self.log.AppendText("Platform: %s, machine: %s\n" % (platform.system(), platform.machine()))
+        
+        p = ""
+        cpu = ""
+        install_suffix = ""
+        update_suffix = ".tgz"
+
+        if platform.system() == 'Windows':
+            p = "windows"
+            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
+                cpu = "x86_64"
+            else:
+                cpu = "x86"
+
+            install_suffix = "-setup.exe"
+        if platform.system() == 'Linux':
+            p = "linux"
+            if re.match(r'(.*)64', platform.machine(), re.M|re.I):
+                cpu = "x86_64"
+            else:
+                cpu = "x86"
+
+            install_suffix = ".tgz"
+
+        install_regex = "tickerscrape-install-([0-9]*).([0-9]*)-%s-%s%s" % (p, cpu, install_suffix)
+        update_regex = "tickerscrape-update-([0-9]*).([0-9]*)%s" % (update_suffix)
+        #self.log.AppendText("Expected platform: %s-%s\n" % (p, cpu))
+        #self.log.AppendText("Installer: %s\n" % (install_regex))
+        #self.log.AppendText("Updater: %s\n" % (update_regex))
+
+        # Initialize the install & update versions 
+        # (which may end up being None...)
+        install_ver_major = None
+        install_ver_minor = None
+        install_fname = None
+        update_ver_major = None
+        update_ver_minor = None
+        update_fname = None
+
+        # Parse the contents
+        soup = BeautifulSoup(originalText, 'lxml')
+
+        # Get the list of install & update packages
+        a = soup.find_all('a')
+        for i in a:
+            fname = i['href']
+            
+            if fname == '/':
+                continue
+            self.log.AppendText("File download available: %s\n" % fname)
+
+            s = re.search(install_regex, fname)
+            if s: 
+                # Get the major, minor version of the file
+                major, minor = s.group(1), s.group(2)
+                
+                # Continue if not newer than current version
+                if (major < ver_major):
+                    continue
+                if (major == ver_major and minor <= ver_minor):
+                    continue
+
+                # Continue if not newer than previsuly-found version
+                if install_ver_major != None:
+                    if install_ver_major > major:
+                        continue
+                if install_ver_minor != None:
+                    if install_ver_minor > minor:
+                        continue
+
+                install_ver_major, install_ver_minor = major, minor
+                install_fname = fname
+
+                self.log.AppendText("Installer: %s\n" % (fname))
+
+            s = re.search(update_regex, fname)
+            if s: 
+                # Get the major, minor version of the file
+                major, minor = s.group(1), s.group(2)
+                
+                # Continue if not newer than current version
+                if (major != ver_major):
+                    continue
+                if (minor <= ver_minor):
+                    continue
+
+                # Continue if not newer than previsuly-found version
+                if update_ver_major != None:
+                    if update_ver_major > major:
+                        continue
+                if update_ver_minor != None:
+                    if update_ver_minor > minor:
+                        continue
+
+                update_ver_major, update_ver_minor = major, minor
+                update_fname = fname
+
+                self.log.AppendText("Updater: %s\n" % (fname))
+
+        # If both the install and the updater have the same major and minor
+        # version, use the updater
+        if install_fname and update_fname:
+            if install_ver_major > update_ver_major:
+                update_fname = None
+        if install_fname and update_fname:
+            if install_ver_major == update_ver_major and install_ver_minor > update_ver_minor:
+                update_fname = None
+        if install_fname and update_fname:
+            install_fname = None
+
+        download_fname = None
+
+        if install_fname:
+            download_fname = install_fname
+        if update_fname:
+            download_fname = update_fname
+
+        return download_fname, None
+
+    def MessageDialogOK(self, msg, caption):
+        dlg = wx.MessageDialog(self, msg, caption,
+                               wx.OK|wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     #---------------------------------------------
 
     # Update methods
     def StartUpdate(self):
 
         #self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
+        url = "http://tickerscrape.com/downloads/"
+        fname, err = self.GetUpdateName(url)
 
-        if self.updating:
+        self.log.AppendText("GetUpdateName() ret %s, %s\n" % (fname, err))
+        if err:
+            self.MessageDialogOK("TickerScrape update error: %s" % err[0],
+                                 "Update TickerScrape")
             return
 
-        self.Reposition()
-        self.updating = True
-        self.updateThread = UpdateThread(self, 
-                                         self.log,
-                                         self.updateGauge,
-                                         "http://tickerscrape.com/downloads/")
-
-    #---------------------------------------------
-
-    def StopUpdate(self, error=None):
-
-        if not self.updating:
+        if not fname:
+            self.MessageDialogOK("TickerScrape is already up to date.",
+                                 "Update TickerScrape")
             return
 
-        if error:
-            if self.sendDownloadError:
-                self.log.AppendText("Warning: problems in downloading update.\n")
-                self.log.AppendText("Error message from the update downloader was:\n")
-                self.log.AppendText("\n".join(error))
-                self.sendDownloadError = False
-
-        self.updateThread.keepRunning = False
-        self.updateThread = None
-
-        self.updating = False
-        self.Reposition()
-
-
-    def UpdateComplete(self, fname=None):
-
-        self.log.AppendText("Asking user\n")
-        dlg = wx.MessageDialog(self, "Install %s?" % fname,
-                               "TickerScrape Installer",
-                               wx.OK|wx.CANCEL|wx.ICON_INFORMATION)
-        val = dlg.ShowModal()
+        dlg = wx.MessageDialog(self, 
+                               "Download and install %s?" % fname,
+                               "Update TickerScrape",
+                               wx.YES_NO | wx.ICON_INFORMATION
+                               )
+        ret = dlg.ShowModal()
         dlg.Destroy()
-        
-        # Install the package
-        if val == wx.ID_OK:
+        dlg = None
+
+        if ret == wx.ID_NO:
+            return
+
+        # Make the downloads directory
+        try:
+            os.mkdir("downloads")
+        except OSError as exc:
+            if exc.errno == errno.EEXIST and os.path.isdir("downloads"):
+                pass
+            else:
+                self.log.AppendText("Mkdir downloads errno %d\n" % (exc.errno))
+                return
+
+        self.log.AppendText("Downloading %s...\n" % (url + fname))
+
+        try:
+            d = urllib.request.urlopen(url + fname)
+            meta = d.info()
+            d_size = int(meta["Content-Length"])
+            self.log.AppendText("%s size %d\n" % (fname, d_size))
+        except (IOError, urllib.error.HTTPError):
+            # Unable to get to the internet
+            t, v = sys.exc_info()[:2]
+            message = traceback.format_exception_only(t, v)
+            return
+        except:
+            # Some other strange error...
+            t, v = sys.exc_info()[:2]
+            message = traceback.format_exception_only(t, v)
+            return
+
+        dlg = wx.ProgressDialog("Update TickerScrape",
+                                "Downloading %s ..." % fname,
+                                maximum = d_size,
+                                parent=self,
+                                style = 0
+                                | wx.PD_APP_MODAL
+                                | wx.PD_CAN_ABORT
+                                #| wx.PD_CAN_SKIP
+                                #| wx.PD_ELAPSED_TIME
+                                | wx.PD_ESTIMATED_TIME
+                                | wx.PD_REMAINING_TIME
+                                #| wx.PD_AUTO_HIDE
+                                )
+        try:
+            f = open("downloads/" + fname, "wb")
+            f_size = 0
+            keep_going = True
+            while keep_going:
+                chunk = d.read(1024*1024)
+                if not chunk:
+                    break
+                f.write(chunk)
+                f_size = f.tell()
+                (keep_going, skip) = dlg.Update(f_size)
+                self.log.AppendText("keep_going %d\n" % (keep_going))
+
+            f.close()
+            
+            was_cancelled = dlg.WasCancelled()
+            dlg.Destroy()
+            dlg = None
+
+            self.log.AppendText("was_cancelled %d\n" % (was_cancelled))
+
+            if was_cancelled:
+                self.MessageDialogOK("TickerScrape update cancelled",
+                                     "Update TickerScrape")
+                return
+
+            # The install has been downloaded. 
+            # Install it and restart the app
+            if os.path.isdir(".git"):
+                self.log.AppendText("Detected Git sandbox. Skipping installation of %s.\n" % (fname))
+                self.MessageDialogOK("Detected Git sandbox, skipping installation",
+                                     "Update TickerScrape")
+                return
+
             if re.search("^tickerscrape-(.*).exe", fname):
                 self.log.AppendText("Executing downloads/%s\n" % fname)
                 ExecApp("downloads/%s" % fname)
@@ -2592,28 +2557,24 @@ class TickerScrapeFrame(wx.Frame):
                 self.log.AppendText("Extracting downloads/%s\n" % fname)
                 tar.extractall()
                 tar.close()
-        
+                
                 self.log.AppendText("Restarting app\n")
-
+                
                 RestartApp("--no-splash")
             else:
                 self.log.AppendText("downloads/%s: unexpected suffix\n" % fname)
-        
-        self.log.AppendText("Update cancelled\n")
 
-        self.updateThread.keepRunning = False
-        self.updateThread = None
+        except (IOError, urllib.error.HTTPError):
+            # Unable to get to the internet
+            t, v = sys.exc_info()[:2]
+            message = traceback.format_exception_only(t, v)
+        except:
+            # Some other strange error...
+            t, v = sys.exc_info()[:2]
+            message = traceback.format_exception_only(t, v)
 
-        self.updating = False
-        self.Reposition()
-
-    #---------------------------------------------
-
-    def LoadUpdate(self, data):
-
-        #self.log.AppendText("In %s()\n" % (sys._getframe().f_code.co_name))
-
-        self.StopUpdate()
+        if dlg:
+            dlg.Destroy()
 
     #---------------------------------------------
 
