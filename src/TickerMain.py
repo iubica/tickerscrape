@@ -2510,8 +2510,8 @@ class TickerScrapeFrame(wx.Frame):
                                 | wx.PD_CAN_ABORT
                                 #| wx.PD_CAN_SKIP
                                 #| wx.PD_ELAPSED_TIME
-                                | wx.PD_ESTIMATED_TIME
-                                | wx.PD_REMAINING_TIME
+                                #| wx.PD_ESTIMATED_TIME
+                                #| wx.PD_REMAINING_TIME
                                 #| wx.PD_AUTO_HIDE
                                 )
         try:
@@ -2520,61 +2520,65 @@ class TickerScrapeFrame(wx.Frame):
             keep_going = True
             while keep_going:
                 chunk = d.read(1024*1024)
+                wx.Yield()
                 if not chunk:
                     break
                 f.write(chunk)
                 f_size = f.tell()
                 (keep_going, skip) = dlg.Update(f_size)
-                self.log.AppendText("keep_going %d\n" % (keep_going))
 
             f.close()
             
-            was_cancelled = dlg.WasCancelled()
-            dlg.Destroy()
-            dlg = None
-
-            self.log.AppendText("was_cancelled %d\n" % (was_cancelled))
-
-            if was_cancelled:
-                self.MessageDialogOK("TickerScrape update cancelled",
-                                     "Update TickerScrape")
-                return
-
-            # The install has been downloaded. 
-            # Install it and restart the app
-            if os.path.isdir(".git"):
-                self.log.AppendText("Detected Git sandbox. Skipping installation of %s.\n" % (fname))
-                self.MessageDialogOK("Detected Git sandbox, skipping installation",
-                                     "Update TickerScrape")
-                return
-
-            if re.search("^tickerscrape-(.*).exe", fname):
-                self.log.AppendText("Executing downloads/%s\n" % fname)
-                ExecApp("downloads/%s" % fname)
-                
-            elif re.search("^tickerscrape-(.*).tgz", fname):
-                tar = tarfile.open("downloads/" + fname, mode="r:gz")
-                self.log.AppendText("Extracting downloads/%s\n" % fname)
-                tar.extractall()
-                tar.close()
-                
-                self.log.AppendText("Restarting app\n")
-                
-                RestartApp("--no-splash")
-            else:
-                self.log.AppendText("downloads/%s: unexpected suffix\n" % fname)
-
         except (IOError, urllib.error.HTTPError):
             # Unable to get to the internet
             t, v = sys.exc_info()[:2]
             message = traceback.format_exception_only(t, v)
+            self.MessageDialogOK("TickerScrape update error: %s" % message,
+                                 "Update TickerScrape")
+            dlg.Destroy()
+            return
         except:
             # Some other strange error...
             t, v = sys.exc_info()[:2]
             message = traceback.format_exception_only(t, v)
-
-        if dlg:
+            self.MessageDialogOK("TickerScrape update error: %s" % message,
+                                 "Update TickerScrape")
             dlg.Destroy()
+            return
+
+        was_cancelled = dlg.WasCancelled()
+        dlg.Destroy()
+        dlg = None
+
+        wx.Yield()
+
+        if was_cancelled:
+            self.MessageDialogOK("TickerScrape update cancelled.",
+                                 "Update TickerScrape")
+            return
+
+        # The install has been downloaded. 
+        # Install it and restart the app
+        if os.path.isdir(".git"):
+            self.MessageDialogOK("Detected Git sandbox, skipping installation.",
+                                 "Update TickerScrape")
+            return
+
+        if re.search("^tickerscrape-(.*).exe", fname):
+            self.log.AppendText("Executing downloads/%s\n" % fname)
+            ExecApp("downloads/%s" % fname)
+                
+        elif re.search("^tickerscrape-(.*).tgz", fname):
+            tar = tarfile.open("downloads/" + fname, mode="r:gz")
+            self.log.AppendText("Extracting downloads/%s\n" % fname)
+            tar.extractall()
+            tar.close()
+                
+            self.log.AppendText("Restarting app\n")
+                
+            RestartApp("--no-splash")
+        else:
+            self.log.AppendText("downloads/%s: unexpected suffix\n" % fname)
 
     #---------------------------------------------
 
